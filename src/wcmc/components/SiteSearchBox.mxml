@@ -1,0 +1,321 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!---
+The SiteSearchBox is an MXML component that is used in the CSN tool to search for a site. 
+<p>The life cycle of the SiteSearchBox is the following:</p>
+<ol>
+<li>The page is loaded and a query is run on initialisation to load a batch of records.</li>
+<li>The user enters search text in the box and a query is run to get the matching records.</li>
+<li>The list is populated with the matching items.</li>
+<li>If a filter is applied, then the filtered results are queried and populated in the list.</li>
+</ol>
+-->
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" 
+		 xmlns:mx="library://ns.adobe.com/flex/mx"
+		 xmlns:classes="wcmc.classes.*"
+		 xmlns:components="wcmc.components.*" 
+		 xmlns:esri="http://www.esri.com/2008/ags"
+		 width="100%" height="100%" 
+		 initialize="init()"
+		 creationComplete="searchBox.setFocus()">
+	<s:layout>
+		<s:VerticalLayout/>
+	</s:layout>
+	
+	<fx:Declarations>
+		<!---The locator is a geolocation service that ESRI provide to locate geographic places in the world.-->
+		<esri:Locator id="locator" url="http://tasks.arcgisonline.com/ArcGIS/rest/services/Locators/ESRI_Places_World/GeocodeServer" showBusyCursor="true"/>
+		<classes:FilterCollection id="countryFilterCollection" masterTableName="V_FILTER">
+			<classes:filters>
+				<s:ArrayCollection>
+					<classes:Filter id="countryFilter" label="{resourceManager.getString('myResources', 'TEXT28')}" table="V_COUNTRY" valueField="Name" masterTableFilterFieldName="SiteRecID" filterRenderer="wcmc.renderers.CountryFilterRenderer" sortLookupValues="false" sharedObjectName="siteSearchFilter"/>
+				</s:ArrayCollection>
+			</classes:filters>
+		</classes:FilterCollection>
+	</fx:Declarations>
+	
+	<s:HGroup width="100%" verticalAlign="middle" paddingTop="5" paddingBottom="5">
+		<s:Label text="{resourceManager.getString('myResources', 'TEXT14')}" styleName="speciesSearchBox" />
+		<classes:SearchBox id="searchBox" keyUp="searchBox_keyUpHandler(event)"/>
+		<components:FilterUI2 id="countryFilterUI" filter="{countryFilter}" openSide="left" buttonTooltip="{resourceManager.getString('myResources', 'TEXT95')}" initialize="countryFilterUI_initializeHandler(event)"/>
+		<mx:Image id="filterImage"/>
+	</s:HGroup>
+	<mx:List id="matchingList" itemRenderer="wcmc.renderers.SiteListRenderer" itemClick="matchingList_itemClickHandler(event)" width="100%" height="100%" rowHeight="24"/>
+	
+	<fx:Script>
+		<![CDATA[
+			import com.esri.ags.geometry.Geometry;
+			import com.esri.ags.geometry.MapPoint;
+			import com.esri.ags.tasks.supportClasses.AddressCandidate;
+			import com.esri.ags.utils.WebMercatorUtil;
+			
+			import mx.collections.ArrayCollection;
+			import mx.events.FlexEvent;
+			import mx.events.ListEvent;
+			import mx.events.ToolTipEvent;
+			import mx.managers.CursorManager;
+			import mx.rpc.AsyncResponder;
+			
+			import wcmc.classes.Countries;
+			import wcmc.classes.FilterResultCompleteEvent;
+			import wcmc.classes.LookupValue;
+			import wcmc.classes.SetSiteEvent;
+			import wcmc.classes.Site;
+			import wcmc.classes.Utilities;
+			private var searchText:String;
+			private const RECORDSIZE:int=200;
+			/**
+			 * The siteIDs of the matching sites shown in the list box.
+			 */ 
+			[Bindable]public var matchingSiteRecIDs:ArrayCollection;
+			[Bindable]public var csn:CSN;
+			/**
+			 * The siteIDs of the matching sites shown in the list box as a string.
+			 */ 
+			public var siteRecIDsString:String;
+			/**
+			 * The urlRequest object that is used to retrieve the sites data from the server 
+			 */ 
+			protected var urlRequest:URLRequest;
+			/**
+			 * The urlLoader object that is used to retrieve the site data from the server 
+			 */ 
+			protected var urlLoader:URLLoader=new URLLoader();
+			/**
+			 * Called on initialisation this function adds the keyDown event listener and populates the list box with the first 200 sites. 
+			 */ 
+			protected function init():void
+			{
+				addEventListener (KeyboardEvent.KEY_DOWN, keyDown);
+				populateSiteListBox();
+			}
+			/**
+			 * Handles a key up event on the keyboard. If the CR key is pressed and there is only one item in the list of sites, then this site is selected and the site page for that site is loaded. <p>If it is not a CR key then the site list is queried for the matching text string.</p>
+			 */ 
+			protected function searchBox_keyUpHandler(event:KeyboardEvent):void
+			{
+				if (event.charCode==13) //CR pressed
+				{
+					if (matchingList.dataProvider.length==1) selectSite();
+				}
+				else
+				{
+					searchText=event.target.text;
+					populateSiteListBox();
+				}
+			}
+			/**
+			 * Gets the selected site as a Site object and dispatches the SetSiteEvent to change the applications state.
+			 */ 
+			protected function selectSite():void
+			{
+				var site:Site=matchingList.selectedItem as Site;
+				dispatchEvent(new SetSiteEvent(SetSiteEvent.SETSITE,matchingList.selectedItem as Site));
+			}
+			/**
+			 * Loads the records into the list box
+			 */ 
+			protected function populateSiteListBox():void
+			{
+				loadRecords({startindex:0, size:RECORDSIZE});
+			}
+			/**
+			 * Requests the site data from the server according to whether the search text is entered and whether the sites are filtered by country.
+			 */ 
+			protected function loadRecords(obj:Object):void
+			{
+				urlLoader.addEventListener(Event.COMPLETE, dataLoaded); //add the listener for when the data is loaded
+				CursorManager.setBusyCursor(); 
+				if (!searchText) //if there is no search text
+				{
+					if (siteRecIDsString!=null) //if a country filter has been set
+					{
+				        urlRequest=new URLRequest("http://dev.unep-wcmc.org/CSN_WebServices/DataServices.asmx/GetSitesInClause");
+				        urlRequest.method=URLRequestMethod.POST;
+						urlRequest.data=new URLVariables("inClause=" + siteRecIDsString); //get the sites with the matching inClause
+					}
+					else //no country filter set
+					{
+						urlRequest = new URLRequest("http://dev.unep-wcmc.org/CSN_WebServices/DataServices.asmx/GetSites");
+				        urlRequest.method=URLRequestMethod.POST;
+						urlRequest.data=new URLVariables("startIndex=" + obj.startindex + "&pageSize=" + obj.size); //get all sites
+					}
+				}
+				else //search text has been set
+				{
+					if (siteRecIDsString!=null) //if a country filter has been set
+					{
+						urlRequest = new URLRequest("http://dev.unep-wcmc.org/CSN_WebServices/DataServices.asmx/GetSitesSearchInClause");
+				        urlRequest.method=URLRequestMethod.POST;
+						urlRequest.data=new URLVariables("searchText=" + searchText + "&inClause=" + siteRecIDsString); //get the sites with the matching inClause and search text
+					}
+					else
+					{
+						urlRequest = new URLRequest("http://dev.unep-wcmc.org/CSN_WebServices/DataServices.asmx/GetSitesSearch");
+				        urlRequest.method=URLRequestMethod.POST;
+						urlRequest.data=new URLVariables("searchText=" + searchText + "&startIndex=" + obj.startindex + "&pageSize=" + obj.size); //get all the sites with the matching search text
+					}
+				}
+				urlLoader.load(urlRequest); //execute the request
+			}
+			/**
+			 * Asynchronous function called when the data is loaded. 
+			 */ 
+			protected function dataLoaded(event:Event):void
+			{
+				var urlLoader:URLLoader=event.target as URLLoader;
+				urlLoader.removeEventListener(Event.COMPLETE, dataLoaded);
+				var _xml:XML=Utilities.getSOAPXML(urlLoader.data);
+				if (_xml)
+				{
+					var _ac:ArrayCollection=populateSiteArrayCollection(_xml.children());
+					matchingList.dataProvider = _ac;
+					searchBox.toolTip="";
+					switch (matchingList.dataProvider.length)
+					{
+						case 1:
+							matchingList.selectedIndex=0;
+							searchBox.toolTip=resourceManager.getString('myResources', 'TEXT96'); //if there is only one matching site, then show a tooltip that you can just press enter to select the site
+							searchBox.dispatchEvent(new ToolTipEvent(ToolTipEvent.TOOL_TIP_SHOW)); //show the tooltip
+							break;
+						default:
+							break;
+					}
+				}
+				else
+				{ //no matching sites
+					matchingList.dataProvider=null; //clear the matching site list
+					searchBox.toolTip=resourceManager.getString('myResources', 'TEXT97') + " '" + searchBox.text + "'.\n" + resourceManager.getString('myResources', 'TEXT98'); //show a tooltip that explains the geoprocessing tool
+					searchBox.dispatchEvent(new ToolTipEvent(ToolTipEvent.TOOL_TIP_SHOW)); //show the tooltip
+				}
+				CursorManager.removeAllCursors(); //removeBusyCursor didnt work - I think because lots of setBusy cursors were set when adding search terms
+			}
+			/**
+			 * Populates the matching sites as a set of strongly typed objects.
+			 */ 
+			protected function populateSiteArrayCollection(_XMLList:XMLList):ArrayCollection
+			{
+				var _ac:ArrayCollection=new ArrayCollection();
+				for each (var _xml:XML in _XMLList)
+				{
+					var site:Site=new Site();
+					site.siteRecID=_xml.a;
+					site.name=_xml.b;
+					site.countryCode=_xml.c;
+					site.isPoly=(_xml.d==1);
+					site.isIBA=(_xml.e==1);
+					_ac.addItem(site);
+				}
+				return _ac;
+			}
+			/**
+			 * Select the site.
+			 */ 
+			protected function matchingList_itemClickHandler(event:ListEvent):void
+			{
+				selectSite();
+				matchingList.selectedIndex=-1;
+			}
+			/**
+			 * Searches the place name in ESRIs geocoder.
+			 */ 
+			protected function doGeocode():void 
+			{
+				var myAddress:Object = {PlaceName:searchBox.text};
+				var myOutFields:Array = ["*"];
+				locator.addressToLocations(myAddress, myOutFields, new AsyncResponder(onGeocodeResult, null));
+			}
+			/**
+			 * Asynchronous function called when the geocoder completes.
+			 */ 
+			protected function onGeocodeResult(candidates:Array, token:Object = null):void
+			{
+				if (candidates.length > 0)
+				{
+					var addressCandidate:AddressCandidate = candidates[0];
+					var geometry:Geometry=WebMercatorUtil.geographicToWebMercator(addressCandidate.location); //get the geometry for the first matching location
+					csn.map.centerAt(geometry as MapPoint); //move to that location
+					csn.map.level = 12; //set the zoom level
+				}
+			}
+			/**
+			 * If the user presses a key the first step is to see if they want to geocode.
+			 */ 
+			protected function keyDown(event:KeyboardEvent):void
+			{
+				if (event.charCode != 0) 
+				{
+					if ((event.charCode == 13) && (searchBox.text.length>0))
+					{
+						if (matchingList.dataProvider==null)
+						{
+							doGeocode();
+							return;
+						}
+						if (matchingList.dataProvider.length==0)
+						{
+							doGeocode();
+							return;
+						}
+						if (matchingList.dataProvider[0]==null)
+						{
+							doGeocode();
+							return;
+						}
+					}
+				}
+			} 
+			/**
+			 * Populates the country filter with all of the countres and adds a listener for when the filter is changed.
+			 */ 
+			protected function countryFilterUI_initializeHandler(event:FlexEvent):void
+			{
+				countryFilterCollection.getMatchingIDs();
+				countryFilterCollection.addEventListener(FilterResultCompleteEvent.FILTERRESULTCOMPLETE,sitesFiltered);
+			}
+			/**
+			 * Asynchronous function called when the filtered sites are returned.
+			 */ 
+			protected function sitesFiltered(event:FilterResultCompleteEvent):void
+			{
+				matchingSiteRecIDs=event.filterResult.matchingIDs; //get the filtered site IDs
+				(countryFilter.selectedItems.length==1) ? setFlag() : clearFlag(); //if there is only one country selected then show the country flag
+				siteRecIDsString=Utilities.arrayCollectionToString(matchingSiteRecIDs); //create the siteRecIDs as a string
+				(siteRecIDsString) ? loadRecords(null) : loadRecords({startindex:0, size:RECORDSIZE}); 
+			}
+			/**
+			 * If a single country is selected in the country filter then show this countries flag
+			 */ 
+			protected function setFlag():void
+			{
+				var selectedId:Number=countryFilter.selectedItems[0];
+				var countryName:String=getCountryName(selectedId);
+				if (countryName)
+				{
+					filterImage.source=Countries.getCountryFlag(countryName);
+					filterImage.toolTip=resourceManager.getString('myResources', 'TEXT99') + countryName;
+				}
+			}
+			/**
+			 * Returns the country name from the selected value in the country filter.
+			 */ 
+			protected function getCountryName(selectedValue:Number):String
+			{
+				for each (var lu:LookupValue in countryFilter.lookupValues)
+				{
+					if (lu.id==selectedValue) return lu.value;
+				}
+				return null;
+			}
+			/**
+			 * Clears the flag if more than one country is selected.
+			 */ 
+			protected function clearFlag():void
+			{
+				filterImage.source=null;
+				filterImage.toolTip="";
+			}
+		]]>
+	</fx:Script>
+	
+</s:Group>

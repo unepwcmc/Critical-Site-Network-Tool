@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!---Custom ToggleButtonBar that shows a number of drawing tools that can be used to draw polygons on the map. These are used to draw user-defined polygons to summarise the IWC data.-->
+<mx:ToggleButtonBar xmlns:fx="http://ns.adobe.com/mxml/2009" 
+				   xmlns:s="library://ns.adobe.com/flex/spark" 
+				   xmlns:supportClasses="com.esri.ags.components.supportClasses.*" 
+				   xmlns:esri="http://www.esri.com/2008/ags" 
+				   xmlns:mx="library://ns.adobe.com/flex/mx" creationComplete="selectedIndex = -1" itemClick="itemClickHandler(event)" toggleOnClick="true" height="22">
+	<fx:Declarations>
+		<esri:DrawTool id="drawTool" map="{map}" graphicsLayer="{drawLayer}" fillSymbol="{sfs_default}" showDrawTips="false" />
+		<esri:SimpleFillSymbol id="sfs_default"/>
+	</fx:Declarations>
+	<fx:Metadata>
+		[Event(name="drawToolActivated", type="flash.events.Event")]
+		[Event(name="drawToolDeactivated", type="flash.events.Event")]
+	</fx:Metadata>
+		<mx:dataProvider>
+			<fx:Array>
+				<fx:Object icon="{EmbeddedImages.drawRect}" toolTip="{resourceManager.getString('myResources', 'TEXT25')}"/>
+				<fx:Object icon="{EmbeddedImages.drawPolygon}" toolTip="{resourceManager.getString('myResources', 'TEXT26')}"/>
+				<fx:Object icon="{EmbeddedImages.drawFreeform}" toolTip="{resourceManager.getString('myResources', 'TEXT27')}"/>
+			</fx:Array>
+		</mx:dataProvider>
+		<fx:Script>
+			<![CDATA[
+				import com.esri.ags.Map;
+				import com.esri.ags.events.DrawEvent;
+				import com.esri.ags.layers.GraphicsLayer;
+				
+				import mx.events.ItemClickEvent;
+				import mx.managers.CursorManager;
+				import mx.managers.CursorManagerPriority;
+				
+				import wcmc.classes.EmbeddedImages;
+				[Bindable]public var map:Map;
+				[Bindable]public var drawLayer:GraphicsLayer;
+				protected function itemClickHandler(event:ItemClickEvent):void
+				{
+					(selectedIndex!=-1) ? activateTool() : deactivateTool();
+					switch (event.item.toolTip)
+					{
+						case resourceManager.getString('myResources', 'TEXT25'):
+						{
+							drawTool.activate(DrawTool.EXTENT);
+							break;
+						}
+						case resourceManager.getString('myResources', 'TEXT26'):
+						{
+							drawTool.activate(DrawTool.POLYGON);
+							break;
+						}
+						case resourceManager.getString('myResources', 'TEXT27'):
+						{
+							drawTool.activate(DrawTool.FREEHAND_POLYGON);
+							break;
+						}
+					}
+				}
+				private function activateTool():void
+				{
+					drawTool.addEventListener(DrawEvent.DRAW_END,drawEnd);
+					CursorManager.setCursor(EmbeddedImages.pencil, CursorManagerPriority.HIGH,0,-10);
+					dispatchEvent(new Event("drawToolActivated"));
+				}
+				public function deactivateTool():void
+				{
+					drawTool.removeEventListener(DrawEvent.DRAW_END,drawEnd);
+					drawTool.deactivate();
+					selectedIndex=-1;
+					CursorManager.removeAllCursors();				
+					dispatchEvent(new Event("drawToolDeactivated"));
+				}
+				private function drawEnd(event:DrawEvent):void
+				{
+					deactivateTool();
+				}
+			]]>
+		</fx:Script>
+</mx:ToggleButtonBar>

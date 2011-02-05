@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!---InfoWindow for the WDPA layer-->
+<mx:VBox xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" 
+		 xmlns:mx="library://ns.adobe.com/flex/mx" styleName="Tooltip" xmlns:components="wcmc.components.*" filters="{shadow}">
+	<fx:Declarations>
+		<mx:DropShadowFilter id="shadow" alpha="0.4"/>
+	</fx:Declarations>
+	<mx:HBox width="100%" verticalAlign="middle" minWidth="160">
+		<mx:Text text="{data.English_Name}" styleName="toolLabel"/>
+		<mx:Spacer width="100%"/>
+		<components:MyCloseButton closeTarget="{parent}"/>
+	</mx:HBox>
+	<mx:VBox width="100%" height="100%">
+		<mx:Canvas><s:Label text="{resourceManager.getString('myResources', 'TEXT137')}"/><s:Label x="100" text="{getTotalArea()}"/></mx:Canvas>
+		<mx:Canvas><s:Label text="{resourceManager.getString('myResources', 'TEXT138')}"/><s:Label x="100" text="{getDesignationDate()}"/></mx:Canvas>
+		<mx:Canvas><s:Label text="{resourceManager.getString('myResources', 'TEXT139')}"/><s:Label x="100" text="{getIUCNCategory()}"/></mx:Canvas>
+		<mx:LinkButton label="{resourceManager.getString('myResources', 'TEXT136')}" click="linkbutton1_clickHandler(event)"/>
+	</mx:VBox>
+	<fx:Script>
+		<![CDATA[
+			import flash.net.navigateToURL;
+			
+			import wcmc.classes.EmbeddedImages;
+			private function getTotalArea():String
+			{
+				if (data.DocumentedTotalArea) return data.DocumentedTotalArea + " " + resourceManager.getString('myResources', 'TEXT140');	
+				return resourceManager.getString('myResources', 'TEXT141');
+			}
+			private function getIUCNCategory():String
+			{
+				if (data.IUCNCategory)
+				{
+					if (data.IUCNCategory==-1)
+					{
+						return "Unknown";						
+					}
+					else
+					{
+						return data.IUCNCategory;		
+					}
+				}
+				else
+				{
+					return "Unknown";
+				}
+				return resourceManager.getString('myResources', 'TEXT141');
+			}
+			private function getDesignationDate():String
+			{
+				if (data.StatusYear) return data.StatusYear;
+				return resourceManager.getString('myResources', 'TEXT141');
+			}
+			/**
+			 * Opens the protected area page in protectedplanet.net 
+			 */ 
+			protected function linkbutton1_clickHandler(event:MouseEvent):void
+			{
+				navigateToURL(new URLRequest("http://www.protectedplanet.net/sites/" + data.Site_ID),"_blank");
+			}
+		]]>
+	</fx:Script>
+</mx:VBox>

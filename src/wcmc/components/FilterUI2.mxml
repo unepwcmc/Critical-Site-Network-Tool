@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!---An simple interface that shows a dropdown array that shows a filter dialog box when the user clicks on the down arrow.-->
+<mx:Canvas xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		   xmlns:s="library://ns.adobe.com/flex/spark" 
+		   xmlns:mx="library://ns.adobe.com/flex/mx" styleName="infoPanel" keyDown="canvas1_keyDownHandler(event)">
+		<s:ToggleButton click="toggleFilterDialog(event)" width="18" height="18" id="button" skinClass="wcmc.skins.FlexUIButtonSkin" toolTip="{buttonTooltip}"/>
+	<fx:Script>
+		<![CDATA[
+			import mx.core.IFlexDisplayObject;
+			import mx.managers.PopUpManager;
+			import mx.managers.PopUpManagerChildList;
+			
+			import spark.core.IViewport;
+			
+			import wcmc.classes.Filter;
+			import wcmc.classes.LookupValue;
+			private var filterDialog:FilterDialog;
+			private var filterDialogOpen:Boolean=false;
+			[Bindable]
+			/**
+			 * The corresponding filter object
+			 */ 
+			public var filter:Filter;
+			[Bindable]
+			/**
+			 * The side that the filter dialog opens out to. Either left or right. The default is right.
+			 */ 
+			public var openSide:String;//left or right
+			[Bindable]
+			/**
+			 * The tooltip that is shown when the user moves the mouse over the drop down box.
+			 */ 
+			public var buttonTooltip:String;
+			/**
+			 * Opens/closes the FilterDialog box.
+			 */ 
+			protected function toggleFilterDialog(event:MouseEvent):void
+			{
+				if (filterDialogOpen)
+				{
+					PopUpManager.removePopUp(filterDialog as IFlexDisplayObject); //remove the filter dialog
+				}
+				else
+				{
+					filterDialog=new FilterDialog(); //instantiate a new filter dialog
+					PopUpManager.addPopUp(filterDialog as IFlexDisplayObject,parentApplication as DisplayObject,false,PopUpManagerChildList.POPUP); //add it to the interface
+					filterDialog.filter=filter; //set the filter for the filter dialog
+					(openSide=="right") ? filterDialog.x=localToGlobal(new Point(button.x,button.y)).x : filterDialog.x=((localToGlobal(new Point(button.x+button.width,button.y)).x)-filterDialog.width); //set the open x position
+					filterDialog.y=(localToGlobal(new Point(button.x,button.y)).y)+button.height-1; //set the open y position
+					filterDialog.addEventListener("filterDialogClosed",filterDialogClosed); //add an event listener for when the filter dialog closes
+				}
+				filterDialogOpen=!filterDialogOpen; //toggle the filter dialog
+			}
+			/**
+			 * Called when the filter dialog is closed. This resets the button and other variables.
+			 */ 
+			protected function filterDialogClosed(event:Event):void
+			{
+				filterDialog.removeEventListener("filterDialogClosed",filterDialogClosed);
+				button.selected=false;
+				filterDialogOpen=false;	
+			}
+			/**
+			 * Moves the scrollbars when the user presses a key - the scroller moves to the item that begins with the key that the user pressed.
+			 */ 
+			protected function canvas1_keyDownHandler(event:KeyboardEvent):void
+			{
+				var index:Number=getIndexOfKey(event);
+				if (index>-1)
+				{
+					filterDialog.list.ensureIndexIsVisible(index);
+					var iViewport:IViewport=filterDialog.list.scroller.viewport;
+//					var verticalScrollPos:Number=iViewport.verticalScrollPosition;
+//					iViewport.verticalScrollPosition=iViewport.verticalScrollPosition+filterDialog.list.height-24; //hack - dont know how to get the rowHeight for a spark item renderer
+					iViewport.verticalScrollPosition=index*20;
+				}
+			}
+			/**
+			 * Finds the position of the first matching item in the lookup values when the user presses a key.
+			 */ 
+			protected function getIndexOfKey(event:KeyboardEvent):Number
+			{
+				for each (var lookupValue:LookupValue in filter.lookupValues)
+				{
+					if (lookupValue.value.substr(0,1).toLowerCase()==numToChar(event.charCode).toLowerCase())
+					{
+						return filter.lookupValues.getItemIndex(lookupValue);
+					}
+				}
+				return -1;
+			}
+			/**
+			 * Converts the charCode for a character to a string
+			 */ 
+			protected function numToChar(num:int):String { if (num > 47 && num < 58) {
+				var strNums:String = "0123456789";
+				return strNums.charAt(num - 48); } else if (num > 64 && num < 91) {
+					var strCaps:String = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+					return strCaps.charAt(num - 65); } else if (num > 96 && num < 123) {
+						var strLow:String = "abcdefghijklmnopqrstuvwxyz";
+						return strLow.charAt(num - 97); } else {
+							return num.toString();
+						}
+			}			
+		]]>
+	</fx:Script>
+</mx:Canvas>

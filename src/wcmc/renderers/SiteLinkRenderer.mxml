@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!---Simple renderer that is used in the data tables to show a link to the site page. When the link is clicked the site navigates to that species page.-->
+<mx:HBox xmlns:mx="http://www.adobe.com/2006/mxml" horizontalScrollPolicy="off" verticalAlign="middle" horizontalAlign="center">
+	<mx:Image source="{EmbeddedImages.arrowRight}"  click="label1_clickHandler(event)" toolTip="{resourceManager.getString('myResources', 'TEXT147')}"/>
+	<mx:Script>
+		<![CDATA[
+			import wcmc.classes.EmbeddedImages;
+			import wcmc.classes.SetSiteEvent;
+			import wcmc.classes.Site;
+			/**
+			 * Navigates to the site - creates a new site object and navigates to that site.
+			 */ 
+			protected function label1_clickHandler(event:MouseEvent):void
+			{
+				var site:Site=new Site();
+				site.countryCode=data.Country;
+				site.name=data.Name;
+				site.isPoly=data.IsPoly;
+				site.isIBA=data.IsIBA;
+				site.siteRecID=data.SiteRecID;
+				parentApplication.dispatchEvent(new SetSiteEvent(SetSiteEvent.SETSITE,site));
+			}
+		]]>
+	</mx:Script>
+
+</mx:HBox>

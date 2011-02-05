@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!---InfoWindow for the sites that are shown in the site list - this is identical to the normal list except that the data.Country is a country code-->
+<mx:VBox xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" 
+		 xmlns:mx="library://ns.adobe.com/flex/mx" styleName="Tooltip" xmlns:components="wcmc.components.*" filters="{shadow}">
+	<fx:Declarations>
+		<mx:DropShadowFilter id="shadow" alpha="0.4"/>
+	</fx:Declarations>
+	<mx:HBox width="100%" verticalAlign="middle" minWidth="160">
+		<mx:Image source="{Countries.getCountryFlag(data.Country)}" verticalAlign="middle" height="100%" toolTip="{Countries.getCountryName(data.Country)}"/>
+		<s:Label text="{data.Name}" width="100%"/>
+		<components:MyCloseButton closeTarget="{parent}"/>
+	</mx:HBox>
+	<fx:Script>
+		<![CDATA[
+			import wcmc.classes.Countries;
+		]]>
+	</fx:Script>
+</mx:VBox>

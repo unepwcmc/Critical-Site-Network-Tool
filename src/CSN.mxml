@@ -1,0 +1,2052 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!---
+Main application class.
+
+-->
+<s:Application xmlns:fx="http://ns.adobe.com/mxml/2009" 
+			   xmlns:s="library://ns.adobe.com/flex/spark" 
+			   xmlns:mx="library://ns.adobe.com/flex/mx" 
+			   xmlns:esri="http://www.esri.com/2008/ags" 
+			   xmlns:components="wcmc.components.*" 
+			   xmlns:classes="wcmc.classes.*" 
+			   xmlns:symbols="com.esri.ags.symbols.*" 
+			   xmlns:reflexutil="net.kandov.reflexutil.*"
+			   xmlns:supportClasses="com.esri.ags.components.supportClasses.*" 
+			   minWidth="955" 
+			   minHeight="600" 
+			   currentState="home"
+			   pageTitle="Critical Site Network Tool" 
+			   initialize="initialise(event)"
+			   currentStateChanging="setTransitionTargets(event)"
+			   currentStateChange="application1_currentStateChangeHandler(event)" viewSourceURL="srcview/index.html">
+
+	<!-- Styles ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+	 
+	<fx:Style source="styles.css"/>
+ 
+	<!-- Metadata ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+	<fx:Metadata>
+		[ResourceBundle("myResources")]
+	</fx:Metadata>
+
+	<!-- Declarations ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+
+	<fx:Declarations>
+		<!--<reflexutil:ReflexUtil/>-->
+		
+		<!--Formatters-->
+		<!---Formatting class used to format the year in the time-slider toolbar on the species page-->
+		<mx:DateFormatter id="myDateFormatter" formatString="YYYY"/>
+		<!---The initial geographic extent of the map when the application loads-->		
+		<esri:Extent id="initialExtent" xmin="2000000" ymin="4000000" xmax="2100000" ymax="10000000">
+			<esri:SpatialReference wkid="102100"/>
+		</esri:Extent>
+		<!---The main navigation tools that are shown at the top of the map which allow the user to use all of the standard GIS type tools in the application.-->
+		<esri:NavigationTool id="navTool" map="{map}"/>
+		
+		<!--Effects-->
+		<!---Fades the layer in when the image/data has loaded to alpha of 0.35-->		
+		<classes:DelayedFade id="fadeIn04" duration="200" alphaFrom="0" alphaTo="0.35"/>
+		<!---Fades the layer out when the image/data has loaded to alpha of 0-->		
+		<classes:DelayedFade id="fadeOut04" duration="200" alphaFrom="0.35" alphaTo="0"/>
+		<!---Fades the layer in when the image/data has loaded to alpha of 0.5-->		
+		<classes:DelayedFade id="fadeIn05" duration="200" alphaFrom="0" alphaTo="0.5"/>
+		<!---Fades the layer out when the image/data has loaded to alpha of 0-->		
+		<classes:DelayedFade id="fadeOut05" duration="200" alphaFrom="0.5" alphaTo="0"/>
+		<!---Fades the layer in when the image/data has loaded to alpha of 0.6-->		
+		<classes:DelayedFade id="fadeIn06" duration="200" alphaFrom="0" alphaTo="0.6"/>
+		<!---Fades the layer out when the image/data has loaded to alpha of 0-->		
+		<classes:DelayedFade id="fadeOut06" duration="200" alphaFrom="0.6" alphaTo="0"/>
+		<!---Fades the layer in when the image/data has loaded to alpha of 0.7-->		
+		<classes:DelayedFade id="fadeIn07" duration="200" alphaFrom="0" alphaTo="0.7"/>
+		<!---Fades the layer out when the image/data has loaded to alpha of 0-->		
+		<classes:DelayedFade id="fadeOut07" duration="200" alphaFrom="0.7" alphaTo="0"/>
+		<!---Fades the layer in when the image/data has loaded to alpha of 0.8-->		
+		<classes:DelayedFade id="fadeIn08" duration="200" alphaFrom="0" alphaTo="0.8"/>
+		<!---Fades the layer out when the image/data has loaded to alpha of 0-->		
+		<classes:DelayedFade id="fadeOut08" duration="200" alphaFrom="0.8" alphaTo="0"/>
+		<!---Fades the layer in when the image/data has loaded to alpha of 1-->		
+		<classes:DelayedFade id="fadeIn10" duration="200" alphaFrom="0" alphaTo="1"/>
+		<!---Fades the layer out when the image/data has loaded to alpha of 0-->		
+		<classes:DelayedFade id="fadeOut10" duration="200" alphaFrom="1" alphaTo="0"/>
+		<!---Fades a component in to alpha of 1-->		
+		<s:Fade id="fadeIn" alphaFrom="0" alphaTo="1" duration="200"/>
+		<!---Fades a component out to alpha of 0-->		
+		<s:Fade id="fadeOut" alphaFrom="1" alphaTo="0" duration="200"/>
+
+		<!--Filters-->
+		<!---A drop shadow filter with an alpha of 0.4 used in the legend component-->
+		<mx:DropShadowFilter id="shadow" alpha="0.4"/>
+
+		<!--Map Symbols-->
+		<!--these are no longer used as the map data for all of these layers is now loaded as a dynamic map service
+		<classes:MySimpleMarkerSymbol id="iwcSymbol" color="0x0000FF" style="circle" size="13" alpha="0.5" legendCaption="{resourceManager.getString('myResources', 'TEXT157')}"><esri:SimpleLineSymbol alpha="0.5"/></classes:MySimpleMarkerSymbol>
+		<classes:MySimpleMarkerSymbol id="sitePointSymbol" color="0xFF00FF" style="circle" size="13" legendCaption="{resourceManager.getString('myResources', 'TEXT150')}"><esri:SimpleLineSymbol/></classes:MySimpleMarkerSymbol>
+		<classes:MySimpleFillSymbol id="sitePolySymbol" color="0xFF00FF" legendCaption="{resourceManager.getString('myResources', 'TEXT151')}"><esri:SimpleLineSymbol/></classes:MySimpleFillSymbol>
+		<classes:MySimpleMarkerSymbol id="wdpaPointSymbol" color="0xff0000" style="circle" size="13" legendCaption="{resourceManager.getString('myResources', 'TEXT152')}"><esri:SimpleLineSymbol/></classes:MySimpleMarkerSymbol>
+		<classes:MySimpleFillSymbol id="wdpaPolySymbol" color="0xff0000" legendCaption="{resourceManager.getString('myResources', 'TEXT153')}"><esri:SimpleLineSymbol/></classes:MySimpleFillSymbol>
+		<classes:MySimpleMarkerSymbol id="ramsarPointSymbol" color="0x44FF00" style="triangle" size="23" legendCaption="{resourceManager.getString('myResources', 'TEXT154')}"><esri:SimpleLineSymbol/></classes:MySimpleMarkerSymbol>
+		<classes:MySimpleFillSymbol id="ramsarPolySymbol" color="0x44FF00" legendCaption="{resourceManager.getString('myResources', 'TEXT155')}"><esri:SimpleLineSymbol/></classes:MySimpleFillSymbol>-->
+
+		<!--Renderers for the Critical Sites-->
+		<!---A set of renderers that are used to render the map data for the critical sites on the species page. @see wcmc.classes.RendererChooser -->
+		<s:ArrayCollection id="csnRenderers">
+			<classes:RendererOption UIText="{resourceManager.getString('myResources', 'TEXT156')}"><!--presence-->
+				<classes:renderer>
+					<esri:SimpleRenderer>
+						<classes:MySimpleMarkerSymbol color="0xFF00FF" style="circle" size="13" legendCaption="{resourceManager.getString('myResources', 'TEXT157')}"><esri:SimpleLineSymbol alpha="0.5"/></classes:MySimpleMarkerSymbol>
+					</esri:SimpleRenderer>
+				</classes:renderer>
+			</classes:RendererOption>
+			<classes:RendererOption UIText="{resourceManager.getString('myResources', 'TEXT158')}"><!--flyway name-->
+				<classes:renderer>
+					<classes:MyUniqueValueRenderer attribute="FlyRecID" legendLabelField="Flyway">
+						<classes:infos>
+							<esri:UniqueValueInfo value="1" ><classes:MySimpleMarkerSymbol color="0xffaa00" size="13" style="circle"><esri:SimpleLineSymbol alpha="0.5"/></classes:MySimpleMarkerSymbol></esri:UniqueValueInfo>
+							<esri:UniqueValueInfo value="2" ><classes:MySimpleMarkerSymbol color="0x00c5ff" size="13" style="circle"><esri:SimpleLineSymbol alpha="0.5"/></classes:MySimpleMarkerSymbol></esri:UniqueValueInfo>
+							<esri:UniqueValueInfo value="3" ><classes:MySimpleMarkerSymbol color="0xc500ff" size="13" style="circle"><esri:SimpleLineSymbol alpha="0.5"/></classes:MySimpleMarkerSymbol></esri:UniqueValueInfo>
+							<esri:UniqueValueInfo value="4" ><classes:MySimpleMarkerSymbol color="0x267300" size="13" style="circle"><esri:SimpleLineSymbol alpha="0.5"/></classes:MySimpleMarkerSymbol></esri:UniqueValueInfo>
+							<esri:UniqueValueInfo value="5" ><classes:MySimpleMarkerSymbol color="0xff0000" size="13" style="circle"><esri:SimpleLineSymbol alpha="0.5"/></classes:MySimpleMarkerSymbol></esri:UniqueValueInfo>
+							<esri:UniqueValueInfo value="6" ><classes:MySimpleMarkerSymbol color="0x004da8" size="13" style="circle"><esri:SimpleLineSymbol alpha="0.5"/></classes:MySimpleMarkerSymbol></esri:UniqueValueInfo>
+							<esri:UniqueValueInfo value="7" ><classes:MySimpleMarkerSymbol color="0xffff00" size="13" style="circle"><esri:SimpleLineSymbol alpha="0.5"/></classes:MySimpleMarkerSymbol></esri:UniqueValueInfo>
+							<esri:UniqueValueInfo value="8" ><classes:MySimpleMarkerSymbol color="0xa3ff73" size="13" style="circle"><esri:SimpleLineSymbol alpha="0.5"/></classes:MySimpleMarkerSymbol></esri:UniqueValueInfo>
+							<esri:UniqueValueInfo value="9" ><classes:MySimpleMarkerSymbol color="0x730000" size="13" style="circle"><esri:SimpleLineSymbol alpha="0.5"/></classes:MySimpleMarkerSymbol></esri:UniqueValueInfo>
+							<esri:UniqueValueInfo value="10" ><classes:MySimpleMarkerSymbol color="0x000000" size="13" style="circle"><esri:SimpleLineSymbol alpha="0.5"/></classes:MySimpleMarkerSymbol></esri:UniqueValueInfo>
+							<esri:UniqueValueInfo value="11" ><classes:MySimpleMarkerSymbol color="0x000000" size="13" style="circle"><esri:SimpleLineSymbol alpha="0.5"/></classes:MySimpleMarkerSymbol></esri:UniqueValueInfo>
+						</classes:infos>
+					</classes:MyUniqueValueRenderer>
+				</classes:renderer>
+			</classes:RendererOption>
+			<classes:RendererOption UIText="{resourceManager.getString('myResources', 'TEXT159')}"><!--season-->
+				<classes:renderer>
+					<esri:UniqueValueRenderer attribute="Season">
+						<esri:infos>
+							<esri:UniqueValueInfo value="breeding" >
+								<classes:MySimpleMarkerSymbol color="0xfcfc39" size="13" style="circle" legendCaption="{resourceManager.getString('myResources', 'TEXT160')}"><esri:SimpleLineSymbol alpha="0.5"/></classes:MySimpleMarkerSymbol>
+							</esri:UniqueValueInfo>
+							<esri:UniqueValueInfo value="non-breeding" >
+								<classes:MySimpleMarkerSymbol color="0x1e89fb" size="13" style="circle" legendCaption="{resourceManager.getString('myResources', 'TEXT161')}"><esri:SimpleLineSymbol alpha="0.5"/></classes:MySimpleMarkerSymbol>
+							</esri:UniqueValueInfo>
+							<esri:UniqueValueInfo value="passage">
+								<classes:MySimpleMarkerSymbol color="0x0ee1011" size="13" style="circle" legendCaption="{resourceManager.getString('myResources', 'TEXT162')}"><esri:SimpleLineSymbol alpha="0.5"/></classes:MySimpleMarkerSymbol>
+							</esri:UniqueValueInfo>
+							<esri:UniqueValueInfo value="winter">
+								<classes:MySimpleMarkerSymbol color="0xd730fb" size="13" style="circle" legendCaption="{resourceManager.getString('myResources', 'TEXT163')}"><esri:SimpleLineSymbol alpha="0.5"/></classes:MySimpleMarkerSymbol>
+							</esri:UniqueValueInfo>
+							<esri:UniqueValueInfo value="resident">
+								<classes:MySimpleMarkerSymbol color="0x1d8216" size="13" style="circle" legendCaption="{resourceManager.getString('myResources', 'TEXT164')}"><esri:SimpleLineSymbol alpha="0.5"/></classes:MySimpleMarkerSymbol>
+							</esri:UniqueValueInfo>
+							<esri:UniqueValueInfo value="unknown">
+								<classes:MySimpleMarkerSymbol color="0xcccccc" size="13" style="circle" legendCaption="{resourceManager.getString('myResources', 'TEXT141')}"><esri:SimpleLineSymbol alpha="0.5"/></classes:MySimpleMarkerSymbol>
+							</esri:UniqueValueInfo>
+						</esri:infos>
+					</esri:UniqueValueRenderer>
+				</classes:renderer>
+			</classes:RendererOption>
+			<classes:RendererOption UIText="{resourceManager.getString('myResources', 'TEXT191')}"><!--mean population-->
+				<classes:renderer>
+					<classes:MyClassBreaksRenderer attribute="PopMean" classes="3" maxSymbolSize="15"><classes:simpleLineSymbol><esri:SimpleLineSymbol alpha="0.5"/></classes:simpleLineSymbol></classes:MyClassBreaksRenderer>
+				</classes:renderer>
+			</classes:RendererOption>
+			<classes:RendererOption UIText="{resourceManager.getString('myResources', 'TEXT167')}"><!--percent flyway-->
+				<classes:renderer>
+					<esri:ClassBreaksRenderer attribute="PercentFlyway">
+						<esri:ClassBreakInfo maxValue="1">
+							<esri:symbol>
+								<classes:MySimpleMarkerSymbol size="5" color="0xFF0000" legendCaption="0% - 1%">
+									<esri:SimpleLineSymbol alpha="0.5"/>
+								</classes:MySimpleMarkerSymbol>
+							</esri:symbol>
+						</esri:ClassBreakInfo>
+						<esri:ClassBreakInfo minValue="1" maxValue="5">
+							<esri:symbol>
+								<classes:MySimpleMarkerSymbol size="10" color="0xFF0000" legendCaption="1% - 5%">
+									<esri:SimpleLineSymbol alpha="0.5"/>
+								</classes:MySimpleMarkerSymbol>
+							</esri:symbol>
+						</esri:ClassBreakInfo>
+						<esri:ClassBreakInfo minValue="5">
+							<esri:symbol>
+								<classes:MySimpleMarkerSymbol size="15" color="0xFF0000" legendCaption="5% - 100%"> 
+									<esri:SimpleLineSymbol alpha="0.5"/>
+								</classes:MySimpleMarkerSymbol>
+							</esri:symbol>
+						</esri:ClassBreakInfo>
+					</esri:ClassBreaksRenderer>
+				</classes:renderer>
+			</classes:RendererOption>
+			<classes:RendererOption UIText="{resourceManager.getString('myResources', 'TEXT198')}"><!--protection status-->
+				<classes:renderer>
+					<esri:UniqueValueRenderer attribute="Protected">
+						<esri:infos>
+							<esri:UniqueValueInfo value="whole" >
+								<classes:MySimpleMarkerSymbol color="0x00ff00" size="13" style="circle" legendCaption="{resourceManager.getString('myResources', 'TEXT169')}"><esri:SimpleLineSymbol alpha="0.5"/></classes:MySimpleMarkerSymbol>
+							</esri:UniqueValueInfo>
+							<esri:UniqueValueInfo value="little/none" >
+								<classes:MySimpleMarkerSymbol color="0xff0000" size="13" style="circle" legendCaption="{resourceManager.getString('myResources', 'TEXT170')}"><esri:SimpleLineSymbol alpha="0.5"/></classes:MySimpleMarkerSymbol>
+							</esri:UniqueValueInfo>
+							<esri:UniqueValueInfo value="unknown">
+								<classes:MySimpleMarkerSymbol color="0x0000ff" size="13" style="circle" legendCaption="{resourceManager.getString('myResources', 'TEXT141')}"><esri:SimpleLineSymbol alpha="0.5"/></classes:MySimpleMarkerSymbol>
+							</esri:UniqueValueInfo>
+							<esri:UniqueValueInfo value="some">
+								<classes:MySimpleMarkerSymbol color="0xffff00" size="13" style="circle" legendCaption="{resourceManager.getString('myResources', 'TEXT171')}"><esri:SimpleLineSymbol alpha="0.5"/></classes:MySimpleMarkerSymbol>
+							</esri:UniqueValueInfo>
+							<esri:UniqueValueInfo value="most">
+								<classes:MySimpleMarkerSymbol color="0xffff00" size="13" style="circle" legendCaption="{resourceManager.getString('myResources', 'TEXT172')}"><esri:SimpleLineSymbol alpha="0.5"/></classes:MySimpleMarkerSymbol>
+							</esri:UniqueValueInfo>
+						</esri:infos>
+					</esri:UniqueValueRenderer>
+				</classes:renderer>
+			</classes:RendererOption>
+		</s:ArrayCollection>
+
+		<!--Renderers for the IBA Sites-->
+		<!---A set of renderers that are used to render the map data for the IBA sites on the species page. @see wcmc.classes.RendererChooser -->
+		<s:ArrayCollection id="ibaRenderers">
+			<classes:RendererOption UIText="{resourceManager.getString('myResources', 'TEXT156')}"><!--presence-->
+				<classes:renderer>
+					<esri:SimpleRenderer>
+						<classes:MySimpleMarkerSymbol color="0xFFAA00" style="circle" size="13" legendCaption="{resourceManager.getString('myResources', 'TEXT157')}"><esri:SimpleLineSymbol alpha="0.5"/></classes:MySimpleMarkerSymbol>
+					</esri:SimpleRenderer>
+				</classes:renderer>
+			</classes:RendererOption>
+			<classes:RendererOption UIText="{resourceManager.getString('myResources', 'TEXT159')}"><!--season-->
+				<classes:renderer>
+					<esri:UniqueValueRenderer attribute="Season">
+						<esri:infos>
+							<esri:UniqueValueInfo value="breeding" >
+								<classes:MySimpleMarkerSymbol color="0xfcfc39" size="13" style="circle" legendCaption="{resourceManager.getString('myResources', 'TEXT160')}"><esri:SimpleLineSymbol alpha="0.5"/></classes:MySimpleMarkerSymbol>
+							</esri:UniqueValueInfo>
+							<esri:UniqueValueInfo value="non-breeding" >
+								<classes:MySimpleMarkerSymbol color="0x1e89fb" size="13" style="circle" legendCaption="{resourceManager.getString('myResources', 'TEXT161')}"><esri:SimpleLineSymbol alpha="0.5"/></classes:MySimpleMarkerSymbol>
+							</esri:UniqueValueInfo>
+							<esri:UniqueValueInfo value="passage">
+								<classes:MySimpleMarkerSymbol color="0x0ee1011" size="13" style="circle" legendCaption="{resourceManager.getString('myResources', 'TEXT162')}"><esri:SimpleLineSymbol alpha="0.5"/></classes:MySimpleMarkerSymbol>
+							</esri:UniqueValueInfo>
+							<esri:UniqueValueInfo value="winter">
+								<classes:MySimpleMarkerSymbol color="0xd730fb" size="13" style="circle" legendCaption="{resourceManager.getString('myResources', 'TEXT163')}"><esri:SimpleLineSymbol alpha="0.5"/></classes:MySimpleMarkerSymbol>
+							</esri:UniqueValueInfo>
+							<esri:UniqueValueInfo value="resident">
+								<classes:MySimpleMarkerSymbol color="0x1d8216" size="13" style="circle" legendCaption="{resourceManager.getString('myResources', 'TEXT164')}"><esri:SimpleLineSymbol alpha="0.5"/></classes:MySimpleMarkerSymbol>
+							</esri:UniqueValueInfo>
+							<esri:UniqueValueInfo value="unknown">
+								<classes:MySimpleMarkerSymbol color="0x1d8216" size="13" style="circle" legendCaption="{resourceManager.getString('myResources', 'TEXT141')}"><esri:SimpleLineSymbol alpha="0.5"/></classes:MySimpleMarkerSymbol>
+							</esri:UniqueValueInfo>
+						</esri:infos>
+					</esri:UniqueValueRenderer>
+				</classes:renderer>
+			</classes:RendererOption>
+			<classes:RendererOption UIText="{resourceManager.getString('myResources', 'TEXT191')}"><!--population mean-->
+				<classes:renderer>
+					<classes:MyClassBreaksRenderer attribute="PopMean" classes="3" maxSymbolSize="15"><classes:simpleLineSymbol><esri:SimpleLineSymbol alpha="0.5"/></classes:simpleLineSymbol></classes:MyClassBreaksRenderer>
+				</classes:renderer>
+			</classes:RendererOption>
+			<classes:RendererOption UIText="{resourceManager.getString('myResources', 'TEXT198')}"><!--protection status-->
+				<classes:renderer>
+					<esri:UniqueValueRenderer attribute="Protected">
+						<esri:infos>
+							<esri:UniqueValueInfo value="whole" >
+								<classes:MySimpleMarkerSymbol color="0x00ff00" size="13" style="circle" legendCaption="{resourceManager.getString('myResources', 'TEXT169')}"><esri:SimpleLineSymbol alpha="0.5"/></classes:MySimpleMarkerSymbol>
+							</esri:UniqueValueInfo>
+							<esri:UniqueValueInfo value="little/none" >
+								<classes:MySimpleMarkerSymbol color="0xff0000" size="13" style="circle" legendCaption="{resourceManager.getString('myResources', 'TEXT170')}"><esri:SimpleLineSymbol alpha="0.5"/></classes:MySimpleMarkerSymbol>
+							</esri:UniqueValueInfo>
+							<esri:UniqueValueInfo value="unknown">
+								<classes:MySimpleMarkerSymbol color="0x0000ff" size="13" style="circle" legendCaption="{resourceManager.getString('myResources', 'TEXT141')}"><esri:SimpleLineSymbol alpha="0.5"/></classes:MySimpleMarkerSymbol>
+							</esri:UniqueValueInfo>
+							<esri:UniqueValueInfo value="some">
+								<classes:MySimpleMarkerSymbol color="0xffff00" size="13" style="circle" legendCaption="{resourceManager.getString('myResources', 'TEXT171')}"><esri:SimpleLineSymbol alpha="0.5"/></classes:MySimpleMarkerSymbol>
+							</esri:UniqueValueInfo>
+							<esri:UniqueValueInfo value="most">
+								<classes:MySimpleMarkerSymbol color="0xffff00" size="13" style="circle" legendCaption="{resourceManager.getString('myResources', 'TEXT172')}"><esri:SimpleLineSymbol alpha="0.5"/></classes:MySimpleMarkerSymbol>
+							</esri:UniqueValueInfo>
+						</esri:infos>
+					</esri:UniqueValueRenderer>
+				</classes:renderer>
+			</classes:RendererOption>
+		</s:ArrayCollection>
+
+		<!--Renderers for the Reports Site List-->
+		<!---A set of renderers that are used to render the sites on the reports page. @see wcmc.classes.RendererChooser -->
+		<s:ArrayCollection id="siteListRenderers">
+			<classes:RendererOption UIText="{resourceManager.getString('myResources', 'TEXT156')}"><!--presence-->
+				<classes:renderer>
+					<esri:SimpleRenderer>
+						<classes:MySimpleMarkerSymbol color="0xFF00FF" style="circle" size="13" legendCaption="{resourceManager.getString('myResources', 'TEXT157')}"><esri:SimpleLineSymbol alpha="0.5"/></classes:MySimpleMarkerSymbol>
+					</esri:SimpleRenderer>
+				</classes:renderer>
+			</classes:RendererOption>
+			<classes:RendererOption UIText="{resourceManager.getString('myResources', 'TEXT198')}"><!--protection status-->
+				<classes:renderer>
+					<esri:UniqueValueRenderer attribute="Protected">
+						<esri:infos>
+							<esri:UniqueValueInfo value="whole" >
+								<classes:MySimpleMarkerSymbol color="0x00ff00" size="13" style="circle" legendCaption="{resourceManager.getString('myResources', 'TEXT169')}"><esri:SimpleLineSymbol alpha="0.5"/></classes:MySimpleMarkerSymbol>
+							</esri:UniqueValueInfo>
+							<esri:UniqueValueInfo value="little/none" >
+								<classes:MySimpleMarkerSymbol color="0xff0000" size="13" style="circle" legendCaption="{resourceManager.getString('myResources', 'TEXT170')}"><esri:SimpleLineSymbol alpha="0.5"/></classes:MySimpleMarkerSymbol>
+							</esri:UniqueValueInfo>
+							<esri:UniqueValueInfo value="unknown">
+								<classes:MySimpleMarkerSymbol color="0x0000ff" size="13" style="circle" legendCaption="{resourceManager.getString('myResources', 'TEXT141')}"><esri:SimpleLineSymbol alpha="0.5"/></classes:MySimpleMarkerSymbol>
+							</esri:UniqueValueInfo>
+							<esri:UniqueValueInfo value="some">
+								<classes:MySimpleMarkerSymbol color="0xffff00" size="13" style="circle" legendCaption="{resourceManager.getString('myResources', 'TEXT171')}"><esri:SimpleLineSymbol alpha="0.5"/></classes:MySimpleMarkerSymbol>
+							</esri:UniqueValueInfo>
+							<esri:UniqueValueInfo value="most">
+								<classes:MySimpleMarkerSymbol color="0xffff00" size="13" style="circle" legendCaption="{resourceManager.getString('myResources', 'TEXT172')}"><esri:SimpleLineSymbol alpha="0.5"/></classes:MySimpleMarkerSymbol>
+							</esri:UniqueValueInfo>
+						</esri:infos>
+					</esri:UniqueValueRenderer>
+				</classes:renderer>
+			</classes:RendererOption>
+			<classes:RendererOption UIText="{resourceManager.getString('myResources', 'TEXT173')}"><!--number of critical species-->
+				<classes:renderer>
+					<classes:MyClassBreaksRenderer attribute="CSNSpc" classes="3" maxSymbolSize="15"><classes:simpleLineSymbol><esri:SimpleLineSymbol alpha="0.5"/></classes:simpleLineSymbol></classes:MyClassBreaksRenderer>
+				</classes:renderer>
+			</classes:RendererOption>
+			<classes:RendererOption UIText="{resourceManager.getString('myResources', 'TEXT174')}"><!--number of IBA species-->
+				<classes:renderer>
+					<classes:MyClassBreaksRenderer attribute="IBASpc" classes="3" maxSymbolSize="15"><classes:simpleLineSymbol><esri:SimpleLineSymbol alpha="0.5"/></classes:simpleLineSymbol></classes:MyClassBreaksRenderer>
+				</classes:renderer>
+			</classes:RendererOption>
+			<classes:RendererOption UIText="{resourceManager.getString('myResources', 'TEXT243')}"><!--total percentage-->
+				<classes:renderer>
+					<classes:MyClassBreaksRenderer attribute="Total" classes="3" maxSymbolSize="15"><classes:simpleLineSymbol><esri:SimpleLineSymbol alpha="0.5"/></classes:simpleLineSymbol></classes:MyClassBreaksRenderer>
+				</classes:renderer>
+			</classes:RendererOption>
+		</s:ArrayCollection>
+		<!---A QueryTask that is used to retrieve a list of countries for the tools on the Reports page for species and populations lists for a country.-->
+		<esri:QueryTask id="countryQueryTask" url="http://dev.unep-wcmc.org/ArcGIS/rest/services/CSN/Reports/MapServer/3" showBusyCursor="true"/>
+		<!---The Query object for the countryQueryTask. The where value is set to CountryID>-1 to retrieve all countries.-->
+		<esri:Query id="countryQuery" outFields="*" returnGeometry="false" where="CountryID>-1"/>
+		<!---The IdentifyParameters object used when the user clicks on the map. The default values are a tolerance of 4, the current maps width,height and extent and all layers.-->
+		<esri:IdentifyParameters id="identifyParameters" tolerance="4" width="{map.width}" height="{map.height}" geometry="{clickPoint}" mapExtent="{map.extent}" spatialReference="{map.spatialReference}" layerOption="all"/> 
+
+	</fx:Declarations>
+
+	<s:states>
+		<s:State name="home"/>
+		<s:State name="speciesSearch"/>
+		<s:State name="siteSearch"/>
+		<s:State name="species"/>
+		<s:State name="site"/>
+		<s:State name="reports"/>
+		<s:State name="info"/>
+	</s:states>
+
+	<!-- UI components ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+	<!---The main mapping component in the application. The map component is used to display all of the spatial layers in the CSN tool which come from a range of sources. The base map imagery comes from ESRI ArcGIS Online and from Microsoft Bing map services. There can be switched on and off using the Basemaps gallery. Then there are a range of MapServices published from ArcGIS Server for the business layers, i.e. all of the data layers relating to the CSN tool.
+	 These layers are currently published from the following ArcGIS REST Services Directory: http://dev.unep-wcmc.org/ArcGIS/rest/services/CSN. However, in the future these servies may be published from an instance of Amazon EC2 to make the application more scalable. In addition, it is envisaged that in future releases of the CSN tool, some of the data layers will be published directly from the data providers, e.g. UNEP-WCMC will publish the World Database on Protected Areas directly from the protectedPlanet website.<p>All of the 
+	 map layers in the map are switched on/off using the relevant UI controls, in all cases these are simple check boxes that are bound to the visible property of the layer. In some cases the visibility of the consittuent layer is also dependent on the state of the application. So for example, the species distribution layer is only visible when the checkbox is selected and the current state of th application is 'species'.</p><p>The type of layer that is shown in the map depends on where it is used. So for example, if the user requests a map of species distribution, then a dynamic map service layer is shown since the user does not need access tot he raw data. However, in other cases the user may require accerss to the actual data (e.g. for critical sites) and in these cases feature layers are used in snapshot mode to return all of the data to the client so that it can be shown in any data tables. In addition, once the data has been returned to the client then it can be rendered on the client according to their requirements withouth having to reload the data from the server.</p><p>The map interaction is minimal with a small number of tools for navigating the map (using the ESRI map controls) and a single IdentifyTask which executes if the user clicks on the map.
+	The results of the identify task are then matched to the layer and are shown using that layers infoWindow. In this way a single infoWindow is recycled for all query operations.</p>-->
+	<components:MyMap id="map" layoutDirection="ltr" width="100%" height="100%" extent="{initialExtent}" creationComplete="map.infoWindow.closeButtonVisible=false;map.infoWindow.labelVisible=false;" pointToolClick="map_pointToolClickHandler(event)" timeSlider="{timeSlider}" extentChange="map_extentChangeHandler(event)" mapClick="map_mapClickHandler(event)">
+
+		<!---The Microsoft Bing imagery and roads layer in the map. The type of base map is selected using the Basemap gallery.-->
+		<esri:VETiledLayer id="bingLayer" key="AgfQ61misLHV_Uq7B8bDf4rMvZZL61oSi8JDxM6I0ImhV3-uO2QPqFMfWe9MK8ar" culture="{culture}" mapStyle="{basemapGallery.mapStyle}" visible="{basemapGallery.isBing}"/>
+		<!---The ESRI ArcGIS Online imagery layer. The type of base map is selected using the Basemap gallery-->
+		<esri:ArcGISTiledMapServiceLayer id="arcgisOnlineImagery" url="{basemapGallery.url}" load="arcgistiledmapservicelayer1_loadHandler(event)" visible="{!basemapGallery.isBing}"/>
+		<!---The ESRI ArcGIS Online labels layer. The type of base map is selected using the Basemap gallery-->
+		<esri:ArcGISTiledMapServiceLayer id="arcgisOnlineLabels" url="{basemapGallery.labelurl}" visible="{((basemapGallery.labelurl!=null)&amp;&amp;(!basemapGallery.isBing))}"/>
+				
+		<!--SPECIES PAGE LAYERS-->
+		
+		<!--Species distribution layer-->
+		<!---The species distribution layer is the first layer in the MapService available through the ArcGIS Server REST Directory: http://dev.unep-wcmc.org/ArcGIS/rest/services/CSN/Species/MapServer. The species that is shown is set using a DefinitionExpression on the MapService using the current SpcRecID in the url.-->
+		<classes:MyArcGISDynamicMapServiceLayer id="distributionMap" url="http://dev.unep-wcmc.org/ArcGIS/rest/services/CSN/Species/MapServer" visible="{speciesBox.dMap.selected}" showEffect="{fadeIn07}" hideEffect="{fadeOut07}" includeIn="species" legendImage="{EmbeddedImages.dmapLegend}" legendCaption="{resourceManager.getString('myResources', 'TEXT103')}">
+			<classes:layerDefinitions>
+				<fx:Array>
+					<fx:String>SpcRecID={speciesBox.species.spcRecID}</fx:String><!--species distribution-->
+				</fx:Array>
+			</classes:layerDefinitions>
+			<classes:visibleLayers>
+				<mx:ArrayCollection>
+					<fx:Number>0</fx:Number>
+				</mx:ArrayCollection>		 		
+			</classes:visibleLayers>
+		</classes:MyArcGISDynamicMapServiceLayer>
+		
+		<!--Species flyways layer-->
+		<!---The species flyways layer is the second layer in the MapService available through the ArcGIS Server REST Directory: http://dev.unep-wcmc.org/ArcGIS/rest/services/CSN/Species/MapServer. The species that is shown is set using a DefinitionExpression on the MapService using the current SpcRecID in the url.-->
+		<classes:MyArcGISDynamicMapServiceLayer id="flywaysMap" url="http://dev.unep-wcmc.org/ArcGIS/rest/services/CSN/Species/MapServer" visible="{speciesBox.fMap.selected}" showEffect="{fadeIn10}" hideEffect="{fadeOut10}" includeIn="species" showlegend="false">
+			<classes:layerDefinitions>
+				<fx:Array>
+					<fx:String></fx:String><!--species distribution-->
+					<fx:String>SpcRecID={speciesBox.species.spcRecID}</fx:String><!--flyways-->
+				</fx:Array>
+			</classes:layerDefinitions>
+			<classes:visibleLayers> 
+				<mx:ArrayCollection>
+					<fx:Number>1</fx:Number>
+				</mx:ArrayCollection>		 		 
+			</classes:visibleLayers>
+		</classes:MyArcGISDynamicMapServiceLayer>
+		
+		<!--Species CSN layer-->
+		<!---The species critical sites layer is the third layer in the MapService available through the ArcGIS Server REST Directory: http://dev.unep-wcmc.org/ArcGIS/rest/services/CSN/Species/MapServer. The species that is shown is set using a DefinitionExpression on the MapService using the current SpcRecID in the url. The FeatureLayer is a snapshot feature layer so that all of the data for the species is returned to the client to display in the data table.-->
+		<classes:MyFeatureLayer url="http://dev.unep-wcmc.org/ArcGIS/rest/services/CSN/Species/MapServer/2" includeIn="species" visible="{speciesBox.csnMap.selected}" id="csnFeatureLayer" outFields="[SiteRecID,Country,Name,Protected,SpcRecID,FlyRecID,Flyway,YearStart,YearEnd,PopMin,PopMax,PopMean,PercentFlyway,Season,Unit,IBACriteria,CSN1,CSN2,IsIBA,IsPoly]" showEffect="{fadeIn07}" hideEffect="{fadeOut07}" definitionExpression="SpcRecID={speciesBox.species.spcRecID}" mode="snapshot" legendCaption="{resourceManager.getString('myResources', 'TEXT107')}" renderer="{csnRenderer.currentRenderer}" infoWindowRenderer="wcmc.infoWindows.SiteInfoWindowWithLink"/>
+
+		<!--Species IBA layer-->
+		<!---The species IBA layer is the fourth layer in the MapService available through the ArcGIS Server REST Directory: http://dev.unep-wcmc.org/ArcGIS/rest/services/CSN/Species/MapServer. The species that is shown is set using a DefinitionExpression on the MapService using the current SpcRecID in the url. The FeatureLayer is a snapshot feature layer so that all of the data for the species is returned to the client to display in the data table.-->
+		<classes:MyFeatureLayer url="http://dev.unep-wcmc.org/ArcGIS/rest/services/CSN/Species/MapServer/3" includeIn="species" visible="{speciesBox.ibaMap.selected}" id="ibaFeatureLayer" outFields="[SiteRecID,Country,Name,Protected,SpcRecID,YearStart,YearEnd,PopMin,PopMax,PopMean,Season,Unit,IBACriteria,IsPoly]" showEffect="{fadeIn07}" hideEffect="{fadeOut07}" definitionExpression="SpcRecID={speciesBox.species.spcRecID}" mode="snapshot" legendCaption="{resourceManager.getString('myResources', 'TEXT109')}" renderer="{ibaRenderer.currentRenderer}" infoWindowRenderer="wcmc.infoWindows.SiteInfoWindow"/>
+		
+		<!--Species IWC site layer-->
+		<!---The species IWC layer is the fifth layer in the MapService available through the ArcGIS Server REST Directory: http://dev.unep-wcmc.org/ArcGIS/rest/services/CSN/Species/MapServer. The species that is shown is set using a DefinitionExpression on the MapService using the current SpcRecID in the url.-->
+		<classes:MyArcGISDynamicMapServiceLayer url="http://dev.unep-wcmc.org/ArcGIS/rest/services/CSN/Species/MapServer" includeIn="species" visible="{speciesBox.iwcMap.selected}" showEffect="{fadeIn08}" hideEffect="{fadeOut08}" legendCaption="{resourceManager.getString('myResources', 'TEXT149')}" infoWindowRenderer="wcmc.infoWindows.IWCChartInfoWindow" legendImage="{EmbeddedImages.speciesIWCL}">
+			<classes:layerDefinitions>
+				<fx:Array> 
+					<fx:String></fx:String><!--species distribution-->
+					<fx:String></fx:String><!--flyways-->
+					<fx:String></fx:String><!--CSN-->
+					<fx:String></fx:String><!--IBA-->
+					<fx:String>SpcRecID={speciesBox.species.spcRecID}</fx:String><!--IWC-->
+				</fx:Array>
+			</classes:layerDefinitions>
+			<classes:visibleLayers>
+				<mx:ArrayCollection>
+					<fx:Number>4</fx:Number>
+				</mx:ArrayCollection>		 		
+			</classes:visibleLayers>
+		</classes:MyArcGISDynamicMapServiceLayer>
+		
+		<!--Species IWC Time Slider layer-->
+		<!---The species IWC time slider layer is the MapService available through the ArcGIS Server REST Directory: http://dev.unep-wcmc.org/ArcGIS/rest/services/CSN/IWCTimeSlider/MapServer. The species and year that is shown is set using a DefinitionExpression on the MapService using the current SpcRecID in the url and the year from the timeslider control that is shown when the user turns on the IWC time slider. This service is separate from the other services because it accesses and maps over 60 million records.-->
+		<classes:MyArcGISDynamicMapServiceLayer url="http://dev.unep-wcmc.org/ArcGIS/rest/services/CSN/IWCTimeSlider/MapServer" id="iwcNonCumulativeTimeLayer" includeIn="species" visible="{speciesBox.timeSliderTool.selected}" load="iwcNonCumulativeTimeLayer_loadHandler(event)" legendCaption="{resourceManager.getString('myResources', 'TEXT149')} ({myDateFormatter.format(timeSlider.timeExtent.endTime)})" legendImage="{EmbeddedImages.timeSeriesMap}" infoWindowRenderer="wcmc.infoWindows.IWCCountInfoWindow">
+			<classes:layerDefinitions>
+				<fx:Array>
+					<fx:String>SpcRecID={speciesBox.species.spcRecID}</fx:String>
+				</fx:Array>
+			</classes:layerDefinitions>
+			<classes:visibleLayers>
+				<mx:ArrayCollection>
+					<fx:Number>0</fx:Number>
+				</mx:ArrayCollection>
+			</classes:visibleLayers>
+		</classes:MyArcGISDynamicMapServiceLayer>
+		
+		<!--SITES PAGE LAYERS-->
+		
+		<!--Critical Site layer-->
+		<!---The critical sites layer represents the point and polygon critical sites (the first and second layers) in the MapService available through the ArcGIS Server REST Directory: http://dev.unep-wcmc.org/ArcGIS/rest/services/CSN/Sites/MapServer. Unlike the species layers, there are no definition expressions on the sites layers since all sites are shown.-->
+		<classes:MyArcGISDynamicMapServiceLayer id="criticalSiteLayer" url="http://dev.unep-wcmc.org/ArcGIS/rest/services/CSN/Sites/MapServer" includeIn="site" visible="{sitesBox.dMap.selected}" showEffect="{fadeIn05}" hideEffect="{fadeOut05}" legendCaption="{resourceManager.getString('myResources', 'TEXT83')}" infoWindowRenderer="wcmc.infoWindows.SiteInfoWindow" legendImage="{EmbeddedImages.siteL}">
+			<classes:layerDefinitions>
+				<fx:Array>
+					<fx:String>IsPoly=0</fx:String><!--Points layer-->
+				</fx:Array>
+			</classes:layerDefinitions>
+			<classes:visibleLayers>
+				<mx:ArrayCollection>
+					<fx:Number>0</fx:Number><!--CSN points layer-->
+					<fx:Number>1</fx:Number><!--CSN polygon layer-->
+				</mx:ArrayCollection>		 		
+			</classes:visibleLayers>
+		</classes:MyArcGISDynamicMapServiceLayer>
+		
+		<!--IBA layer-->
+		<!---The IBA sites layer represents the point and polygon IBA sites (the third and fourth layers) in the MapService available through the ArcGIS Server REST Directory: http://dev.unep-wcmc.org/ArcGIS/rest/services/CSN/Sites/MapServer. Unlike the species layers, there are no definition expressions on the sites layers since all sites are shown.-->
+		<classes:MyArcGISDynamicMapServiceLayer id="ibaLayer" url="http://dev.unep-wcmc.org/ArcGIS/rest/services/CSN/Sites/MapServer" includeIn="site" visible="{sitesBox.ibaMap.selected}" showEffect="{fadeIn07}" hideEffect="{fadeOut07}" legendCaption="{resourceManager.getString('myResources', 'TEXT122')}" infoWindowRenderer="wcmc.infoWindows.SiteInfoWindow" legendImage="{EmbeddedImages.ibaL}">
+			<classes:visibleLayers>
+				<mx:ArrayCollection>
+					<fx:Number>2</fx:Number><!--IBA points layer-->
+					<fx:Number>3</fx:Number><!--IBA polygons layer-->
+				</mx:ArrayCollection>		 		
+			</classes:visibleLayers>
+		</classes:MyArcGISDynamicMapServiceLayer>
+		
+		<!--Site IWC Layer-->
+		<!---The IWC layer represents the point locations of IWC sites (the fifth layer) in the MapService available through the ArcGIS Server REST Directory: http://dev.unep-wcmc.org/ArcGIS/rest/services/CSN/Sites/MapServer. Unlike the species layers, there are no definition expressions on the sites layers since all sites are shown.-->
+<!--		<classes:MyFeatureLayer url="http://dev.unep-wcmc.org/ArcGIS/rest/services/CSN/Sites/MapServer/4" minScale="{STATIC_DYNAMIC_SCALE_CUT_OFF}" includeIn="site" visible="{sitesBox.iwcMap.selected}" outFields="[Name,CountryCode,SiteCode]" showEffect="{fadeIn07}" hideEffect="{fadeOut07}" legendCaption="{resourceManager.getString('myResources', 'TEXT85')}" symbol="{iwcSymbol}" infoWindowRenderer="wcmc.infoWindows.IWCSimpleInfoWindow"/>-->
+		<classes:MyArcGISDynamicMapServiceLayer id="iwcLayer" url="http://dev.unep-wcmc.org/ArcGIS/rest/services/CSN/Sites/MapServer" includeIn="site" visible="{sitesBox.iwcMap.selected}" showEffect="{fadeIn07}" hideEffect="{fadeOut07}" legendCaption="{resourceManager.getString('myResources', 'TEXT149')}" infoWindowRenderer="wcmc.infoWindows.IWCSimpleInfoWindow" legendImage="{EmbeddedImages.speciesIWCL}">
+			<classes:visibleLayers>
+				<mx:ArrayCollection>
+					<fx:Number>4</fx:Number><!--IWC layer-->
+				</mx:ArrayCollection>		 		
+			</classes:visibleLayers>
+		</classes:MyArcGISDynamicMapServiceLayer>
+	
+		<!--Site WDPA layer-->
+		<!---The WDPA layer represents the point and polygon WDPA sites (the 6th and 7th layers) in the MapService available through the ArcGIS Server REST Directory: http://dev.unep-wcmc.org/ArcGIS/rest/services/CSN/Sites/MapServer. Unlike the species layers, there are no definition expressions on the sites layers since all sites are shown.-->
+		<classes:MyArcGISDynamicMapServiceLayer id="wdpaLayer" url="http://dev.unep-wcmc.org/ArcGIS/rest/services/CSN/Sites/MapServer" includeIn="site" visible="{sitesBox.wdpaMap.selected}" showEffect="{fadeIn07}" hideEffect="{fadeOut07}" legendCaption="{resourceManager.getString('myResources', 'TEXT87')}" infoWindowRenderer="wcmc.infoWindows.WDPAInfoWindow" legendImage="{EmbeddedImages.wdpaL}">
+			<classes:visibleLayers>
+				<mx:ArrayCollection>
+					<fx:Number>5</fx:Number><!--WDPA points layer-->
+					<fx:Number>6</fx:Number><!--WDPA polygons layer-->
+				</mx:ArrayCollection>		 		
+			</classes:visibleLayers>
+		</classes:MyArcGISDynamicMapServiceLayer>
+
+		<!-- PPE layer CURRENTLY NOT IMPLEMENTED
+		<classes:GeoJSONLayer includeIn="site" visible="{sitesBox.ppeMap.selected}" legendCaption="ProtectedPlanet data" symbol="{wdpaPointSymbol}" updateEnd="geojsonlayer1_updateEndHandler(event)"/>-->
+		
+		<!--Site Ramsar layer-->
+		<!---The Ramsar layer represents the point and polygon Ramsar sites (the 8th and 9th layers) in the MapService available through the ArcGIS Server REST Directory: http://dev.unep-wcmc.org/ArcGIS/rest/services/CSN/Sites/MapServer. Unlike the species layers, there are no definition expressions on the sites layers since all sites are shown.-->
+		<classes:MyArcGISDynamicMapServiceLayer id="ramsarLayer" url="http://dev.unep-wcmc.org/ArcGIS/rest/services/CSN/Sites/MapServer" includeIn="site" visible="{sitesBox.ramsarMap.selected}" showEffect="{fadeIn07}" hideEffect="{fadeOut07}" legendCaption="{resourceManager.getString('myResources', 'TEXT91')}" infoWindowRenderer="wcmc.infoWindows.RamsarInfoWindow" legendImage="{EmbeddedImages.ramsarL}">
+			<classes:visibleLayers>
+				<mx:ArrayCollection>
+					<fx:Number>7</fx:Number><!--Ramsar points layer-->
+					<fx:Number>8</fx:Number><!--Ramsar polygon layer-->
+				</mx:ArrayCollection>		 		
+			</classes:visibleLayers>
+		</classes:MyArcGISDynamicMapServiceLayer>
+	
+		<!--Polygon Draw layer-->
+<!--		<esri:GraphicsLayer id="drawLayer" showEffect="{fadeIn07}" hideEffect="{fadeOut07}" includeIn="species" visible="{speciesBox.iwcCustomAreaTool.selected}"/>-->
+		
+		<!--REPORTS PAGE LAYERS-->
+		
+		<!--Reports site layer-->
+		<!---The layer containing the sites matching the currently selected values in the filterBox, e.g. if the user selects Albania in the filterBox, then only the sites for Albania will be shown on the map using this layer.-->
+		<classes:MyFeatureLayer id="sitePointsLayer" url="http://dev.unep-wcmc.org/ArcGIS/rest/services/CSN/Reports/MapServer/1" includeIn="reports" visible="{reportsBox.showSites.selected}" outFields="[Name,SiteRecID,Country,IsIBA,Protected,IBASpc,CSNSpc,Total]" showEffect="{fadeIn07}" hideEffect="{fadeOut07}" legendCaption="{resourceManager.getString('myResources', 'TEXT83')}" mode="snapshot" infoWindowRenderer="wcmc.infoWindows.SiteListInfoWindow" renderer="{siteListRenderer.currentRenderer}"/>
+		
+		<!--CONTEXTUAL LAYERS-->
+		
+		<!--AEWA Boundary layer-->
+		<!---Dynamic map service with the AEWA boundary outline.-->
+		<classes:MyArcGISDynamicMapServiceLayer id="aewaLayer" url="http://dev.unep-wcmc.org/ArcGIS/rest/services/CSN/ContextualData/MapServer" visible="{toolbox.aewaBoundary.selected}" showEffect="{fadeIn10}" hideEffect="{fadeOut10}" showlegend="false" loadError="aewaLayer_loadErrorHandler(event)">
+			<classes:visibleLayers>
+				<mx:ArrayCollection>
+					<fx:Number>0</fx:Number>
+				</mx:ArrayCollection>		 		
+			</classes:visibleLayers>
+		</classes:MyArcGISDynamicMapServiceLayer>
+		
+		<!--Demo sites layer-->
+		<!---Dynamic map service with the Demo sites-->
+		<classes:MyArcGISDynamicMapServiceLayer id="demoSitesLayer" url="http://dev.unep-wcmc.org/ArcGIS/rest/services/CSN/ContextualData/MapServer" visible="{toolbox.demoSites.selected}" showEffect="{fadeIn10}" hideEffect="{fadeOut10}" showlegend="false" infoWindowRenderer="wcmc.infoWindows.DemoSitesInfoWindow" imageFormat="png32">
+			<classes:visibleLayers>
+				<mx:ArrayCollection>
+					<fx:Number>1</fx:Number>
+				</mx:ArrayCollection>		 		
+			</classes:visibleLayers>
+		</classes:MyArcGISDynamicMapServiceLayer>
+
+		<!--Gap sites layer-->
+		<!---Dynamic map service with the Gap sites-->
+		<classes:MyArcGISDynamicMapServiceLayer id="gapSitesLayer" url="http://dev.unep-wcmc.org/ArcGIS/rest/services/CSN/ContextualData/MapServer" visible="{toolbox.gapSites.selected}" showEffect="{fadeIn10}" hideEffect="{fadeOut10}" showlegend="false" infoWindowRenderer="wcmc.infoWindows.GapSitesInfoWindow" imageFormat="png32">
+			<classes:visibleLayers>
+				<mx:ArrayCollection>
+					<fx:Number>2</fx:Number>
+				</mx:ArrayCollection>		 		
+			</classes:visibleLayers>
+		</classes:MyArcGISDynamicMapServiceLayer>
+
+	</components:MyMap>
+	
+	<!-- Map navigation controls-->
+	<mx:ControlBar width="100%" horizontalAlign="center" paddingTop="0">
+		<!---Map navigation controls.-->
+		<mx:ToggleButtonBar id="navBar" creationComplete="navBar.selectedIndex=-1" valueCommit="if (navBar.selectedIndex == -1) navTool.deactivate()" itemClick="navigationToolClick(event)" toggleOnClick="true">
+			<mx:dataProvider>
+				<fx:Array>
+					<fx:Object icon="{EmbeddedImages.zoomIn}" toolTip="{resourceManager.getString('myResources', 'TEXT178')}"/>
+					<fx:Object icon="{EmbeddedImages.zoomOut}" toolTip="{resourceManager.getString('myResources', 'TEXT179')}"/>
+					<fx:Object icon="{EmbeddedImages.pan}" toolTip="{resourceManager.getString('myResources', 'TEXT180')}"/>
+				</fx:Array>
+			</mx:dataProvider>
+		</mx:ToggleButtonBar>
+		<mx:ControlBar horizontalGap="0">
+			<mx:Button click="navTool.zoomToPrevExtent()" enabled="{!navTool.isFirstExtent}" icon="{(!navTool.isFirstExtent ? EmbeddedImages.previousImg : EmbeddedImages.previousDisabledImg)}" toolTip="{resourceManager.getString('myResources', 'TEXT181')}"/>
+			<mx:Button click="navTool.zoomToNextExtent()" enabled="{!navTool.isLastExtent}" icon="{(!navTool.isLastExtent ? EmbeddedImages.nextImg : EmbeddedImages.nextDisabledImg)}" toolTip="{resourceManager.getString('myResources', 'TEXT182')}"/>
+		</mx:ControlBar>
+		<mx:Button click="navTool.zoomToFullExtent()" icon="@Embed(source='images/full.png')" toolTip="{resourceManager.getString('myResources', 'TEXT183')}"/>
+	</mx:ControlBar>		
+	
+	<!--Basemap gallery-->
+	<!---The basemapGallery is a custom box that allows the user to change the base map data for the application. @see wcmc.components.BasemapGallery-->
+	<components:BasemapGallery id="basemapGallery" basemapChanged="basemapChanged(event)" visible="{toolbox.basemapSwitch.selected}" showEffect="{fadeIn}" hideEffect="{fadeOut}" show="basemapGallery_showHandler(event)" styleName="InformationPanel" map="{map}" hide="toolbox.basemapSwitch.selected=false" csn="{this}"/>
+
+	<!--Button to show the infoPanel again after it has been hidden-->
+	<supportClasses:InfoWindowCloseButton right="0" top="100" visible="{!infoPanel.visible}" toolTip="{resourceManager.getString('myResources', 'TEXT184')}" click="infoPanel.visible=true"/>
+
+	<!--Legend-->
+	<!---The Legend component shows information about the currently visible layers in the map, such as the layers names and symbology. @see wcmc.components.Legend-->
+	<components:Legend id="legend" map="{map}" visible="{toolbox.legendSwitch.selected}" hideEffect="{fadeOut}" showEffect="{fadeIn}" hide="toolbox.legendSwitch.selected=false" filters="{shadow}" csn="{this}"/>
+
+	<!--Time slider toolbar-->
+	<!---The timesliderToolbar is a box which shows the user a slider control to control the year for the IWC data.-->
+	<components:MyBorderContainer id="timesliderToolbar" styleName="InformationPanel" visible="{(speciesBox.timeSliderTool.selected)&amp;&amp;(currentState=='species')}" show="timesliderToolbar_showHandler(event)">
+		<s:BorderContainer styleName="ContentPanel" right="5" bottom="5" top="5" left="5" height="100%" minHeight="0" minWidth="0">
+			<s:VGroup paddingBottom="8" paddingLeft="10" paddingTop="10" paddingRight="10" horizontalAlign="center">
+				<components:BoxHeader dragComponent="{timesliderToolbar}" target="{this}" caption="{resourceManager.getString('myResources', 'TEXT134')} {myDateFormatter.format(timeSlider.timeExtent.endTime)}" boxClosed="speciesBox.timeSliderTool.checkBox.selected=false"/>
+				<!---The timeSlider is the actual control the controls the time-period for the map control.-->
+				<esri:TimeSlider id="timeSlider" skinClass="wcmc.skins.MyTimeSliderSkin" singleThumbAsTimeInstant="true" itemCreationPolicy="immediate" includeIn="species"/>
+			</s:VGroup>
+		</s:BorderContainer>
+	</components:MyBorderContainer>		
+	
+	<!--Info panel-->
+	<!---The info panel is the main viewport to the application and contains all of the items that the user will interact with, apart from popups like data tables. It contains components that are displayed according to what state the application is in.-->
+	<s:BorderContainer id="infoPanel" width="450" height="750" styleName="InformationPanel" verticalCenter="0">
+		<s:BorderContainer styleName="ContentPanel" height="{(infoPanel.height - 20)}" width="{infoPanel.width-20}" x="10" y="10">
+			<s:VGroup width="100%" height="100%" paddingBottom="10" paddingLeft="10" paddingRight="10" paddingTop="13">
+				<!---The switcher is the navigation control for the infoPanel which sets the state of the application. @see wcmc.components.Switcher-->
+				<components:Switcher id="switcher" csn="{this}"/>
+				<!---The welcomeBox is the box that is loaded when the state of the application is 'home'. This is the default state on loading. @see wcmc.components.WelcomeBox-->
+				<components:WelcomeBox id="welcomeBox" includeIn="home" csn="{this}"/> 
+				<!---The speciesSearchBox is the box that is loaded when the state of the application is 'speciesSearch'. @see wcmc.components.SpeciesSearchBox-->
+				<components:SpeciesSearchBox id="speciesSearchBox" includeIn="speciesSearch" itemCreationPolicy="immediate" commonNameField="{commonNameField}" dao="{dao}"/> 
+				<!---The siteSearchBox is the box that is loaded when the state of the application is 'siteSearch'. @see wcmc.components.SiteSearchBox-->
+				<components:SiteSearchBox id="siteSearchBox" includeIn="siteSearch" itemCreationPolicy="immediate" csn="{this}"/>
+				<!---The speciesBox is the box that is loaded when the state of the application is 'species'. @see wcmc.components.SpeciesBox-->
+				<components:SpeciesBox id="speciesBox" includeIn="species" itemCreationPolicy="immediate" csn="{this}"/> 
+				<!---The sitesBox is the box that is loaded when the state of the application is 'sitesBox'. @see wcmc.components.SitesBox-->
+				<components:SitesBox id="sitesBox" includeIn="site" map="{map}" itemCreationPolicy="immediate" csn="{this}"/> 
+				<!---The reportsBox is the box that is loaded when the state of the application is 'reports'. @see wcmc.components.ReportsBox-->
+				<components:ReportsBox id="reportsBox" includeIn="reports" map="{map}" dao="{dao}" itemCreationPolicy="immediate" csn="{this}"/>
+				<!---The infoBox is the box that is loaded when the state of the application is 'info'. @see wcmc.components.InfoBox-->
+				<components:InfoBox id="infoBox" includeIn="info"/>
+				<!---The toolbox is shown at the bottom of the infoPanel is is used to control the switching on/off of the contextual layers and to show/hide the legend and the Basemap gallery. It also allows the user to set the language and print the map. @see wcmc.components.Toolbox-->
+				<components:Toolbox id="toolbox" csn="{this}"/>
+			</s:VGroup>
+		</s:BorderContainer>
+	</s:BorderContainer>
+	
+	<!--Draw toolbar for user-defined polygon-->
+<!--	<components:MyBorderContainer id="drawToolbar" styleName="InformationPanel" visible="{((speciesBox.iwcCustomAreaTool.selected)&amp;&amp;(currentState=='species'))}" minHeight="0" show="drawToolbar_showHandler(event)">
+		<s:BorderContainer styleName="ContentPanel" right="5" bottom="5" top="5" left="5" minHeight="0">
+			<s:VGroup paddingBottom="8" paddingLeft="10" paddingTop="10" paddingRight="10" horizontalAlign="center">
+				<components:BoxHeader dragComponent="{drawToolbar}" target="{map}" caption="Draw toolbar" boxClosed="speciesBox.iwcCustomAreaTool.checkBox.selected=false;drawTools.deactivateTool();"/>
+				<components:DrawToolbar id="drawTools" map="{map}" drawLayer="{drawLayer}" creationComplete="drawToolbar_creationCompleteHandler(event)" drawToolActivated="resetDrawTool(event)" drawToolDeactivated="resetDrawTool(event)"/>
+			</s:VGroup>
+		</s:BorderContainer>
+	</components:MyBorderContainer>-->		
+	
+	<!--Species critical sites data table-->
+	<!---A custom border container that shows information relating to the critical sites for a species. @see wcmc.components.MyBorderContainer-->
+	<components:MyBorderContainer id="csnDataTable" styleName="InformationPanel" horizontalCenter="0" bottom="10" visible="{(speciesBox.csnMap.selected)&amp;&amp;(currentState=='species')}"> 
+		<s:BorderContainer styleName="ContentPanel" right="5" bottom="5" top="5" left="5">
+			<s:VGroup paddingLeft="10" paddingBottom="8" paddingRight="10" paddingTop="10">
+				<s:HGroup verticalAlign="middle" width="100%">
+					<s:Label text="{resourceManager.getString('myResources', 'TEXT185')}" styleName="boxLabel"/>
+					<!---The renderer chooser for the critical site data.-->
+					<components:RendererChooser id="csnRenderer" renderers="{csnRenderers}" selectedIndex="0" width="200"/>
+					<mx:Spacer width="100%"/>
+					<components:DragBox dragComponent="{csnDataTable}" target="{this}"/>
+					<components:MyCloseButton closeTarget="{csnDataTable}"/>
+				</s:HGroup>
+				<!---The data grid that shows information on the critical sites. This data grid is bound to the features in the csnFeatureLayer.-->
+				<components:MyDataGrid id="csnDataGrid" dataProvider="{csnFeatureLayer.features}" featureLayer="{csnFeatureLayer}" itemClick="datagrid_itemClickHandler(event)" itemRollOver="dataGrid_ItemRollOver(event)" itemRollOut="datagrid_itemRollOutHandler(event)">
+					<components:columns>
+						<mx:DataGridColumn headerText="{resourceManager.getString('myResources', 'TEXT28')}" itemRenderer="wcmc.renderers.CountryRenderer" sortCompareFunction="countrySortCompare" width="{wCountry}"/>
+						<mx:DataGridColumn headerText="{resourceManager.getString('myResources', 'TEXT186')}" dataField="Name" showDataTips="true" width="{wSitename}"/>
+						<mx:DataGridColumn headerText="{resourceManager.getString('myResources', 'TEXT158')}" dataField="Flyway" showDataTips="true" width="{wPopulation}"/>
+						<mx:DataGridColumn headerText="{resourceManager.getString('myResources', 'TEXT159')}" dataField="Season" width="{wSeason}"/>
+						<mx:DataGridColumn headerText="{resourceManager.getString('myResources', 'TEXT187')}" dataField="YearStart" width="{wStart}"/>
+						<mx:DataGridColumn headerText="{resourceManager.getString('myResources', 'TEXT188')}" dataField="YearEnd" width="{wEnd}"/>
+						<mx:DataGridColumn headerText="{resourceManager.getString('myResources', 'TEXT189')}" dataField="PopMin" textAlign="right" width="{wMin}"/>
+						<mx:DataGridColumn headerText="{resourceManager.getString('myResources', 'TEXT190')}" dataField="PopMax" textAlign="right" width="{wMax}"/>
+						<mx:DataGridColumn headerText="{resourceManager.getString('myResources', 'TEXT191')}" dataField="PopMean" textAlign="right" width="{wMean}"/>
+						<mx:DataGridColumn headerText="{resourceManager.getString('myResources', 'TEXT192')}" dataField="Unit" width="{wUnits}"/>
+						<mx:DataGridColumn headerText="{resourceManager.getString('myResources', 'TEXT193')}" dataField="PercentFlyway" sortCompareFunction="percentSortCompare" labelFunction="getPercentFlyway" textAlign="right" width="{wPercentPop}"/>
+						<mx:DataGridColumn headerText="{resourceManager.getString('myResources', 'TEXT194')}" itemRenderer="wcmc.renderers.TicRenderer1" width="{wCSN1}" sortCompareFunction="booleanCompare1"/>
+						<mx:DataGridColumn headerText="{resourceManager.getString('myResources', 'TEXT195')}" itemRenderer="wcmc.renderers.TicRenderer2" width="{wCSN2}" sortCompareFunction="booleanCompare2"/>
+						<mx:DataGridColumn headerText="{resourceManager.getString('myResources', 'TEXT196')}" itemRenderer="wcmc.renderers.TicRenderer3" width="{wIBA}" sortCompareFunction="booleanCompare3"/>
+						<mx:DataGridColumn headerText="{resourceManager.getString('myResources', 'TEXT197')}" dataField="IBACriteria" width="70" showDataTips="{wIBACriteria}"/>
+						<mx:DataGridColumn headerText="{resourceManager.getString('myResources', 'TEXT198')}" dataField="Protected" width="{wProtected}"/>
+						<mx:DataGridColumn headerText="" width="{wLink}" itemRenderer="wcmc.renderers.SiteLinkRenderer"/>
+					</components:columns>
+				</components:MyDataGrid> 
+				<components:ReportToolbar dataGrid="{csnDataGrid}" reportTitle="{resourceManager.getString('myResources', 'TEXT199')} {speciesBox.species.commonName}" reportOrientation="{Orientation.LANDSCAPE}" reportLink="http://dev.unep-wcmc.org/csn/default.html#state=species&amp;SpcRecID={speciesBox.species.spcRecID}"/>
+			</s:VGroup>
+		</s:BorderContainer>
+	</components:MyBorderContainer>
+	
+	<!--Species IBA data table-->
+	<!---A custom border container that shows information relating to the IBA sites for a species. @see wcmc.components.MyBorderContainer-->
+	<components:MyBorderContainer id="ibaDataTable" styleName="InformationPanel" horizontalCenter="0" bottom="10" visible="{(speciesBox.ibaMap.selected)&amp;&amp;(currentState=='species')}"> 
+		<s:BorderContainer styleName="ContentPanel" right="5" bottom="5" top="5" left="5">
+			<s:VGroup paddingLeft="10" paddingBottom="8" paddingRight="10" paddingTop="10">
+				<s:HGroup verticalAlign="middle" width="100%">
+					<s:Label text="{resourceManager.getString('myResources', 'TEXT224')}" styleName="boxLabel"/>
+					<!---The renderer chooser for the IBA site data.-->
+					<components:RendererChooser id="ibaRenderer" renderers="{ibaRenderers}" selectedIndex="0" width="200"/>
+					<mx:Spacer width="100%"/>
+					<components:DragBox dragComponent="{ibaDataTable}" target="{this}"/>
+					<components:MyCloseButton click="ibaDataTable.visible=false"/>
+				</s:HGroup>
+				<!---The data grid that shows information on the IBA sites. This data grid is bound to the features in the ibaFeatureLayer.-->
+				<components:MyDataGrid id="ibaDataGrid" dataProvider="{ibaFeatureLayer.features}" featureLayer="{ibaFeatureLayer}" itemClick="datagrid_itemClickHandler(event)" itemRollOver="dataGrid_ItemRollOver(event)" itemRollOut="datagrid_itemRollOutHandler(event)">
+					<components:columns>
+						<mx:DataGridColumn headerText="{resourceManager.getString('myResources', 'TEXT28')}" itemRenderer="wcmc.renderers.CountryRenderer" sortCompareFunction="countrySortCompare" width="{wCountry}"/>
+						<mx:DataGridColumn headerText="{resourceManager.getString('myResources', 'TEXT186')}" dataField="Name" showDataTips="true" width="{wSitename}"/>
+						<mx:DataGridColumn headerText="{resourceManager.getString('myResources', 'TEXT159')}" dataField="Season" width="{wSeason}"/>
+						<mx:DataGridColumn headerText="{resourceManager.getString('myResources', 'TEXT187')}" dataField="YearStart" width="{wStart}"/>
+						<mx:DataGridColumn headerText="{resourceManager.getString('myResources', 'TEXT188')}" dataField="YearEnd" width="{wEnd}"/>
+						<mx:DataGridColumn headerText="{resourceManager.getString('myResources', 'TEXT189')}" dataField="PopMin" textAlign="right" width="{wMin}"/>
+						<mx:DataGridColumn headerText="{resourceManager.getString('myResources', 'TEXT190')}" dataField="PopMax" textAlign="right" width="{wMax}"/>
+						<mx:DataGridColumn headerText="{resourceManager.getString('myResources', 'TEXT191')}" dataField="PopMean" textAlign="right" width="{wMean}"/>
+						<mx:DataGridColumn headerText="{resourceManager.getString('myResources', 'TEXT192')}" dataField="Unit" width="{wUnits}"/>
+						<mx:DataGridColumn headerText="{resourceManager.getString('myResources', 'TEXT197')}" dataField="IBACriteria" width="{wIBACriteria}" showDataTips="true"/>
+						<mx:DataGridColumn headerText="{resourceManager.getString('myResources', 'TEXT198')}" dataField="Protected" width="{wProtected}"/>
+						<mx:DataGridColumn headerText="" width="{wLink}" itemRenderer="wcmc.renderers.SiteLinkRenderer"/>
+					</components:columns>
+				</components:MyDataGrid> 
+				<components:ReportToolbar dataGrid="{ibaDataGrid}" reportTitle="{resourceManager.getString('myResources', 'TEXT200')} {speciesBox.species.commonName}" reportOrientation="{Orientation.LANDSCAPE}" reportLink="http://dev.unep-wcmc.org/csn/default.html#state=species&amp;SpcRecID={speciesBox.species.spcRecID}"/>
+			</s:VGroup>
+		</s:BorderContainer>
+	</components:MyBorderContainer>
+	
+	<!--Species Waterbird Population Estimates table-->
+	<!---A custom border container that shows information relating to the waterbird populations for a species. @see wcmc.components.MyBorderContainer-->
+	<components:MyBorderContainer id="wpeDataTable" styleName="InformationPanel" visible="{(speciesBox.wpeTable.selected)&amp;&amp;(currentState=='species')}" show="wpeDataTable_showHandler(event)"> 
+		<s:BorderContainer styleName="ContentPanel" right="5" bottom="5" top="5" left="5">
+			<s:VGroup paddingLeft="10" paddingBottom="8" paddingRight="10" paddingTop="10">
+				<components:BoxHeader dragComponent="{wpeDataTable}" target="{this}" caption="{resourceManager.getString('myResources', 'TEXT117')}" boxClosed="speciesBox.wpeTable.checkBox.selected=false;"/>
+				<!---The data grid that shows information on the waterbird population estimates for a species. This data grid is bound to the data from the DAO.getWaterbirdPopulationEstimates method. @see wcmc.classes.DAO-->
+				<mx:DataGrid id="wpeTable" rowCount="{wpeTable.dataProvider.length}" dataProvider="{dao.getWaterbirdPopulationEstimates(speciesBox.species.spcRecID)}">
+					<mx:columns>
+						<mx:DataGridColumn headerText="{resourceManager.getString('myResources', 'TEXT158')}" dataField="Flyway" width="{wPopulation}"/>
+						<mx:DataGridColumn headerText="{resourceManager.getString('myResources', 'TEXT201')}" dataField="Estimate" width="{wEstimate}"/>
+						<mx:DataGridColumn headerText="{resourceManager.getString('myResources', 'TEXT202')}" dataField="Trend" width="{wTrend}"/>
+						<mx:DataGridColumn headerText="{resourceManager.getString('myResources', 'TEXT203')}" dataField="OnePercentCalc" textAlign="right"/>
+					</mx:columns>
+				</mx:DataGrid>
+				<components:ReportToolbar dataGrid="{wpeTable}" reportTitle="{resourceManager.getString('myResources', 'TEXT204')} {speciesBox.species.commonName}" reportLink="http://dev.unep-wcmc.org/csn/default.html#state=species&amp;SpcRecID={speciesBox.species.spcRecID}"/>
+			</s:VGroup>
+		</s:BorderContainer>
+	</components:MyBorderContainer>
+	
+	<!--Site species list table-->
+	<!---A custom border container that shows information on all species recorded for a site.-->
+	<components:MyBorderContainer id="speciesListDataTable" styleName="InformationPanel" horizontalCenter="0" bottom="10" visible="{(sitesBox.speciesList.selected)&amp;&amp;(currentState=='site')}"> 
+		<s:BorderContainer styleName="ContentPanel" right="5" bottom="5" top="5" left="5">
+			<s:VGroup paddingLeft="10" paddingBottom="8" paddingRight="10" paddingTop="10">
+				<components:BoxHeader dragComponent="{speciesListDataTable}" target="{this}" caption="{resourceManager.getString('myResources', 'TEXT93')}" boxClosed="sitesBox.speciesList.checkBox.selected=false;"/>
+				<!---Data grid showing all species occuring for a site. This data grid is bound to the DAO.getSpeciesList method. @see wcmc.classes.DAO-->
+				<mx:DataGrid id="speciesListTable" dataProvider="{getSpeciesList(commonNameField,sitesBox.site.siteRecID)}">
+					<mx:columns>
+						<mx:DataGridColumn headerText="{resourceManager.getString('myResources', 'TEXT208')}" width="{wScientific}" showDataTips="true" itemRenderer="wcmc.renderers.SpeciesRenderer" sortCompareFunction="speciesCompare"/>
+						<mx:DataGridColumn headerText="{resourceManager.getString('myResources', 'TEXT205')}" dataField="{commonNameField}" width="{wCommon}" showDataTips="true" dataTipField="{commonNameField}"/>
+						<mx:DataGridColumn headerText="{resourceManager.getString('myResources', 'TEXT158')}" dataField="Flyway" width="{wPopulation}" showDataTips="true" dataTipField="Flyway"/>
+						<mx:DataGridColumn headerText="{resourceManager.getString('myResources', 'TEXT159')}" dataField="Season" width="{wSeason}"/>
+						<mx:DataGridColumn headerText="{resourceManager.getString('myResources', 'TEXT187')}" dataField="YearStart" width="{wStart}"/>
+						<mx:DataGridColumn headerText="{resourceManager.getString('myResources', 'TEXT188')}" dataField="YearEnd" width="{wEnd}"/>
+						<mx:DataGridColumn headerText="{resourceManager.getString('myResources', 'TEXT189')}" dataField="PopMin" textAlign="right" width="{wMin}"/>
+						<mx:DataGridColumn headerText="{resourceManager.getString('myResources', 'TEXT190')}" dataField="PopMax" textAlign="right" width="{wMax}"/>
+						<mx:DataGridColumn headerText="{resourceManager.getString('myResources', 'TEXT191')}" dataField="PopMean" textAlign="right" width="{wMean}"/>
+						<mx:DataGridColumn headerText="{resourceManager.getString('myResources', 'TEXT192')}" dataField="Unit" width="{wUnits}"/>
+						<mx:DataGridColumn headerText="{resourceManager.getString('myResources', 'TEXT193')}" dataField="PercentFlyway" sortCompareFunction="percentSortCompare" labelFunction="getPercentFlyway" textAlign="right" width="{wPercentPop}"/>
+						<mx:DataGridColumn headerText="{resourceManager.getString('myResources', 'TEXT194')}" itemRenderer="wcmc.renderers.SiteSpeciesListTicRenderer1" width="{wCSN1}" sortCompareFunction="booleanCompare1"/>
+						<mx:DataGridColumn headerText="{resourceManager.getString('myResources', 'TEXT195')}" itemRenderer="wcmc.renderers.SiteSpeciesListTicRenderer2" width="{wCSN2}" sortCompareFunction="booleanCompare2"/>
+						<mx:DataGridColumn headerText="{resourceManager.getString('myResources', 'TEXT196')}" itemRenderer="wcmc.renderers.SiteSpeciesListTicRenderer3" width="{wIBA}" sortCompareFunction="booleanCompare3"/>
+						<mx:DataGridColumn headerText="{resourceManager.getString('myResources', 'TEXT197')}" dataField="IBACriteria" showDataTips="true" width="{wIBACriteria}"/>
+						<mx:DataGridColumn headerText="{resourceManager.getString('myResources', 'TEXT206')}" itemRenderer="wcmc.renderers.IWCTrendRenderer" textAlign="center" width="70" sortCompareFunction="booleanCompare4"/>
+						<mx:DataGridColumn headerText="" width="{wLink}" itemRenderer="wcmc.renderers.SpeciesLinkRenderer"/>
+					</mx:columns>
+				</mx:DataGrid>
+				<components:ReportToolbar dataGrid="{speciesListTable}" reportTitle="{resourceManager.getString('myResources', 'TEXT207')} {sitesBox.site.name}" reportOrientation="{Orientation.LANDSCAPE}" reportLink="http://dev.unep-wcmc.org/csn/default.html#state=site&amp;SiteRecID={sitesBox.site.siteRecID}"/>
+			</s:VGroup>
+		</s:BorderContainer>
+	</components:MyBorderContainer>
+	
+	<!--Reports Matching species table-->
+	<!---A custom border container that shows a list of matching species in the reports page when the user selects values in the filterBox.-->
+	<components:MyBorderContainer id="reportSpeciesList" styleName="InformationPanel" horizontalCenter="0" bottom="10" visible="{(reportsBox.showSpecies.selected)&amp;&amp;(currentState=='reports')}" movedToFront="reportSpeciesList_movedToFrontHandler(event)"> 
+		<s:BorderContainer styleName="ContentPanel" right="5" bottom="5" top="5" left="5">
+			<s:VGroup paddingLeft="10" paddingBottom="8" paddingRight="10" paddingTop="10">
+				<components:BoxHeader dragComponent="{reportSpeciesList}" target="{this}" caption="{resourceManager.getString('myResources', 'TEXT93')}" boxClosed="reportsBox.showSpecies.selected=false;"/>
+				<!---Data grid that shows a list of matching species in the reports page when the user selects values in the filterBox. It is bound to the reportsBox.filteredSpecies ArrayCollection. @see wcmc.components.ReportsBox-->
+				<components:MyDataGrid id="reportSpeciesListTable" dataProvider="{reportsBox.filteredSpecies}">
+					<components:columns>
+						<mx:DataGridColumn headerText="{resourceManager.getString('myResources', 'TEXT208')}" dataField="Species" width="{wScientific}" showDataTips="true" itemRenderer="wcmc.renderers.SpeciesRenderer" sortCompareFunction="speciesCompare"/>
+						<mx:DataGridColumn headerText="{resourceManager.getString('myResources', 'TEXT205')}" dataField="{commonNameField}" width="{wCommon}" showDataTips="true" dataTipField="{commonNameField}"/>
+						<mx:DataGridColumn headerText="" width="{wLink}" itemRenderer="wcmc.renderers.SpeciesLinkRenderer"/>
+					</components:columns>
+				</components:MyDataGrid>
+				<components:ReportToolbar dataGrid="{reportSpeciesListTable}" reportTitle="{resourceManager.getString('myResources', 'TEXT93')}" outputFilters="true" filterCollection="{reportsBox.filterBox.filterCollection}" reportLink="http://dev.unep-wcmc.org/csn/default.html#state=reports"/>
+			</s:VGroup>
+		</s:BorderContainer>
+	</components:MyBorderContainer>
+	
+	<!--Reports - Matching sites table-->
+	<!---The reportSiteList box is the box showing matching sites in the Reports page when the user selects items from the filter. The contents of this box are bound to the matching siteRecIDs in the filterBox.-->
+	<components:MyBorderContainer id="reportSiteList" styleName="InformationPanel" horizontalCenter="0" bottom="10" visible="{(reportsBox.showSites.selected)&amp;&amp;(currentState=='reports')}" movedToFront="reportSpeciesList_movedToFrontHandler(event)"> 
+		<s:BorderContainer styleName="ContentPanel" right="5" bottom="5" top="5" left="5">
+			<s:VGroup paddingLeft="10" paddingBottom="8" paddingRight="10" paddingTop="10">
+				<s:HGroup verticalAlign="middle" width="100%">
+					<s:Label text="{resourceManager.getString('myResources', 'TEXT185')}" styleName="boxLabel"/>
+					<!---The siteListRenderer is used to render the features in the site list layer. @see sitePointsLayer-->
+					<components:RendererChooser id="siteListRenderer" renderers="{siteListRenderers}" selectedIndex="0" width="180"/>
+					<mx:Spacer width="100%"/>
+					<components:DragBox dragComponent="{reportSiteList}" target="{this}"/>
+					<components:MyCloseButton click="reportSiteList.visible=false;reportsBox.showSites.selected=false;"/>
+				</s:HGroup>
+				<mx:Canvas>
+					<mx:SWFLoader source="{EmbeddedImages.loader}" horizontalCenter="0" verticalCenter="0"/>
+					<!---Custom data grid that is bound to the features in the sitePointsLayer. This data grid shows all of the matching sites according to the values currently selected in the filterBox.-->
+					<components:MyDataGrid id="reportSiteListTable" dataProvider="{sitePointsLayer.features}" featureLayer="{sitePointsLayer}" visible="{!sitePointsLayer.loading}" itemClick="datagrid_itemClickHandler(event)" itemRollOver="dataGrid_ItemRollOver(event)" itemRollOut="datagrid_itemRollOutHandler(event)">
+						<components:columns>
+							<mx:DataGridColumn headerText="{resourceManager.getString('myResources', 'TEXT28')}" itemRenderer="wcmc.renderers.CountryRenderer" sortCompareFunction="countrySortCompare" width="{wCountry}"/>
+							<mx:DataGridColumn headerText="{resourceManager.getString('myResources', 'TEXT186')}" dataField="Name" showDataTips="true" width="{wSitename}"/>
+							<mx:DataGridColumn headerText="{resourceManager.getString('myResources', 'TEXT196')}" itemRenderer="wcmc.renderers.TicRenderer3" width="{wIBA}" sortCompareFunction="booleanCompare3"/>
+							<mx:DataGridColumn headerText="{resourceManager.getString('myResources', 'TEXT198')}" dataField="Protected" width="{wProtected}"/>
+							<mx:DataGridColumn headerText="{resourceManager.getString('myResources', 'TEXT209')}" dataField="CSNSpc" width="70" textAlign="center" sortCompareFunction="csnSpCountCompare"/>
+							<mx:DataGridColumn headerText="{resourceManager.getString('myResources', 'TEXT210')}" dataField="IBASpc" width="70" textAlign="center" sortCompareFunction="ibaSpCountCompare"/>
+							<mx:DataGridColumn headerText="{resourceManager.getString('myResources', 'TEXT243')}" dataField="Total" width="83" textAlign="center"/>
+							<mx:DataGridColumn headerText="" width="20" itemRenderer="wcmc.renderers.SiteLinkRenderer"/>
+						</components:columns>
+					</components:MyDataGrid> 
+				</mx:Canvas>
+				<components:ReportToolbar dataGrid="{reportSiteListTable}" reportTitle="{resourceManager.getString('myResources', 'TEXT211')}" outputFilters="true" filterCollection="{reportsBox.filterBox.filterCollection}" reportLink="http://dev.unep-wcmc.org/csn/default.html#state=reports"/>
+			</s:VGroup>
+		</s:BorderContainer>
+	</components:MyBorderContainer>
+	
+	<!--Reports - Species list for a country table-->
+	<!---The reportSpeciesListForCountry box is the box showing species that occur in a country based on the currently selected country in the countryDropDown control.-->	
+	<components:MyBorderContainer id="reportSpeciesListForCountry" styleName="InformationPanel" horizontalCenter="0" bottom="10" visible="{(reportsBox.reportSpeciesListForCountry.selected)&amp;&amp;(currentState=='reports')}" movedToFront="reportSpeciesListForCountry_movedToFrontHandler(event)">
+		<s:BorderContainer styleName="ContentPanel" right="5" bottom="5" top="5" left="5">
+			<s:VGroup paddingLeft="10" paddingBottom="8" paddingRight="10" paddingTop="10">
+				<s:HGroup verticalAlign="middle" width="100%">
+					<s:Label text="{resourceManager.getString('myResources', 'TEXT66')}" styleName="boxLabel" creationComplete="countryQueryTask.execute(countryQuery)"/>
+					<!---The countryDropDown is a simple drop down control that shows a list of all AEWA countries from the countryQueryTask. These items are rendererd using the CountryFilterRenderer2 renderer.-->
+					<s:DropDownList id="countryDropDown" dataProvider="{getSortedCountries(countryQueryTask.executeLastResult.attributes)}" itemRenderer="wcmc.renderers.CountryFilterRenderer2" change="countryComboBox_changeHandler(event)" width="190" labelField="Name"/>
+					<mx:Spacer width="100%"/>
+					<components:DragBox dragComponent="{reportSpeciesListForCountry}" target="{this}"/>
+					<components:MyCloseButton click="reportSpeciesListForCountry.visible=false;reportsBox.reportSpeciesListForCountry.checkBox.selected=false"/>
+				</s:HGroup>
+				<!---Data grid that is bound to the features that are returned in the countrySpeciesQueryTask when the user selects a country in the countryDropDown control.-->
+				<mx:DataGrid id="reportSpeciesListForCountryTable" dataProvider="{sortCountrySpeciesList(reportsBox.speciesFilterBox.countrySpeciesQueryTask.executeLastResult.attributes)}">
+					<mx:columns>
+						<mx:DataGridColumn headerText="{resourceManager.getString('myResources', 'TEXT208')}" dataField="Species" width="{wScientific}" showDataTips="true" itemRenderer="wcmc.renderers.SpeciesRenderer" sortCompareFunction="speciesCompare"/>
+						<mx:DataGridColumn headerText="{resourceManager.getString('myResources', 'TEXT205')}" dataField="{commonNameField}" width="{wCommon}" showDataTips="true" dataTipField="{commonNameField}"/>
+						<mx:DataGridColumn headerText="{resourceManager.getString('myResources', 'TEXT212')}" dataField="Description" width="60"/>
+						<mx:DataGridColumn headerText="" width="20" itemRenderer="wcmc.renderers.SpeciesLinkRenderer"/>
+					</mx:columns>
+				</mx:DataGrid>
+				<components:ReportToolbar dataGrid="{reportSpeciesListForCountryTable}" reportTitle="{resourceManager.getString('myResources', 'TEXT207')} {countryDropDown.selectedItem.Name}" outputFilters="true" filterCollection="{reportsBox.speciesFilterBox.allSpeciesFilter}" reportLink="http://dev.unep-wcmc.org/csn/default.html#state=reports"/>
+			</s:VGroup>
+		</s:BorderContainer>
+	</components:MyBorderContainer>
+	
+	<!--Reports - population list for a country table-->
+	<!---The reportFlywayListForCountry box is the box showing species flyways that occur in a country based on the currently selected country in the countryDropDown2 control.-->	
+	<components:MyBorderContainer id="reportPopListForCountry" styleName="InformationPanel" horizontalCenter="0" bottom="10" visible="{(reportsBox.reportFlywayListForCountry.selected)&amp;&amp;(currentState=='reports')}" movedToFront="reportPopListForCountry_movedToFrontHandler(event)"> 
+		<s:BorderContainer styleName="ContentPanel" right="5" bottom="5" top="5" left="5">
+			<s:VGroup paddingLeft="10" paddingBottom="8" paddingRight="10" paddingTop="10">
+				<s:HGroup verticalAlign="middle" width="100%">
+					<s:Label text="{resourceManager.getString('myResources', 'TEXT213')}" styleName="boxLabel" creationComplete="countryQueryTask.execute(countryQuery)"/>
+					<!---The countryDropDown2 is a simple drop down control that shows a list of all AEWA countries from the countryQueryTask. These items are rendererd using the CountryFilterRenderer2 renderer.-->
+					<s:DropDownList id="countryDropDown2" dataProvider="{getSortedCountries(countryQueryTask.executeLastResult.attributes)}" itemRenderer="wcmc.renderers.CountryFilterRenderer2" change="countryDropDown2_changeHandler(event)" width="190" labelField="Name"/>
+					<mx:Spacer width="100%"/>
+					<components:DragBox dragComponent="{reportPopListForCountry}" target="{this}"/>
+					<components:MyCloseButton click="reportPopListForCountry.visible=false;reportsBox.reportFlywayListForCountry.checkBox.selected=false"/>
+				</s:HGroup>
+				<!---Data grid that is bound to the features that are returned in the countryPopulationQueryTask when the user selects a country in the countryDropDown2 control.-->
+				<mx:DataGrid id="reportFlywayListForCountryTable" dataProvider="{sortCountrySpeciesList(reportsBox.populationFilterBox.flywaysQueryTask.executeLastResult.attributes)}">
+					<mx:columns>
+						<mx:DataGridColumn headerText="{resourceManager.getString('myResources', 'TEXT208')}" dataField="Species" width="{wScientific}" showDataTips="true" itemRenderer="wcmc.renderers.SpeciesRenderer" sortCompareFunction="speciesCompare"/>
+						<mx:DataGridColumn headerText="{resourceManager.getString('myResources', 'TEXT205')}" dataField="{commonNameField}" width="{wCommon}" showDataTips="true" dataTipField="{commonNameField}"/>
+						<mx:DataGridColumn headerText="{resourceManager.getString('myResources', 'TEXT158')}" dataField="Flyway" width="{wPopulation}" showDataTips="true" dataTipField="Flyway"/>
+						<mx:DataGridColumn headerText="{resourceManager.getString('myResources', 'TEXT201')}" dataField="Estimate" width="{wEstimate}" showDataTips="true" dataTipField="Estimate"/>
+						<mx:DataGridColumn headerText="{resourceManager.getString('myResources', 'TEXT203')}" dataField="OnePercentCalc" textAlign="right" sortCompareFunction="onePercentCompare" width="{wOnePercent}"/>
+						<mx:DataGridColumn headerText="{resourceManager.getString('myResources', 'TEXT250')}" dataField="AEWAStatus" width="{wAEWAStatus}"/>
+						<mx:DataGridColumn headerText="" width="20" itemRenderer="wcmc.renderers.SpeciesLinkRenderer"/>
+					</mx:columns>
+				</mx:DataGrid>
+				<components:ReportToolbar dataGrid="{reportFlywayListForCountryTable}" reportTitle="{resourceManager.getString('myResources', 'TEXT214')} {countryDropDown2.selectedItem.Name}" reportOrientation="{Orientation.LANDSCAPE}" reportLink="http://dev.unep-wcmc.org/csn/default.html#state=reports"/>
+			</s:VGroup>
+		</s:BorderContainer>
+	</components:MyBorderContainer>
+	
+	<!--Reports - population list for a point table-->
+	<!---The speciesPointDataTable box is the box showing species that occur for a user-defined point. These features are contained in the arrayCollection speciesListForPoints which is created when the user activates the species list for point tool and clicks on the map.-->	
+	<components:MyBorderContainer id="reportPopListForPoint" styleName="InformationPanel" horizontalCenter="0" bottom="10" visible="{(reportsBox.reportFlywayListForPoint.selected)&amp;&amp;(currentState=='reports')}" show="speciesPointDataTable_showHandler(event)" hide="speciesPointDataTable_hideHandler(event)" movedToFront="reportPopListForPoint_movedToFrontHandler(event)"> 
+		<s:BorderContainer styleName="ContentPanel" right="5" bottom="5" top="5" left="5">
+			<s:VGroup paddingLeft="10" paddingBottom="8" paddingRight="10" paddingTop="10">
+				<components:BoxHeader id="popListHeader" dragComponent="{reportPopListForPoint}" target="{this}" caption="{resourceManager.getString('myResources', 'TEXT215')}" boxClosed="reportsBox.reportFlywayListForPoint.checkBox.selected=false;"/>
+				<!---Data grid that is bound to the speciesListForPoints ArrayCollection that is created when the user activates the species list for point tool and clicks on the map.-->
+				<mx:DataGrid id="speciesPointTable" dataProvider="{reportsBox.pointFilterBox.flywaysQueryTask.executeLastResult.attributes}">
+					<mx:columns>
+						<mx:DataGridColumn headerText="{resourceManager.getString('myResources', 'TEXT208')}" dataField="Species" width="{wScientific}" showDataTips="true" itemRenderer="wcmc.renderers.SpeciesRenderer" sortCompareFunction="speciesCompare"/>
+						<mx:DataGridColumn headerText="{resourceManager.getString('myResources', 'TEXT205')}" dataField="{commonNameField}" width="{wCommon}" showDataTips="true" dataTipField="{commonNameField}"/>
+						<mx:DataGridColumn headerText="{resourceManager.getString('myResources', 'TEXT158')}" dataField="Flyway" width="{wPopulation}" showDataTips="true" dataTipField="Flyway"/>
+						<mx:DataGridColumn headerText="{resourceManager.getString('myResources', 'TEXT201')}" dataField="Estimate" width="{wEstimate}" showDataTips="true" dataTipField="Estimate"/>
+						<mx:DataGridColumn headerText="{resourceManager.getString('myResources', 'TEXT203')}" dataField="OnePercentCalc" textAlign="right" sortCompareFunction="onePercentCompare" width="{wOnePercent}"/>
+						<mx:DataGridColumn headerText="{resourceManager.getString('myResources', 'TEXT250')}" dataField="AEWAStatus" width="{wAEWAStatus}"/>
+						<mx:DataGridColumn headerText="" width="20" itemRenderer="wcmc.renderers.SpeciesLinkRenderer"/>
+					</mx:columns>
+				</mx:DataGrid> 
+				<components:ReportToolbar dataGrid="{speciesPointTable}" reportTitle="{resourceManager.getString('myResources', 'TEXT216')}{clickPointLat.toString()}{resourceManager.getString('myResources', 'TEXT217')}{clickPointLong.toString()})" outputDate="true" reportLink="http://dev.unep-wcmc.org/csn/default.html#state=reports"/>
+			</s:VGroup>
+		</s:BorderContainer>
+	</components:MyBorderContainer>
+
+	<!-- Script~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+	
+	<fx:Script>
+		<![CDATA[
+			import com.esri.ags.Graphic;
+			import com.esri.ags.TimeExtent;
+			import com.esri.ags.events.DrawEvent;
+			import com.esri.ags.events.ExtentEvent;
+			import com.esri.ags.events.IdentifyEvent;
+			import com.esri.ags.events.LayerEvent;
+			import com.esri.ags.events.MapMouseEvent;
+			import com.esri.ags.geometry.Geometry;
+			import com.esri.ags.geometry.MapPoint;
+			import com.esri.ags.layers.ArcGISDynamicMapServiceLayer;
+			import com.esri.ags.layers.FeatureLayer;
+			import com.esri.ags.layers.Layer;
+			import com.esri.ags.layers.supportClasses.TimeInfo;
+			import com.esri.ags.tasks.IdentifyTask;
+			import com.esri.ags.tasks.supportClasses.IdentifyParameters;
+			import com.esri.ags.tasks.supportClasses.IdentifyResult;
+			import com.esri.ags.tasks.supportClasses.Query;
+			import com.esri.ags.utils.GraphicUtil;
+			import com.esri.ags.utils.WebMercatorUtil;
+			
+			import mx.collections.ArrayList;
+			import mx.controls.Alert;
+			import mx.controls.Image;
+			import mx.core.IFlexDisplayObject;
+			import mx.effects.Sequence;
+			import mx.events.BrowserChangeEvent;
+			import mx.events.FlexEvent;
+			import mx.events.ItemClickEvent;
+			import mx.events.ListEvent;
+			import mx.events.StateChangeEvent;
+			import mx.managers.BrowserManager;
+			import mx.managers.CursorManager;
+			import mx.managers.CursorManagerPriority;
+			import mx.managers.IBrowserManager;
+			import mx.managers.PopUpManager;
+			
+			import org.alivepdf.layout.Orientation;
+			
+			import spark.events.IndexChangeEvent;
+			import spark.filters.GlowFilter;
+			
+			import wcmc.classes.AGSResult;
+			import wcmc.classes.BasemapChangedEvent;
+			import wcmc.classes.Countries;
+			import wcmc.classes.CreateIWCChartEvent;
+			import wcmc.classes.DAO;
+			import wcmc.classes.EmbeddedImages;
+			import wcmc.classes.FilterResultCompleteEvent;
+			import wcmc.classes.LanguageChangedEvent;
+			import wcmc.classes.SetSiteEvent;
+			import wcmc.classes.SetSpeciesEvent;
+			import wcmc.classes.Species;
+			import wcmc.infoWindows.IWCChartInfoWindow;
+			import wcmc.infoWindows.SiteInfoWindowWithLink;
+			public const LANGUAGE_ENGLISH:String="English";
+			public const LANGUAGE_FRENCH:String="French";
+			public const LANGUAGE_RUSSIAN:String="Russian";
+			public const LANGUAGE_ARABIC:String="Arabic";
+			public const SHAREDOBJECT_NAME:String="mydata";
+			[Bindable]
+			/**
+			* The name of the field to use when displaying any species common names. This property is set when the application loads based on the currently selected language. Any UI controls that have data bound to this property will be refreshed if it changes.//
+			*/
+			public var commonNameField:String;
+			[Bindable]
+			/**
+			 * A reference to a global instance of the data access object. This object is used to retrieve all non-spatial data in the application back to the UI and it has a large number of methods to retrieve specific data. 
+			 */
+			public var dao:DAO=new DAO();
+			[Bindable]
+			/**
+			 * Direction of text in text/label controls. This is set when the language is set - for Arabic the direction is rtl otherwise it is ltr. Some labels/text controls have their direction property bound to this variable. 
+			 */
+			public var direction:String;
+			[Bindable]
+			/**
+			 * The localisation for the Microsoft Bing map. This is set when the language is set. Currently if the language is set to French and the Bing streets or imagery with labels is shown then the language of the labels is set to French. That is very cool.
+			 */ 
+			protected var culture:String;
+			[Bindable]
+			/**
+			 * The latitude where the user clicked in the 'Species List for a point' tool. This is shown in the results box.  
+			 */
+			protected var clickPointLat:Number;
+			[Bindable]
+			/**
+			 * The longitude where the user clicked in the 'Species List for a point' tool. This is shown in the results box.  
+			 */
+			protected var clickPointLong:Number;
+			[Bindable]
+			/**
+			 * Contains the user-defined point when the user clicks on the map when the 'Species list for a point' tool is active.  
+			 */
+			protected var clickPoint:MapPoint;
+			/**
+			 * Cookie that is stored on the clients browser that persists a number of variables in the application including the language, filters and current map.  
+			 */
+			protected var mySO:SharedObject;
+			/**
+			 * Used the highlight a Graphic when the user moves the mouse over a data item in a bound data grid, e.g. a critical site.  
+			 */
+			protected var currentGraphic:Graphic;
+			/**
+			 * Used to control the state of the navigation tools in the map.  
+			 */
+			protected var mapMode:String="normal";
+			private var _language:String;
+			private const wCountry:int=105; //width of country column
+			private const wSitename:int=160; 
+			private const wPopulation:int=90; 
+			private const wSeason:int=69; 
+			private const wStart:int=34; 
+			private const wEnd:int=34; 
+			private const wMin:int=44; 
+			private const wMax:int=44; 
+			private const wMean:int=44; 
+			private const wUnits:int=60; 
+			private const wPercentPop:int=38; 
+			private const wCSN1:int=37; 
+			private const wCSN2:int=37; 
+			private const wIBA:int=37; 
+			private const wIBACriteria:int=64; 
+			private const wProtected:int=60; 
+			private const wLink:int=19; 
+			private const wScientific:int=130; 
+			private const wCommon:int=130; 
+			private const wEstimate:int=90; 
+			private const wTrend:int=90; 
+			private const wOnePercent:int=67; 
+			private const wAEWAStatus:int=70; 
+			
+			
+			////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+			// INITIALISATION AND STARTUP CODE
+			////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+			
+			/**
+			 * Called on application initialisation. Loads the shared object to initialise the map, language and page title. It then adds event listeners for setting species, setting sites and creating IWC charts. 
+			 */			
+			protected function initialise(event:FlexEvent):void
+			{
+				mySO = SharedObject.getLocal(SHAREDOBJECT_NAME); //By default on a Mac: /Users/andrewcottam/Library/Preferences/Macromedia/Flash Player/#SharedObjects/T4S7ZKE6/localhost/myData.sol
+				setBaseMap(); //set the Basemap
+				setLanguage(); //set the language of the application
+				var browserManager:IBrowserManager = BrowserManager.getInstance(); //get the instance of the browser manager 
+				browserManager.addEventListener(BrowserChangeEvent.BROWSER_URL_CHANGE, parseURL);  //used to manage history and the browser navigation
+				browserManager.init("state=home", resourceManager.getString('myResources', 'TEXT79')); //set the title of the application				
+				addEventListener(SetSpeciesEvent.SETSPECIES,setSpecies); //setSpecies is called from either a direct url, e.g. csn.html#state=species&SpcRecID=3005 or via selecting a species in the SpeciesSearch box
+				addEventListener(SetSiteEvent.SETSITE,setSite); //setSite is called from either a direct url, e.g. csn.html#state=site&SiteRecID=3005 or via selecting a site in the SiteSearch box
+				addEventListener(CreateIWCChartEvent.CREATEIWCCHART,createIWCChartForSiteID); //create an event listener for when the user moves their mouse over the symbol for a chart in the species for a site table - this pops up the chart
+			}
+			/**
+			 * Parses the url and gets the parameters as a Dictionary object and then sets the application state and loads species/site data if it is a direct call 
+			 */			
+			protected function parseURL(event:BrowserChangeEvent):void
+			{
+				var params:Dictionary=getUrlParameters(); //get the url parameters
+				parseParams(params); //parse them 
+			}
+			/**
+			 *  Returns all of the parameters in the current url
+			 */			
+			protected function getUrlParameters():Dictionary
+			{
+			   var urlParams:Dictionary = new Dictionary(); 
+			   var paramStr:String=BrowserManager.getInstance().fragment;
+			   if (paramStr != null)
+			    {
+			        var params:Array = paramStr.split("&");
+			        for (var i:int = 0; i < params.length; i++)
+			       {
+			            var kv:Array = params[i].split("=");
+			            urlParams[kv[0]] = kv[1];
+			        }
+			    } 
+			    return urlParams;
+			}			
+			/**
+			 * Parses the current url parameters and sets the state of the application and gets the relevant data if it is a species or site state.
+			 */			
+			protected function parseParams(params:Dictionary):void
+			{
+				var state:String=params.state;
+				currentState=state;	//set the current state		
+				if (params.SpcRecID)
+				{
+					getSpeciesInfo(params.SpcRecID); //retrieve the information for that species from the server
+					return;
+				}
+				if (params.SiteRecID)
+				{
+					getSiteInfo(params.SiteRecID); //retrieve the information for that site from the server
+					return;
+				}
+			}
+			/**
+			 * Called if the url contains SpcRecID= as a parameter, i.e. the species page is being called directly. This gets the species data and then populates the species page  
+			 */
+			protected function getSpeciesInfo(SpcRecID:Number):void
+			{
+				dao.addEventListener(AGSResult.SPECIES,speciesInfoRetrieved); //add the listener
+				dao.getSpecies(commonNameField,new ArrayCollection([SpcRecID])); //get the species data for the SpcRecID 
+			}
+			/**
+			 * Asynchronous return call with the species information.
+			 */
+			protected function speciesInfoRetrieved(event:AGSResult):void
+			{
+				dao.removeEventListener(AGSResult.SPECIES,speciesInfoRetrieved); //remove the listener
+				if (event.results) setSpecies(new SetSpeciesEvent(SetSpeciesEvent.SETSPECIES,event.results[0] as Species)); //set the species data - this calls setSpecies function
+			}
+			/**
+			 *  Called if the url contains SiteRecID= as a parameter, i.e. the sites page is being called directly. This gets the sites data and then populates the sites page
+			 */			
+			protected function getSiteInfo(SiteRecID:Number):void
+			{
+				dao.addEventListener(AGSResult.SITE,siteInfoRetrieved); //add the listener
+				dao.getSite(SiteRecID.toString()); //get the site data for the SiteRecID 
+			}
+			/**
+			 *  Asynchronous return call with the site information.
+			 */			
+			protected function siteInfoRetrieved(event:AGSResult):void
+			{
+				dao.removeEventListener(AGSResult.SITE,siteInfoRetrieved);
+				if (event.results) setSite(new SetSiteEvent(SetSpeciesEvent.SETSPECIES,event.results[0])); //set the site data - this calls setSite function
+			}
+			/**
+			 * When the user changes the state of the application, then this is reflected in the url.
+			 */ 			
+			protected function application1_currentStateChangeHandler(event:StateChangeEvent):void
+			{
+				map.infoWindow.hide(); //hide the map info window when switching states
+				removePopups(); //removes the filter boxes and other popups that were created by the popup manager
+				if (event.newState=="species" || event.newState=="site") return; //the title for these states is set in the setSpecies and setSites functions
+				var iBrowserManager:IBrowserManager=BrowserManager.getInstance() //get the browser manager instance
+				iBrowserManager.setFragment("state=" + event.newState); //set the parameter in the url to reflect the state
+				switch (event.newState) //set the title according to the state
+				{
+					case "speciesSearch":
+						iBrowserManager.setTitle(resourceManager.getString('myResources', 'TEXT79') + " - " + resourceManager.getString('myResources', 'TEXT218'));
+						break
+					case "siteSearch":
+						iBrowserManager.setTitle(resourceManager.getString('myResources', 'TEXT79') + " - " + resourceManager.getString('myResources', 'TEXT219'));
+						break
+					case "reports":
+						iBrowserManager.setTitle(resourceManager.getString('myResources', 'TEXT79') + " - " + resourceManager.getString('myResources', 'TEXT220'));
+						break
+					case "info":
+						iBrowserManager.setTitle(resourceManager.getString('myResources', 'TEXT79') + " - " + resourceManager.getString('myResources', 'TEXT221'));
+						break
+					default:
+						iBrowserManager.setTitle(resourceManager.getString('myResources', 'TEXT79'));
+				}
+			}
+			/**
+			 * Sets the language of the application based on the contents of the mySO shared object. If it is not set, then the default is English. 
+			 */			
+			protected function setLanguage():void
+			{
+				(mySO.data.language) ? language=mySO.data.language : language=LANGUAGE_ENGLISH;
+			}
+			/**
+			 *  Sets the base map of the application based on the contents of the mySO shared object. If it is not set, then the default is the ESRI Streets map.
+			 */			
+			protected function setBaseMap():void
+			{
+				(mySO.data.mapId) ? basemapGallery.mapId=mySO.data.mapId : basemapGallery.mapId=basemapGallery.DEFAULTBASEMAP;
+			}
+			/**
+			 * The language that is used in the user interface. The language that is set for the UI can be changed on the fly as all of the text strings used in the application are compiled into the swf file. Setting the language also sets the commonNameField.
+			 */ 			
+			[Bindable]public function get language():String
+			{
+				return _language;
+			}
+			public function set language(value:String):void
+			{
+				mySO.data.language=value;
+				mySO.flush();
+				switch (value)
+				{
+					case (LANGUAGE_ENGLISH):
+						resourceManager.localeChain=['en_US'];
+						commonNameField="NameEN";
+						culture="en-US"; //changes the language for Microsoft Bing maps
+						break;
+					case (LANGUAGE_FRENCH):
+						resourceManager.localeChain=['fr_FR'];
+						commonNameField="NameFR";
+						culture="fr-FR"; //changes the language for Microsoft Bing maps
+						break;
+					case (LANGUAGE_RUSSIAN):
+						resourceManager.localeChain=['ru_RU'];
+						commonNameField="NameRU";
+						culture="en-US"; //changes the language for Microsoft Bing maps
+						break;
+					case (LANGUAGE_ARABIC):
+						resourceManager.localeChain=['ar_AE'];
+						commonNameField="NameAR";
+						culture="en-US"; //changes the language for Microsoft Bing maps
+						break;
+				}
+				if (value==LANGUAGE_ARABIC)
+				{
+					layoutDirection='rtl'; //this is bound to the application direction property which is inherited by all controls so setting this to rtl mirrors all components for Arabic, including the map - so this must be overriden in the map object.
+					direction="rtl"; //sets the text in some text/label controls
+					infoPanel.left=20; //because the infoPanel would move to the opposite side of the screen when it is reversed, we must set the left property instead of the right property to keep it on the right hand side of the page
+					infoPanel.right=NaN; //must be reset otherwise with both left and right set the infoPanel is nearly the width of the window
+				}
+				else
+				{
+					layoutDirection='ltr';
+					direction="ltr";
+					infoPanel.left=NaN;
+					infoPanel.right=20;
+				}
+				_language = value;
+				dispatchEvent(new LanguageChangedEvent(LanguageChangedEvent.LANGUAGECHANGED,value)); //fire the language change event
+			}
+			/**
+			 * Fired when the user changes the basemap type in the basemap gallery. The new base map is stored in the shared object.
+			 */ 			
+			protected function basemapChanged(event:BasemapChangedEvent):void
+			{
+				mySO.data.mapId=event.mapId;
+				mySO.flush();
+			}
+			////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+			
+			/**
+			 * Fired when the user clicks on one of the navigation controls.
+			 */			
+			protected function navigationToolClick(event:ItemClickEvent):void
+			{
+				switch (event.item.toolTip)
+				{
+					case resourceManager.getString('myResources', 'TEXT178'):
+					{
+						(mapMode!=NavigationTool.ZOOM_IN) ? setNavBar(NavigationTool.ZOOM_IN,EmbeddedImages.zoomIn) : resetNavBar();
+						break;
+					}
+					case resourceManager.getString('myResources', 'TEXT179'):
+					{
+						(mapMode!=NavigationTool.ZOOM_OUT) ? setNavBar(NavigationTool.ZOOM_OUT,EmbeddedImages.zoomOut) : resetNavBar();
+						break;
+					}
+					case resourceManager.getString('myResources', 'TEXT180'):
+					{
+						(mapMode!=NavigationTool.PAN) ? setNavBar(NavigationTool.PAN,EmbeddedImages.pan) : resetNavBar();
+						break;
+					}
+				}
+			}
+			/**
+			 * Activates the navigation control. 
+			 */			
+			protected function setNavBar(mode:String,cursor:Class):void
+			{
+				resetNavBar();
+				navTool.activate(mode);
+				mapMode=mode;
+				CursorManager.setCursor(cursor,CursorManagerPriority.HIGH,0,-10);
+			}
+			/**
+			 * Resets the navigation bar controls.
+			 */			
+			protected function resetNavBar():void
+			{
+				navTool.deactivate();
+				mapMode="normal";
+				CursorManager.removeAllCursors();
+			}
+			/**
+			 * Fired whenever a species is selected in the application. This causes the current state to be set to 'species'; sets the browser title and url; sets the species object in the species page and refreshes the distribution map if it is visible.
+			 */			
+			protected function setSpecies(event:SetSpeciesEvent):void
+			{
+				if (event.species)
+				{
+					currentState="species";
+					BrowserManager.getInstance().setFragment("state=species&SpcRecID=" + event.species.spcRecID);
+					BrowserManager.getInstance().setTitle(resourceManager.getString('myResources', 'TEXT79') + " - " + event.species.commonName);
+					speciesBox.species=event.species;	
+					if (distributionMap.visible) distributionMap.refresh();
+				}
+			}
+			/**
+			 * Fired whenever a site is selected in the application. This causes the current state to be set to 'site'; sets the browser title and url; sets the site object in the sites page. 
+			 */			
+			protected function setSite(event:SetSiteEvent):void
+			{
+				if (event.site)
+				{
+					currentState="site";
+					BrowserManager.getInstance().setFragment("state=site&SiteRecID=" + event.site.siteRecID);
+					BrowserManager.getInstance().setTitle(resourceManager.getString('myResources', 'TEXT79') + " - " + event.site.name);
+					sitesBox.site=event.site;
+				}
+			}
+
+			////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+			//// DATA GRID SORTING AND LABELLING FUNCTIONS
+			////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+			
+			private function countrySortCompare(obj1:Object, obj2:Object):int
+			{
+				var country1:String=Countries.getCountryName(obj1.Country);
+				var country2:String=Countries.getCountryName(obj2.Country);
+				if (country1==country2) return 0;
+				if (country1<country2) return -1;
+				return 1;
+			}
+			private function percentSortCompare(obj1:Object, obj2:Object):int
+			{
+				if (obj1.PercentFlyway==obj2.PercentFlyway) return 0;
+				if (obj1.PercentFlyway<obj2.PercentFlyway) return -1;
+				return 1;
+			}
+			private function csnSpCountCompare(obj1:Object, obj2:Object):int
+			{
+				if (obj1.CSNSpc==obj2.CSNSpc) return 0;
+				if (obj1.CSNSpc<obj2.CSNSpc) return -1;
+				return 1;
+			}
+			private function ibaSpCountCompare(obj1:Object, obj2:Object):int
+			{
+				if (obj1.IBASpc==obj2.IBASpc) return 0;
+				if (obj1.IBASpc<obj2.IBASpc) return -1;
+				return 1;
+			}
+			private function booleanCompare1(obj1:Object, obj2:Object):int
+			{
+				if (obj1.CSN1==obj2.CSN1) return 0;
+				if (obj1.CSN1<obj2.CSN1) return -1;
+				return 1;
+			}
+			private function booleanCompare2(obj1:Object, obj2:Object):int
+			{
+				if (obj1.CSN2==obj2.CSN2) return 0;
+				if (obj1.CSN2<obj2.CSN2) return -1;
+				return 1;
+			}
+			private function booleanCompare3(obj1:Object, obj2:Object):int
+			{
+				if (obj1.IsIBA==obj2.IsIBA) return 0;
+				if (obj1.IsIBA<obj2.IsIBA) return -1;
+				return 1;
+			}
+			private function booleanCompare4(obj1:Object, obj2:Object):int
+			{
+				if (obj1.CountOfIWCCounts==obj2.CountOfIWCCounts) return 0;
+				if (obj1.CountOfIWCCounts<obj2.CountOfIWCCounts) return -1;
+				return 1;
+			}
+			private function speciesCompare(obj1:Object, obj2:Object):int
+			{
+				if (obj1.Species==obj2.Species) return 0;
+				if (obj1.Species<obj2.Species) return -1;
+				return 1;
+			}
+			private function onePercentCompare(obj1:Object, obj2:Object):int
+			{
+				if (Number(obj1.OnePercentCalc)==Number(obj2.OnePercentCalc)) return 0;
+				if (Number(obj1.OnePercentCalc)<Number(obj2.OnePercentCalc)) return -1;
+				return 1;
+			}
+			private function getPercentFlyway(item:Object,column:DataGridColumn):String
+			{
+				var percent:Number=item.PercentFlyway;
+				if (percent>1)
+				{
+					return percent.toFixed(0) + "%";
+				}
+				else
+				{
+					if (item.PopMean==0)
+					{
+						return resourceManager.getString('myResources', 'TEXT222');
+					}
+					else
+					{
+						return "<1%";						
+					}
+				}
+			}
+			////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+			
+			////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+			//// DRAW POLYGON AND GET IWC TIME SERIES CHARTS FUNCTIONS
+			////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+			/**
+			 * Fired when the drawToolbar has finished being created. This adds the event listeners for the user-defined polygon drawing.
+			 */			
+			protected function drawToolbar_creationCompleteHandler(event:FlexEvent):void //TODO: REMOVE FOR USER-DEFINED AREA
+			{
+//				drawTools.drawTool.addEventListener(DrawEvent.DRAW_END,drawEnd);
+//				addEventListener(StateChangeEvent.CURRENT_STATE_CHANGE,resetDrawTool);
+			}
+			/**
+			 * Fired when the user has finished drawing the user-defined polygon.  
+			 */			
+			protected function drawEnd(event:DrawEvent):void
+			{
+//				var query:Query=new Query();
+//				query.geometry=event.graphic.geometry;
+//				iwcFeatureLayer.selectionColor=0xff0000;
+//				iwcFeatureLayer.selectFeatures(query,"new",new AsyncResponder(onResult,null));
+			}
+			/**
+			 * Fired when the features within the user-defined polygon are returned.
+			 */ 			
+			protected function onResult(features:Array, token:Object = null):void
+			{
+				if (features.length==0) return;
+				var inClause:String=getInClause(features); //get the inClause for the query, e.g. 12,45,68,123
+				var extent:Extent=GraphicUtil.getGraphicsExtent(features); //gets the extent of all of the selected graphics
+				var mapPoint:MapPoint;
+				(features.length==1) ? mapPoint=((features[0] as Graphic).geometry as MapPoint) : mapPoint=new MapPoint(extent.xmin,extent.ymax); //get the point where the time series chart will be displayed   
+				createIWCTrendChart(inClause,speciesBox.species.spcRecID,mapPoint,"Time-series chart for an area"); //create the time series chart
+			}
+			/**
+			 *  Creates the time-series chart for a user-defined area.
+			 */			
+			protected function createIWCTrendChart(inClause:String,spcRecID:Number,mapPoint:MapPoint,title:String, backgroundAlpha:Number=0.9):void
+			{
+				map.infoWindow.content=new IWCChartInfoWindow(); //create a new instance of the IWCChartInfoWindow
+				map.infoWindow.content.setStyle("backgroundAlpha",backgroundAlpha); //set the background transparency
+				var data:Object={SiteCode:inClause,CountryCode:"xx",Name:title,SpcRecID:spcRecID}; //initialise the data object that will be bound to the time-series chart
+				map.infoWindow.data=data; //set the data property of the infoWindow
+				map.infoWindow.show(mapPoint); //show the infoWindow - the infoWindow onShow event will then retrieve the actual data for the selected sites
+				map.staticLayer.setElementIndex(map.infoWindow,map.staticLayer.numChildren-1); //move the time-series chart to the top of the display list in the maps static layer
+			}
+			/**
+			 * Gets the sites inClause from the array of selected features
+			 */ 			
+			protected function getInClause(features:Array):String
+			{
+				if (features.length==1) return (features[0] as Graphic).attributes.SiteCode; //if there is only one feature selected then return the site code
+				var inClause:String="'";
+				for each (var graphic:Graphic in features) //iterate through the selected features and build the inClause
+				{
+					inClause+=graphic.attributes.SiteCode + "','";				
+				}
+				return inClause.substring(0,inClause.length-2);
+			}
+			/**
+			 *  Resets the user-defined polygon drawing tools
+			 */			
+			protected function resetDrawTool(event:Event):void
+			{
+//				if (!drawLayer) return;
+//				drawLayer.clear();
+//				iwcFeatureLayer.clearSelection();
+//				map.infoWindow.hide();
+			}
+
+			////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+			////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+			//// SYNCRONISATION FUNCTIONS BETWEEN A DATATABLE AND A FEATURE LAYER SO WHEN YOU MOVE OVER AN ITEM IN A DATA GRID IT SHOWS ON THE MAP - CLICKING MOVES THE MAP
+			////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+			
+			/**
+			 * When the user moves the cursor over the data grid, the feature that contains that data is highlighted on the map.
+			 */ 			
+			protected function dataGrid_ItemRollOver(event:ListEvent):void
+			{
+				currentGraphic=findGraphic(event);
+				if (!currentGraphic) return;
+				currentGraphic.parent.setChildIndex(currentGraphic,currentGraphic.parent.numChildren-1);//move the graphic to the front
+				var glow:GlowFilter = new GlowFilter();
+				glow.alpha=0.6;
+				glow.blurX=16;
+				glow.blurY=16;
+				glow.color=0xff0000;
+				glow.inner=false;
+				glow.knockout=false;
+				glow.quality=1;
+				glow.strength=8;
+				currentGraphic.filters=[glow];
+			}
+			/**
+			 * Resets the highlighted feature back to its original symbol.
+			 */			
+			protected function datagrid_itemRollOutHandler(event:ListEvent):void
+			{
+				resetSymbol();
+			}
+			/**
+			 * If a Graphic is currently selected then removes its selection filters, i.e. the red glow around the Graphic.
+			 */			
+			protected function resetSymbol():void
+			{
+				if (!currentGraphic) return;
+				currentGraphic.filters=null;
+			}
+			/**
+			 * A public utility method for searching for the Graphic on the map that contains the data that is used to populate an item in a data grid. 
+			 */ 			
+			public function findGraphic(event:ListEvent):Graphic
+			{
+				var dataGrid:MyDataGrid=event.target as MyDataGrid;
+				if (!dataGrid.featureLayer) return null;
+				var attributesObject:Object=event.itemRenderer.data;
+				for each (var graphic:Graphic in dataGrid.featureLayer.graphicProvider)
+				{
+					if (attributesObject===graphic.attributes) return graphic;
+				}			
+				return null;
+			}
+			/**
+			 * Pans the map to the item that was clicked in the Data Grid and resets the hightlighted symbol.
+			 */ 			
+			protected function datagrid_itemClickHandler(event:ListEvent):void
+			{
+				panToCurrentGraphic();
+				resetSymbol();
+			}
+			/**
+			 * Moves the map to the currently selected Graphic on the map. 
+			 */ 			
+			protected function panToCurrentGraphic():void
+			{
+				map.addEventListener(ExtentEvent.EXTENT_CHANGE,extentChanged);
+				map.centerAt(currentGraphic.geometry as MapPoint);
+			}
+			/**
+			 * Fired after the maps extent has changed. This will show the infoWindow for a Graphic if it is currently selected - this is normally called when a user clicks on an item in a data grid, e.g. a critical site.
+			 */			
+			protected function extentChanged(event:ExtentEvent):void
+			{
+				map.removeEventListener(ExtentEvent.EXTENT_CHANGE,extentChanged); //remove the listener
+				if (!currentGraphic) return; //if no Graphic is currently selected then return
+				var iFactory:IFactory=currentGraphic.graphicsLayer.infoWindowRenderer; //get the factory for the current graphics info window renderer
+				if (iFactory) map.infoWindow.content=iFactory.newInstance(); //create a new instance of the renderer as the maps infoWindow
+				map.infoWindow.data=currentGraphic.attributes; //bind the maps infoWindow attributes to those of the current graphic
+				map.infoWindow.show(currentGraphic.geometry as MapPoint); //show the infoWindow
+				var timer:Timer=new Timer(5000,1); //set the timer to hide the popup infoWindow after 5 seconds
+				timer.addEventListener(TimerEvent.TIMER_COMPLETE,timerComplete); //add an event for the end of the timer
+				timer.start(); //start the timer
+			}
+			/**
+			 *  Fired when the timer for a popup ends.
+			 */			
+			protected function timerComplete(event:TimerEvent):void
+			{
+				event.target.removeEventListener(TimerEvent.TIMER_COMPLETE,timerComplete);
+				map.infoWindow.hide();
+			}
+			
+			////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+			//// FUNCTIONS TO CREATE AND POPULATE THE SITE SPECIES LIST
+			////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+			
+			/**
+			 *  Returns a list of species for the passed site.
+			 */			
+			protected function getSpeciesList(commonNameField:String,siteRecID:Number):ArrayCollection
+			{
+				dao.addEventListener(AGSResult.SITESPECIESLIST,speciesListReturned);
+				return dao.getSpeciesListForSite(commonNameField,siteRecID);
+			}
+			/**
+			 * Asynchronous return call when the species list for a site is returned.
+			 */			
+			protected function speciesListReturned(event:AGSResult):void
+			{
+				dao.removeEventListener(AGSResult.SITESPECIESLIST,speciesListReturned);
+				var speciesInClause:String=dao.createSpeciesInClause(event.results,"SpcRecID"); //get the spcRecIDs for the site
+			}
+			
+			////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+			//// BASEMAP GALLERY POSITIONING
+			////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+			
+			/**
+			 * Sets the default position of the Basemap gallery.
+			 */ 			
+			protected function basemapGallery_showHandler(event:FlexEvent):void
+			{
+				var yPos:Number=toolbox.basemapSwitch.contentToGlobal(new Point()).y;
+				basemapGallery.bottom=height-yPos;
+				var xPos:Number=toolbox.basemapSwitch.contentToGlobal(new Point(toolbox.basemapSwitch.width,0)).x;
+				basemapGallery.right=width-xPos;
+			}
+			
+			////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+			//// FLYWAY LIST FOR A POINT 
+			////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+			
+			/**
+			 * Sets the map cursor when the species list for a point tool is selected. 
+			 */ 			
+			protected function speciesPointDataTable_showHandler(event:FlexEvent):void
+			{
+				map.addEventListener(MouseEvent.MOUSE_OVER,mouseOverMap);
+				map.addEventListener(MouseEvent.MOUSE_OUT,mouseOutMap);
+			}
+			private function mouseOverMap(event:MouseEvent):void
+			{
+				map.cursorManager.setCursor(EmbeddedImages.queryPoint);
+			}
+			private function mouseOutMap(event:MouseEvent):void
+			{
+				map.cursorManager.removeAllCursors();	
+			}
+			/**
+			 * Resets the map cursor when the species list for a point tool is unselected. 
+			 */ 			
+			protected function speciesPointDataTable_hideHandler(event:FlexEvent):void
+			{
+				map.removeEventListener(MouseEvent.MOUSE_OVER,mouseOverMap);
+				map.removeEventListener(MouseEvent.MOUSE_OUT,mouseOutMap);
+				map.cursorManager.removeAllCursors();
+			}
+			/**
+			 * Fired when the user clicks on the map when the species list for a point tool is active.
+			 */ 			
+			protected function map_pointToolClickHandler(event:MapMouseEvent):void
+			{
+				clickPoint=event.mapPoint;
+				if (!clickPoint) return;
+				var latLng:Geometry=WebMercatorUtil.webMercatorToGeographic(clickPoint);
+				clickPointLat=(latLng as MapPoint).y;
+				clickPointLong=(latLng as MapPoint).x;
+				popListHeader.caption=resourceManager.getString('myResources', 'TEXT216') + clickPointLat.toString() + resourceManager.getString('myResources', 'TEXT217') + clickPointLong.toString()+ ")";
+				getFlywaysListForPoint();
+			}
+			/**
+			 * Returns a flyways list for a user-defined point on the map.
+			 */ 			
+			protected function getFlywaysListForPoint():void
+			{
+				if (!clickPoint) return;
+				dao.addEventListener(AGSResult.POINTFLYWAYSLIST,pointSpeciesListReturned); //add the listener
+				dao.getFlywaysForPoint(commonNameField,clickPoint); //call the function 
+				function pointSpeciesListReturned(event:AGSResult):void
+				{
+					dao.removeEventListener(AGSResult.POINTFLYWAYSLIST,speciesListReturned); //remove the listener
+					reportsBox.pointFilterBox.spcFlyRecIDs=event.results; //bind the results to an arraycollection
+				}
+			}
+
+			////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+			//// SITE IWC TREND CHART FOR A SPECIES FUNCTIONS
+			////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+			/**
+			 * Positions the draw toolbar. 
+			 */			
+			protected function drawToolbar_showHandler(event:FlexEvent):void
+			{
+//				var point:Point=speciesBox.iwcCustomAreaTool.contentToGlobal(new Point());
+//				drawToolbar.bottom=height-point.y+!5;
+//				drawToolbar.x=infoPanel.x-40;
+			} 
+
+			////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+			//// TIMESLIDER FUNCTIONS
+			////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+			/**
+			 * Fired when the IWC time slider tool is made active. Sets the maps current time extent to 1966 and creates the time intervals for the species based on the data.
+			 */ 			
+			protected function iwcNonCumulativeTimeLayer_loadHandler(event:LayerEvent):void
+			{
+				if (!timeSlider) return;
+				var iwcTimeExtent:TimeExtent=new TimeExtent(new Date(1966,1,1),iwcNonCumulativeTimeLayer.timeInfo.timeExtent.endTime); //create the time extent from 1966
+				timeSlider.createTimeStopsByTimeInterval(iwcTimeExtent,1,TimeInfo.UNIT_YEARS);
+			}
+			/**
+			 * Sets the startup position of the time slider toolbar.
+			 */ 			
+			protected function timesliderToolbar_showHandler(event:FlexEvent):void
+			{
+				var point:Point=speciesBox.timeSliderTool.contentToGlobal(new Point());
+				timesliderToolbar.bottom=height-point.y+15;
+				timesliderToolbar.x=infoPanel.x-40;
+			}
+			
+			////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+			//// WPE DATA TABLE POSITIONING
+			////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+			
+			/**
+			 * Sets the startup position of the WPE table.
+			 */ 			
+			protected function wpeDataTable_showHandler(event:FlexEvent):void
+			{
+				var point:Point=speciesBox.wpeTable.contentToGlobal(new Point());
+				wpeDataTable.bottom=height-point.y+15;
+				wpeDataTable.right=infoPanel.right;
+			}
+			
+			////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+			//// SITE IWC TREND CHART FOR A SPECIES FUNCTIONS
+			////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+			/**
+			 * Creates an IWC chart for either a single IWC site or a number of IWC sites and species using the parameters passed in the event object. 
+			 */			
+			protected function createIWCChartForSiteID(event:CreateIWCChartEvent):void
+			{
+				var chartImage:Image=event.target as Image;
+				var data:Object=event.data; //the data for the IWC chart, e.g. the sitecode and species
+				var point:Point=event.point; //where the chart will be shown
+				dao.addEventListener(AGSResult.IWCSITECODES,siteCodesReturned); //add a listener
+				dao.getIWCSiteCodesForSiteRecID(data.SiteRecID); //call the DAO function to get the data
+				function siteCodesReturned(event:AGSResult):void
+				{
+					dao.removeEventListener(AGSResult.IWCSITECODES,siteCodesReturned); //remove the listener
+					var inClause:String="'";
+					if (event.results.length==1) //if it is just one site
+					{
+						inClause=event.results[0].SiteCode;	
+					}
+					else
+					{
+						for each (var obj:Object in event.results) //iterate through all of the site codes and build the inClause
+						{
+							inClause+=obj.SiteCode + "','";				
+						}
+						inClause=inClause.substring(0,inClause.length-2);
+					}
+					createIWCTrendChart(inClause,data.SpcRecID,map.toMapFromStage(speciesListDataTable.x,speciesListDataTable.y),resourceManager.getString('myResources', 'TEXT238') + data[commonNameField],1); //create the trend chart
+				}				
+			}
+			/**
+			 * Returns a list of countries sorted by name. This is used in the species list for a country table.
+			 */			
+			protected function getSortedCountries(countries:Array):ArrayList
+			{
+				countries.sortOn("Name");
+				return new ArrayList(countries);
+			}
+
+			////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+			////  SPECIES LIST FOR A COUNTRY FUNCTIONS
+			////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+			
+			/**
+			 * Executes the countrySpeciesQueryTask to get a list of species for the currently selected country.
+			 */ 			
+			protected function countryComboBox_changeHandler(event:IndexChangeEvent):void
+			{
+				reportsBox.speciesFilterBox.countryID=countryDropDown.selectedItem.CountryID; //set the countryID - this runs the relevant queries
+			}
+			/**
+			 *  Sorts an array by species name.
+			 */			
+			protected function sortCountrySpeciesList(array:Array):Array
+			{
+				array.sortOn("Species");
+				if (reportsBox.filterBox.filterCollection.filtered) reportsBox.filterBox.filterCollection.getMatchingIDs();
+				return array;
+			}
+
+			////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+			////  POPULATION LIST FOR A COUNTRY FUNCTIONS
+			////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+			/**
+			 * User has selected a country. Get the matching SpcFlyRecIDs for this country then set this set of IDs on the filter and get the matching full species flyway data from the server.
+			 */ 			
+			protected function countryDropDown2_changeHandler(event:IndexChangeEvent):void
+			{
+				dao.addEventListener(AGSResult.COUNTRYFLYWAYSLIST,flywayIDsReturned); //add a listener
+				dao.getFlywaysForCountry(countryDropDown2.selectedItem.CountryID);
+				function flywayIDsReturned(event:AGSResult):void
+				{
+					dao.removeEventListener(AGSResult.COUNTRYFLYWAYSLIST,flywayIDsReturned); //remove the listener
+					reportsBox.populationFilterBox.spcFlyRecIDs=event.results;
+				}
+			}
+			/**
+			 *  Removes any filter dialogs and the other popup boxes (e.g. license agreement box).
+			 */			
+			protected function removePopups():void 
+			{
+				for (var i:int =0; i<systemManager.popUpChildren.numChildren;i++)
+				{
+					var popup:DisplayObject=systemManager.popUpChildren.getChildAt(i);
+					PopUpManager.removePopUp(popup as IFlexDisplayObject); 	
+				}
+			}
+			
+			////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+			////  FUNCTION TO SET THE VALUE OF THE GENERALISATION OFFSET WHEN THE MAP EXTENT CHANGES
+			////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+			
+			/**
+			 *  No longer used.
+			 */			
+			protected function map_extentChangeHandler(event:ExtentEvent):void //not currently used - use dynamic map services instead
+			{
+//				(map.level<10) ? maxAllowableOffset=(int((map.lods[map.level] as LOD).resolution)*4) : maxAllowableOffset=10; //only generalise fully if the map level is less than 12
+			}
+			/**
+			 * If the user switches from a base layer with a smaller number of LODS to a higher one, the LODS need to be explicitly reset otherwise they are not picked up by the map. 
+			 */			
+			protected function arcgistiledmapservicelayer1_loadHandler(event:LayerEvent):void
+			{
+				var level:Number=map.level
+				map.lods=((event.layer as ArcGISTiledMapServiceLayer).tileInfo.lods);
+				map.level=level;
+			}
+
+			////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+			////  FUNCTIONS TO REACT TO THE USER CLICKING ON THE MAP
+			////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+			
+			/**
+			 * Fired when the used clicks on the map. This function is used to retrieve the correct layer for the feature that was clicked on and to populate the corresponding infoWindow for that feature.
+			 */ 			
+			protected function map_mapClickHandler(event:MapMouseEvent):void
+			{
+				clickPoint=event.mapPoint;
+				if (!clickPoint) return;
+				var mapServices:Array=getVisibleMapServices();
+				var i:int;
+				for (i=mapServices.length-1;i>=0;i--) //iterate through the visible map services and build up an arraycollection of the map services that are visible
+				{
+					var mapServiceURL:String=mapServices[i];
+					var definitionExpression:String;
+					identifyParameters.layerIds=getVisibleLayers(mapServiceURL);
+					if (((mapServiceURL.indexOf("Species"))>0)||((mapServiceURL.indexOf("IWCTimeSlider"))>0)) 
+					{
+						identifyParameters.layerDefinitions=getDefinitionExpressions("SpcRecID=" + speciesBox.species.spcRecID.toString(),identifyParameters.layerIds); //if its a species map service then set a layer definition
+						(((mapServiceURL.indexOf("IWCTimeSlider"))>0)&&(speciesBox.timeSliderTool.selected)) ? identifyParameters.timeExtent=timeSlider.timeExtent : identifyParameters.timeExtent=null; //if its the time slider then set the time extent
+					}
+					else
+					{
+						identifyParameters.layerDefinitions=null;
+						identifyParameters.timeExtent=null;
+					}
+					var identifyTask:IdentifyTask=new IdentifyTask(mapServiceURL);
+					identifyTask.showBusyCursor=true;
+					identifyTask.addEventListener(IdentifyEvent.EXECUTE_COMPLETE,identifyCompleted);
+					identifyTask.execute(identifyParameters); //execute the identify task with the parameters that have been set
+				}
+			}
+			/**
+			 * Returns an array of the visible map services. 
+			 */			
+			protected function getVisibleMapServices():Array
+			{
+				var visibleServices:Array=new Array();
+				var visibleServiceURL:String;
+				for each (var layer:Layer in map.layers)
+				{
+					if (layer.visible)
+					{
+						switch (layer.className)
+						{
+							case "FeatureLayer":
+							case "MyFeatureLayer":
+								visibleServiceURL=getMapServiceURL((layer as FeatureLayer).url);
+								break;
+							case "ArcGISDynamicMapServiceLayer":
+							case "MyArcGISDynamicMapServiceLayer":
+								visibleServiceURL=(layer as ArcGISDynamicMapServiceLayer).url;
+								break;
+							default:
+								visibleServiceURL=null;
+								break;
+						}
+						if ((visibleServiceURL)&&(visibleServices.indexOf(visibleServiceURL)<0)) visibleServices.push(visibleServiceURL);
+					}
+				}
+				return visibleServices;
+			}
+			/**
+			 * Iterates through all of the layers in the map to see which subLayers for the passed mapServiceURL are currently visible and returns them as an array  
+			 */			
+			protected function getVisibleLayers(mapServiceURL:String):Array
+			{
+				var visibleLayers:Array=new Array();
+				for each (var layer:Layer in map.layers)
+				{
+					if ((layer.visible)&&(layer.hasOwnProperty("url"))) //ArcGISDynamicMapServiceLayer or FeatureLayer layers have a URL property
+					{
+						var url:String=getMapServiceURL((layer as Object).url);
+						if (url==mapServiceURL) //this layer is visible and being identified - so get the layerIds of the map service that are being shown
+						{
+							switch (layer.className)
+							{
+								case "FeatureLayer":
+								case "MyFeatureLayer":
+									var pos:Number=(layer as FeatureLayer).url.lastIndexOf("/");
+									if (pos>0) 
+									{
+										var layerID:Number=Number((layer as FeatureLayer).url.slice(pos+1));
+										if (visibleLayers.indexOf(layerID)==-1) visibleLayers.push(layerID);
+									}
+									break;
+								case "ArcGISDynamicMapServiceLayer":
+								case "MyArcGISDynamicMapServiceLayer":
+									if ((layer as ArcGISDynamicMapServiceLayer).visibleLayers)
+									{
+										for each (var visibleLayer:Number in (layer as ArcGISDynamicMapServiceLayer).visibleLayers)
+										{
+											if (visibleLayers.indexOf(visibleLayer)==-1) visibleLayers.push(visibleLayer);
+										}
+									}
+									break;
+								default:
+									break;
+							}
+						}
+					}
+				}
+				return visibleLayers;
+			}
+			/**
+			 * Returns the name of the map service from the REST endpoint, e.g. http://dev.unep-wcmc.org/ArcGIS/rest/services/CSN/Species/MapServer would return 'Species' 
+			 */			
+			protected function getMapServiceURL(restEndpoint:String):String
+			{
+				var returnValue:String;
+				var pos:Number=restEndpoint.indexOf("/MapServer");
+				(pos>0) ? returnValue=restEndpoint.slice(0,pos+1) + "MapServer" : returnValue=null;
+				return returnValue;
+			}
+			/**
+			 * Creates an array of definition expressions from the passed expression and layerIDs. This is used to set the parameters of the IdentifyTask that is used when the user clicks on the map.
+			 */			
+			protected function getDefinitionExpressions(definitionExpression:String,layerIds:Array):Array
+			{
+				layerIds.sort();
+				var count:Number=layerIds[layerIds.length-1];
+				var definitionExpressions:Array=new Array();
+				for (var i:Number=0;i<count+1;i++)
+				{
+					definitionExpressions.push(definitionExpression);
+				}
+				return definitionExpressions;
+			}
+			/**
+			 * Asynchronous return call when the identifyTask has completed. 
+			 */			
+			protected function identifyCompleted(event:IdentifyEvent):void
+			{
+				var identifyTask:IdentifyTask=event.target as IdentifyTask;
+				identifyTask.removeEventListener(IdentifyEvent.EXECUTE_COMPLETE,identifyCompleted); //remove listener
+				var results:Array=event.identifyResults; //get the results array
+				if (results && results.length > 0)
+				{
+					for each (var identifyResult:IdentifyResult in results); //show the results of the identify task by showing the infoWindow for each one on the map
+					{
+						showInfoWindow(identifyResult,identifyTask.url);
+					}
+				}
+			}
+			/**
+			 * Shows the infoWindow for the identify result. 
+			 */			
+			protected function showInfoWindow(identifyResult:IdentifyResult,identifyTaskURL:String):void
+			{
+				var layers:Array=getDynamicLayers(identifyTaskURL); //get the dynamic layers from the map that are displaying features from the MapService that is being identified
+				for each (var layer:ArcGISDynamicMapServiceLayer in layers) //iterate through these layers to see which one the identified feature is in
+				{
+					if (layer.visibleLayers.source.indexOf(identifyResult.layerId)>-1) //if the dynamic layer includes the feature identified
+					{
+						if (layer is MyArcGISDynamicMapServiceLayer)
+						{
+							if ((layer as MyArcGISDynamicMapServiceLayer).infoWindowRenderer) //get the infowindow renderer 
+							{
+								var ifactory:IFactory=(layer as MyArcGISDynamicMapServiceLayer).infoWindowRenderer; //get the factory
+								map.infoWindow.content=ifactory.newInstance(); //create a new instance of the info renderer and set the maps infoWindow to this new instance
+								map.infoWindow.data=identifyResult.feature.attributes; //bind the attributes
+								map.infoWindow.show(clickPoint); //show the infoWinwod
+							}
+						}
+					}
+				}
+			}
+			/**
+			 * Returns an array of the ArcGISDynamicMapServiceLayers that are currently visible in the map. This is used to get the infoWindow to show when the user clicks on the map. 
+			 */			
+			protected function getDynamicLayers(url:String):Array
+			{
+				var array:Array=new Array();
+				for each (var layer:Layer in map.layers)
+				{
+					if ((layer is ArcGISDynamicMapServiceLayer)&&(layer.visible))
+					{
+						var arcGISDynamicMapServiceLayer:ArcGISDynamicMapServiceLayer=layer as ArcGISDynamicMapServiceLayer;
+						if (arcGISDynamicMapServiceLayer.url==url) array.push(arcGISDynamicMapServiceLayer);
+					}
+				}
+				return array;
+			}
+			/**
+			 * Creates the transitions between the application states to make the application change states more smoothly. Currently the transitions are sequences of 250ms fading out and in. 
+			 */			
+			protected function setTransitionTargets(event:StateChangeEvent):void
+			{	
+				var showTarget:Object=getTarget(event.newState);			
+				var hideTarget:Object=getTarget(event.oldState);	
+				var sequence:Sequence=new Sequence();
+				sequence.duration=250;
+				var fade1:Fade=new Fade(showTarget);
+				fade1.alphaFrom=0;
+				fade1.alphaTo=1;
+				fade1.disableLayout=true;
+				var fade2:Fade=new Fade(hideTarget);
+				fade2.alphaFrom=1;
+				fade2.alphaTo=0;
+				fade2.disableLayout=true;
+				sequence.addChild(fade1);
+				sequence.addChild(fade2);
+				sequence.play();
+			}
+			/**
+			 * Gets the target for the next transition. 
+			 */			
+			protected function getTarget(state:String):Object
+			{
+				switch (state)
+				{
+					case "home":
+						return welcomeBox;
+						break;
+					case "speciesSearch":
+						return speciesSearchBox;
+						break;
+					case "siteSearch":
+						return siteSearchBox;
+						break;
+					case "species":
+						return speciesBox;
+						break;
+					case "site":
+						return sitesBox;
+						break;
+					case "reports":
+						return reportsBox;
+						break;
+					case "info":
+						return infoBox;
+						break;
+					default:
+						return null;
+						break;
+				}
+			}
+			/**
+			 * Fired if the AEWA layer fails to draw. Since this is always on by default this is a good check to see if the user is connected to the internet or if there are connection problems. 
+			 */			
+			protected function aewaLayer_loadErrorHandler(event:LayerEvent):void
+			{
+				Alert.show("Unable to connect to server","Critical Site Network Tool");
+			}
+			protected function reportSpeciesListForCountry_movedToFrontHandler(event:Event):void
+			{
+				reportsBox.currentState="speciesFilter";
+			}
+			protected function reportPopListForCountry_movedToFrontHandler(event:Event):void
+			{
+				reportsBox.currentState="flywaysFilter";
+			}
+			protected function reportSpeciesList_movedToFrontHandler(event:Event):void
+			{
+				reportsBox.currentState="fullFilter";
+			}
+			protected function reportPopListForPoint_movedToFrontHandler(event:Event):void
+			{
+				reportsBox.currentState="pointFilter";
+			}
+		]]>
+	</fx:Script>
+</s:Application>

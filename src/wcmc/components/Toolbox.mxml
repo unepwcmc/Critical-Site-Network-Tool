@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!---
+Layout component that is at the bottom of the infoPanel and holds various tools to change basemaps, show/hide legend, show/hide contextual layers and change the language of the application. 
+-->
+<s:BorderContainer xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		  xmlns:s="library://ns.adobe.com/flex/spark" 
+		  xmlns:mx="library://ns.adobe.com/flex/mx" width="100%" height="50" borderAlpha="0">
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+	</fx:Declarations>
+	<s:HGroup width="100%" height="100%">
+		<s:VGroup height="100%">
+			<s:CheckBox label="{resourceManager.getString('myResources', 'TEXT119')}" id="legendSwitch" selected="true" toolTip="{resourceManager.getString('myResources', 'TEXT120')}"/>
+			<s:CheckBox label="{resourceManager.getString('myResources', 'TEXT24')}" id="basemapSwitch" toolTip="{resourceManager.getString('myResources', 'TEXT125')}"/>
+			<!--<mx:LinkButton label="{resourceManager.getString('myResources', 'TEXT24')}" id="basemapSwitch" click="csn.basemapGallery.visible=true;" toolTip="{resourceManager.getString('myResources', 'TEXT125')}"/>-->
+		</s:VGroup>
+		<mx:Spacer width="40"/>
+		<s:VGroup height="100%" gap="0">
+			<s:CheckBox label="{resourceManager.getString('myResources', 'TEXT131')}" id="aewaBoundary" selected="true" toolTip="{resourceManager.getString('myResources', 'TEXT121')}"/>
+			<s:CheckBox label="{resourceManager.getString('myResources', 'TEXT244')}" id="demoSites" selected="false" toolTip="{resourceManager.getString('myResources', 'TEXT244')}"/>
+			<s:CheckBox label="{resourceManager.getString('myResources', 'TEXT248')}" id="gapSites" selected="false" toolTip="{resourceManager.getString('myResources', 'TEXT248')}"/>
+		</s:VGroup>
+		<mx:Spacer width="100%"/>
+		<s:VGroup height="100%" horizontalAlign="right">
+			<mx:Image source="{EmbeddedImages.print}" click="image1_clickHandler(event)" buttonMode="true" toolTip="{resourceManager.getString('myResources', 'TEXT126')}"/>
+			<mx:Spacer height="100%"/>
+			<s:HGroup horizontalAlign="right" width="100%">
+				<mx:Image toolTip="{resourceManager.getString('myResources', 'TEXT127')}" source="{Countries.gb}" alpha="{(csn.language==csn.LANGUAGE_ENGLISH ? 1.0 : 0.5)}" buttonMode="true" click="csn.language=csn.LANGUAGE_ENGLISH;"/>
+				<mx:Image toolTip="{resourceManager.getString('myResources', 'TEXT128')}" source="{Countries.fr}" alpha="{(csn.language==csn.LANGUAGE_FRENCH ? 1.0 : 0.5)}" buttonMode="true"  click="csn.language=csn.LANGUAGE_FRENCH;"/>
+				<mx:Image toolTip="{resourceManager.getString('myResources', 'TEXT129')}" source="{Countries.ru}" alpha="{(csn.language==csn.LANGUAGE_RUSSIAN ? 1.0 : 0.5)}" buttonMode="true"  click="csn.language=csn.LANGUAGE_RUSSIAN;"/>
+				<mx:Image toolTip="{resourceManager.getString('myResources', 'TEXT130')}" source="{Countries.arab_league}" alpha="{(csn.language==csn.LANGUAGE_ARABIC ? 1.0 : 0.5)}" buttonMode="true"  click="csn.language=csn.LANGUAGE_ARABIC;"/>
+			</s:HGroup>
+		</s:VGroup>
+	</s:HGroup>
+	<fx:Script>
+		<![CDATA[
+			import mx.controls.Alert;
+			import mx.graphics.ImageSnapshot;
+			import mx.graphics.codec.JPEGEncoder;
+			import mx.printing.FlexPrintJob;
+			import mx.printing.FlexPrintJobScaleType;
+			
+			import wcmc.classes.Countries;
+			import wcmc.classes.EmbeddedImages;
+			[Bindable]public var csn:CSN;
+			/**
+			 * Opens the print dialog box
+			 */
+			protected function image1_clickHandler(event:MouseEvent):void
+			{
+				print2(FlexPrintJobScaleType.SHOW_ALL);
+			}
+			private function print():void //mansours method - not currently used
+			{
+				const decoder: JPEGEncoder = new JPEGEncoder();
+				csn.map.logoVisible=false;
+				csn.map.scaleBarVisible=false;
+				csn.map.zoomSliderVisible = false;
+				const imageSnapshot:ImageSnapshot = ImageSnapshot.captureImage(csn.map,96,decoder,true);
+				csn.map.logoVisible=true;
+				csn.map.scaleBarVisible=true;
+				csn.map.zoomSliderVisible = true;
+				const fileReference:FileReference = new FileReference();
+				fileReference.save(imageSnapshot.data,"csn.jpg");
+			}
+			/**
+			 * Prints the active map.
+			 */ 
+			private function print2(myFlexPrintJobScaleType:String):void
+			{
+				// Create an instance of the FlexPrintJob class.
+				var myPrintJob:FlexPrintJob = new FlexPrintJob();
+				// Start the print job.
+				if (myPrintJob.start())
+				{
+					try
+					{
+						// hide the zoom slider so it won't be printed
+						csn.map.zoomSliderVisible = false;
+						// Add the panel to print.
+						myPrintJob.addObject(csn.map, myFlexPrintJobScaleType);
+						
+						// turn the zoom slider back on
+						csn.map.zoomSliderVisible = true;
+					}
+					catch (error:Error)
+					{
+						Alert.show(error.toString());
+					}
+					// Send the job to the printer.
+					myPrintJob.send();
+				}
+			}
+		]]>
+	</fx:Script>
+</s:BorderContainer>

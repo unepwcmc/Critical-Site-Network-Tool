@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!---Custom BorderContainer class that adds the ability to move the component to the top of the view stack when it is clicked.-->
+<s:BorderContainer xmlns:fx="http://ns.adobe.com/mxml/2009" 
+				   xmlns:s="library://ns.adobe.com/flex/spark" 
+				   xmlns:mx="library://ns.adobe.com/flex/mx" click="bordercontainer1_clickHandler(event)" show="bordercontainer1_showHandler(event)" hide="bordercontainer1_hideHandler(event)">
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+	</fx:Declarations>
+	<fx:Metadata>
+		[Event(name="movedToFront", type="flash.events.Event")]
+	</fx:Metadata>
+	<fx:Script>
+		<![CDATA[
+			import mx.controls.Alert;
+			import mx.core.IVisualElement;
+			import mx.core.IVisualElementContainer;
+			import mx.events.FlexEvent;
+			protected function bordercontainer1_clickHandler(event:MouseEvent):void 
+			{
+				moveToFront(event.currentTarget as IVisualElement);
+			}
+			protected function bordercontainer1_showHandler(event:FlexEvent):void
+			{
+				moveToFront(this as IVisualElement);
+			}
+			private function getFather(iVisualElement:IVisualElement):IVisualElementContainer
+			{
+				var father:IVisualElementContainer;
+				if (iVisualElement.parent is IVisualElementContainer) father=IVisualElementContainer(iVisualElement.parent);
+				return father;
+			}
+			private function moveToFront(iVisualElement:IVisualElement):void //moves this border container to the front of the maps staticLayer group
+			{
+				var father:IVisualElementContainer=getFather(iVisualElement);
+				if (!father) return;
+				var brothers:int=father.numElements;
+				father.setElementIndex(iVisualElement,brothers-1);
+				dispatchEvent(new Event("movedToFront"));
+			}			
+			protected function bordercontainer1_hideHandler(event:FlexEvent):void
+			{
+				var father:IVisualElementContainer=getFather(this as IVisualElement);
+				if (!father) return;
+				var brothers:int=father.numElements;
+				if (brothers>0)
+				{
+					//not yet implemented
+				}
+			}
+
+		]]>
+	</fx:Script>
+</s:BorderContainer>

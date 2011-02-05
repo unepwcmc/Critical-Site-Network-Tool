@@ -1,0 +1,28 @@
+<strong>Application architecture</strong>
+				<p>The overall architecture of the CSN application is a Adobe Flash application running in a browser accessing and using a number of REST and SOAP based services from a server. These services
+				are delivered through ArcGIS Server (for mapping services) and SOAP (for non-spatial services) and also from a number of external data providers (ESRI and Microsoft).
+				</p>
+				<p>The server side architecture is a fully normalised ESRI ArcSDE database (using Microsoft SQL Server 2008 database) with spatial views. These tables and views are published in 5 web services that are accessed in the web application. These 
+				services correspond to the main pages in the user interface: species, sites, reports, contextual maps (AEWA boundary, gap and demo sites) and a map service dedicated to the IWC time-series data since there are over 60 million records.
+				</p>
+				<strong>User interface design</strong>
+				<p>The user interface has been implemeted using Adobe Flash Builder and it is structured into a number of components which are shown at various times in the user interface. The CSN class is the main application class for the Critical Site Network tool. It includes many of the user interface components, including the map component and the floating panel that contains all of the species, sites, and reports pages.The main components within this class are described below:</p>
+				<ul>
+				<li>The information panel (or infoPanel) is the main component that the user interacts with and contains pages specific to what the user has selected, e.g. if a species has been selected then a species box is loaded into the infoPanel. </li>
+				<li>The map component contains all of the spatial data that is shown in the application</li>
+				<li>The navigation toolbar is shown at the top of the screen and allows the user to navigate the map</li>
+				<li>The legend component is a floating box that shows all of the symbols for those layers that are currently on the map</li>
+				<li>Data boxes are shown when a user clicks in a check box next to a 'tool'. A tool is an item in the infoPanel which has a title and a description and allows the user to turn the information on/off.</li>
+				</ul>
+				<strong>Typical Lifecycle</strong>
+				<p>The typical life cycle of a page request in the CSN application is the following:</p>
+				<ol>
+				<li>The user loads the CSN.swf file in their browser</li>
+				<li>The map and language are inititalised using information in a stored object</li>
+				<li>The map is loaded and the user is shown the start page</li>
+				<li>If the user clicks on any of the navigation controls in the infoPanel then the state changes in the application</li>
+				<li>The new application state is loaded and components visibilities are set accordingly</li>
+				<li>If the user selected any tools then the map layers or data boxes in the main CSN class are made visible</li>
+				<li>Some tool data is loaded as images (e.g. a species distribution map) and some is downloaded all to the client, e.g. the CSN data - this is so it can be rerendererd using a different renderer on the client</li>
+				<li>If the user clicks on any species or site, then the state is changed and a SetSpecies or SetSite event occurs</li>
+				<li>The reports page uses a SQL generator on the client which then requests data from the SOAP services</li></ol><br/>

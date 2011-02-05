@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!---Simple renderer that is used in the data tables to show a tic.-->
+<mx:HBox xmlns:fx="http://ns.adobe.com/mxml/2009" xmlns:mx="library://ns.adobe.com/flex/mx"  horizontalScrollPolicy="off" verticalAlign="middle" horizontalAlign="center">
+	<fx:Script>
+		<![CDATA[
+			import wcmc.classes.EmbeddedImages;
+		]]>
+	</fx:Script>
+	<mx:Image source="{EmbeddedImages.tic}" visible="{data.IsIBA!=0}"/>
+</mx:HBox>

@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!---
+Navigation component at the top of the infoPanel that controls the state of the application.
+-->
+<s:HGroup xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		  xmlns:s="library://ns.adobe.com/flex/spark" 
+		  xmlns:mx="library://ns.adobe.com/flex/mx" verticalAlign="middle" horizontalAlign="left" xmlns:components="wcmc.components.*" xmlns:supportClasses="com.esri.ags.components.supportClasses.*" width="100%">
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+	</fx:Declarations>
+	<mx:Image toolTip="{resourceManager.getString('myResources', 'TEXT8')}" source="{EmbeddedImages.home}" click="csn.currentState='home'" alpha="{(csn.currentState=='home')? 0.8 : 0.2}"/>
+	<mx:Image toolTip="{resourceManager.getString('myResources', 'TEXT4')}" source="{EmbeddedImages.species}" click="csn.currentState='speciesSearch'" alpha="{((csn.currentState=='species')||(csn.currentState=='speciesSearch'))? 1 : 0.2}"/>
+	<mx:Image toolTip="{resourceManager.getString('myResources', 'TEXT5')}" source="{EmbeddedImages.sitessmall}" click="csn.currentState='siteSearch'" alpha="{((csn.currentState=='site')||(csn.currentState=='siteSearch'))? 0.8 : 0.2}"/>
+	<mx:Image toolTip="{resourceManager.getString('myResources', 'TEXT6')}" source="{EmbeddedImages.reports}" click="csn.currentState='reports'" alpha="{(csn.currentState=='reports')? 0.8 : 0.2}"/>
+	<mx:Image toolTip="{resourceManager.getString('myResources', 'TEXT7')}" source="{EmbeddedImages.info}" click="csn.currentState='info'" alpha="{(csn.currentState=='info')? 0.8 : 0.2}"/>
+	<mx:Spacer width="100%"/>
+	<components:DragBox dragComponent="{csn.infoPanel}" target="{csn}"/>
+	<components:MyCloseButton closeTarget="{csn.infoPanel}"/>
+	<fx:Script>
+		<![CDATA[
+			import spark.components.BorderContainer;
+			
+			import wcmc.classes.EmbeddedImages;
+			[Bindable]public var csn:CSN;
+		]]>
+	</fx:Script>
+</s:HGroup>

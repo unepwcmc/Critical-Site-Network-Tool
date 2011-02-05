@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!---Simple renderer that is used in the data tables to show the RDB status as a small image and the species name using italics.-->
+<mx:HBox xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" 
+		 xmlns:mx="library://ns.adobe.com/flex/mx" horizontalScrollPolicy="off" paddingLeft="5" verticalAlign="middle" width="100%">
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+	</fx:Declarations>
+	<s:BorderContainer id="rdbswatch" height="10" width="10" backgroundColor="{RDBConstants.instance.getColorForRDB(data.SpcRedCategory)}" backgroundAlpha="0.7" verticalCenter="0" toolTip="{RDBConstants.instance.getTextForRDB(data.SpcRedCategory)}" borderColor="0x777777"/>
+	<s:Label text="{data.Species}" fontStyle="italic" verticalAlign="middle" toolTip="{data.Species}"/>
+	<fx:Script>
+		<![CDATA[
+			import wcmc.classes.RDBConstants;
+		]]>
+	</fx:Script>
+</mx:HBox>

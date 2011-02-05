@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!---Renderer for a country that shows the country name and the flag in drop down boxes. This renderer is used in the reports page for the species and population lists for a country.-->
+<s:ItemRenderer xmlns:fx="http://ns.adobe.com/mxml/2009" 
+				xmlns:s="library://ns.adobe.com/flex/spark" 
+				xmlns:mx="library://ns.adobe.com/flex/mx" 
+				autoDrawBackground="true">
+	<s:HGroup verticalAlign="middle" paddingLeft="5">
+		<mx:Image source="{Countries.getCountryFlag(data.Code)}"/>
+		<mx:Label text="{Countries.getCountryName(data.Code)}"/>
+	</s:HGroup>
+	
+	<fx:Script>
+		<![CDATA[
+			import wcmc.classes.Countries;
+		]]>
+	</fx:Script>
+</s:ItemRenderer>

@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!---A sophisticated set of data filters that control the display of matching species and sites depending on a whole range of filters, e.g. country, RDB status. This box is part of the reports box.-->
+<s:BorderContainer xmlns:fx="http://ns.adobe.com/mxml/2009" 
+				   xmlns:s="library://ns.adobe.com/flex/spark" 
+				   xmlns:mx="library://ns.adobe.com/flex/mx" xmlns:classes="wcmc.classes.*" xmlns:components="wcmc.components.*" borderAlpha="0">
+	
+	<fx:Declarations>
+		<classes:FilterCollection id="filterCollection" masterTableName="V_FILTER" filterResultComplete="newFilterCollection_filterResultCompleteHandler(event)"><!-- startGetMatchingIDs="CursorManager.setBusyCursor()" endGetMatchingIDs="CursorManager.removeBusyCursor()"-->
+			<classes:filters>
+				<s:ArrayCollection>
+					<!---
+					Filter on the COUNTRY table in the database.
+					-->
+					<classes:Filter id="country" label="{resourceManager.getString('myResources', 'TEXT28')}" table="V_COUNTRY" valueField="Name" masterTableFilterFieldName="SiteRecID" filterRenderer="wcmc.renderers.CountryFilterRenderer"/>
+					<!---
+					Filter on the F_SITE_PROTECTION table in the database.
+					-->
+					<classes:Filter id="protection" label="{resourceManager.getString('myResources', 'TEXT29')}" table="F_SITE_PROTECTION" valueField="DesDesc" masterTableFilterFieldName="SiteRecID" filterRenderer="wcmc.renderers.FilterRenderer"/>
+					<!---
+					Filter on the F_SITE_LANDUSE table in the database.
+					-->
+					<classes:Filter id="landUse" label="{resourceManager.getString('myResources', 'TEXT30')}" table="F_SITE_LANDUSE" valueField="LUDesc" masterTableFilterFieldName="SiteRecID" filterRenderer="wcmc.renderers.FilterRenderer"/>
+					<!---
+					Filter on the V_SITE_SITE table in the database.
+					-->
+					<classes:Filter id="site" label="{resourceManager.getString('myResources', 'TEXT31')}" table="V_SITE_SITE" valueField="Name" masterTableFilterFieldName="SiteRecID" filterRenderer="wcmc.renderers.FilterRenderer"/>
+					<!---
+					Filter on the F_SPECIES_FAMILY table in the database.
+					-->
+					<classes:Filter id="family" label="{resourceManager.getString('myResources', 'TEXT32')}" table="F_SPECIES_FAMILY" valueField="FamName" masterTableFilterFieldName="SpcRecID" filterRenderer="wcmc.renderers.FilterRenderer"/>
+					<!---
+					Filter on the F_SPECIES_GENUS table in the database.
+					-->
+					<classes:Filter id="genus" label="{resourceManager.getString('myResources', 'TEXT33')}" table="F_SPECIES_GENUS" valueField="GenName" masterTableFilterFieldName="SpcRecID" filterRenderer="wcmc.renderers.FilterRenderer"/>
+					<!---
+					Filter on the F_SPECIES_SPECIES table in the database.
+					-->
+					<classes:Filter id="species" label="{resourceManager.getString('myResources', 'TEXT208')}" table="F_SPECIES_SPECIES" valueField="{application.commonNameField}" masterTableFilterFieldName="SpcRecID" filterRenderer="wcmc.renderers.FilterRenderer"/>
+					<!---
+					Filter on the F_SPECIES_REDLIST table in the database.
+					-->
+					<classes:Filter id="redlist" label="{resourceManager.getString('myResources', 'TEXT35')}" table="F_SPECIES_REDLIST" valueField="Category" masterTableFilterFieldName="SpcRecID" filterRenderer="wcmc.renderers.RDBFilterRenderer"/>
+					<!---
+					Filter on the F_SPECIES_HABITAT_LEVEL1 table in the database.
+					-->
+					<classes:Filter id="habitat1" label="{resourceManager.getString('myResources', 'TEXT36')}" table="F_SPECIES_HABITAT_LEVEL1" valueField="HabL1Desc" masterTableFilterFieldName="SpcRecID" filterRenderer="wcmc.renderers.FilterRenderer"/>
+					<!---
+					Filter on the F_SPECIES_HABITAT_LEVEL2 table in the database.
+					-->
+					<classes:Filter id="habitat2" label="{resourceManager.getString('myResources', 'TEXT37')}" table="F_SPECIES_HABITAT_LEVEL2" valueField="HabL2Desc" masterTableFilterFieldName="SpcRecID" filterRenderer="wcmc.renderers.FilterRenderer"/>
+					<!---
+					Filter on the F_SPECIES_LEGAL table in the database.
+					-->
+					<classes:Filter id="legal" label="{resourceManager.getString('myResources', 'TEXT38')}" table="F_SPECIES_LEGAL" valueField="LegName" masterTableFilterFieldName="SpcRecID" filterRenderer="wcmc.renderers.FilterRenderer"/>
+					<!---
+					Filter on the F_SPECIES_THREAT_LEVEL1 table in the database.
+					-->
+					<classes:Filter id="threatl1" label="{resourceManager.getString('myResources', 'TEXT39')}" table="F_SPECIES_THREAT_LEVEL1" valueField="ThrL1Desc" masterTableFilterFieldName="SpcRecID" filterRenderer="wcmc.renderers.FilterRenderer"/>
+					<!---
+					Filter on the F_SPECIES_THREAT_LEVEL2 table in the database.
+					-->
+					<classes:Filter id="threatl2" label="{resourceManager.getString('myResources', 'TEXT40')}" table="F_SPECIES_THREAT_LEVEL2" valueField="ThrL2Desc" masterTableFilterFieldName="SpcRecID" filterRenderer="wcmc.renderers.FilterRenderer"/>
+					<!---
+					Filter on the F_SITE_HABITAT table in the database.
+					-->
+					<classes:Filter id="siteHabitat1" label="{resourceManager.getString('myResources', 'TEXT41')}" table="F_SITE_HABITAT" valueField="HabDesc" masterTableFilterFieldName="SiteRecID" filterRenderer="wcmc.renderers.FilterRenderer"/>
+					<!---
+					Filter on the F_SITE_HABITAT2 table in the database.
+					-->
+					<classes:Filter id="siteHabitat2" label="{resourceManager.getString('myResources', 'TEXT42')}" table="F_SITE_HABITAT2" valueField="HabDesc" masterTableFilterFieldName="SiteRecID" filterRenderer="wcmc.renderers.FilterRenderer"/>
+					<!---
+					Filter on the F_SITE_THREAT table in the database.
+					-->
+					<classes:Filter id="siteThreat1" label="{resourceManager.getString('myResources', 'TEXT43')}" table="F_SITE_THREAT" valueField="ThreatDesc" masterTableFilterFieldName="SiteRecID" filterRenderer="wcmc.renderers.FilterRenderer"/>
+					<!---
+					Filter on the F_SITE_THREAT2 table in the database.
+					-->
+					<classes:Filter id="siteThreat2" label="{resourceManager.getString('myResources', 'TEXT44')}" table="F_SITE_THREAT2" valueField="ThreatDesc" masterTableFilterFieldName="SiteRecID" filterRenderer="wcmc.renderers.FilterRenderer"/>
+					<!---
+					Filter on the F_SITE_TYPE table in the database.
+					-->
+					<classes:Filter id="siteType" label="{resourceManager.getString('myResources', 'TEXT45')}" table="V_SITE_TYPE" valueField="SiteType" masterTableFilterFieldName="SiteRecID" filterRenderer="wcmc.renderers.FilterRenderer"/>
+				</s:ArrayCollection>
+			</classes:filters>
+		</classes:FilterCollection>
+		<s:Fade id="fader" duration="250"/>
+	</fx:Declarations>
+	<fx:Metadata>
+		[Event(name="spcRecIDsChanged", type="wcmc.classes.SpcRecIDsChangedEvent")]
+		[Event(name="siteRecIDsChanged", type="wcmc.classes.SiteRecIDsChangedEvent")]
+		[Event(name="closed", type="flash.events.Event")]
+		[Event(name="cancelled", type="flash.events.Event")]
+	</fx:Metadata>
+		<s:HGroup gap="3">
+			<s:VGroup width="183">
+				<s:Label text="{resourceManager.getString('myResources', 'TEXT208')}" fontSize="14"/>
+				<components:FilterUI filter="{family}"/>
+				<components:FilterUI filter="{genus}"/>
+				<components:FilterUI filter="{species}"/>
+				<components:FilterUI filter="{redlist}"/>
+				<components:FilterUI filter="{legal}"/>
+				<components:FilterUI filter="{habitat1}"/>
+				<components:FilterUI filter="{habitat2}"/>
+				<components:FilterUI filter="{threatl1}"/>
+				<components:FilterUI filter="{threatl2}"/>
+			</s:VGroup>
+			<s:VGroup width="200" height="100%">
+				<s:Label text="{resourceManager.getString('myResources', 'TEXT107')}" fontSize="14"/>
+				<components:FilterUI filter="{country}" searchRowHeight="20" openSide="left"/>
+				<components:FilterUI filter="{protection}" openSide="left"/>
+				<components:FilterUI filter="{landUse}" openSide="left"/>
+				<components:FilterUI filter="{site}" openSide="left"/>
+				<components:FilterUI filter="{siteType}" openSide="left"/>
+				<components:FilterUI filter="{siteHabitat1}" openSide="left"/>
+				<components:FilterUI filter="{siteHabitat2}" openSide="left"/>
+				<components:FilterUI filter="{siteThreat1}" openSide="left"/>
+				<components:FilterUI filter="{siteThreat2}" openSide="left"/>
+			</s:VGroup>
+		</s:HGroup>
+	<fx:Script>
+		<![CDATA[
+			import wcmc.classes.SiteRecIDsChangedEvent;
+			import wcmc.classes.SpcRecIDsChangedEvent;
+			import wcmc.classes.Utilities;
+			private var _application:CSN;
+			import wcmc.classes.FilterResultCompleteEvent;
+			[Bindable]public var application:CSN;
+			public function clearAllFilters(event:MouseEvent):void
+			{
+				filterCollection.clearAll();
+			}
+			protected function newFilterCollection_filterResultCompleteHandler(event:FilterResultCompleteEvent):void
+			{
+				switch (event.filterResult.filterFieldName)
+				{
+					case "SiteRecID":
+						var siteRecIDs:ArrayCollection=event.filterResult.matchingIDs;
+						var siteRecIDsString:String;
+						var siteRecIDsStringInClause:String;
+						if (event.filterResult.matchingIDs.length>0)
+						{
+							siteRecIDsString=Utilities.arrayCollectionToString(siteRecIDs);
+							siteRecIDsStringInClause="SiteRecID IN (" + siteRecIDsString + ")";
+						}
+						else
+						{
+							siteRecIDsString=null;
+							siteRecIDsStringInClause=null;
+							siteRecIDs=null;	
+						}
+						dispatchEvent(new SiteRecIDsChangedEvent(SiteRecIDsChangedEvent.SITERECIDSCHANGED,siteRecIDs,siteRecIDsString,siteRecIDsStringInClause));
+						break;
+					case "SpcRecID":
+						var spcRecIDs:ArrayCollection=event.filterResult.matchingIDs;
+						var spcRecIDsString:String;
+						var spcRecIDsStringInClause:String;
+						if (event.filterResult.matchingIDs.length>0)
+						{
+							spcRecIDsString=Utilities.arrayCollectionToString(spcRecIDs);
+							spcRecIDsStringInClause="SpcRecID IN (" + spcRecIDsString + ")";
+						}
+						else
+						{
+							spcRecIDs=null;
+							spcRecIDsString=null;
+							spcRecIDsStringInClause=null;
+						}
+						dispatchEvent(new SpcRecIDsChangedEvent(SpcRecIDsChangedEvent.SPCRECIDSCHANGED,spcRecIDs,spcRecIDsString,spcRecIDsStringInClause));
+						break;
+					default:
+						
+				}
+			}
+		]]>
+	</fx:Script>
+</s:BorderContainer>

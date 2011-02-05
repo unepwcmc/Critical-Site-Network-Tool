@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!---A sophisticated set of data filters that control the display of matching species and sites depending on a whole range of filters, e.g. country, RDB status. This box is part of the reports box.-->
+<s:BorderContainer xmlns:fx="http://ns.adobe.com/mxml/2009" 
+				   xmlns:s="library://ns.adobe.com/flex/spark" 
+				   xmlns:mx="library://ns.adobe.com/flex/mx" xmlns:classes="wcmc.classes.*" xmlns:components="wcmc.components.*" borderAlpha="0" xmlns:esri="http://www.esri.com/2008/ags">
+	
+	<fx:Declarations>
+		<!---The allSpeciesFilter is used for filtering the reports for country list for species, population list for species and population list for a point. The filter includes all species.-->
+		<classes:FilterCollection id="allSpeciesFilter" masterTableName="V_COUNTRY_SPECIES" filterResultComplete="newFilterCollection_filterResultCompleteHandler(event)"><!-- startGetMatchingIDs="CursorManager.setBusyCursor()" endGetMatchingIDs="CursorManager.removeBusyCursor()"-->
+			<classes:filters>
+				<s:ArrayCollection>
+					<!---
+					Filter on the COUNTRY table in the database - the WhereClause is populated by the country drop down boxes in the reports dialog boxes.
+					-->
+					<classes:Filter id="countryAll" masterTableFilterFieldName="SpcRecID" sharedObjectName="speciesSpcRecID"/>
+					<!---
+					Filter on the F_SPECIES_FAMILY table in the database.
+					-->
+					<classes:Filter id="familyAll" label="{resourceManager.getString('myResources', 'TEXT32')}" table="F_SPECIES_FAMILY" valueField="FamName" masterTableFilterFieldName="SpcRecID" filterRenderer="wcmc.renderers.FilterRenderer" sharedObjectName="speciesFamily"/>
+					<!---
+					Filter on the F_SPECIES_GENUS table in the database.
+					-->
+					<classes:Filter id="genusAll" label="{resourceManager.getString('myResources', 'TEXT33')}" table="F_SPECIES_GENUS" valueField="GenName" masterTableFilterFieldName="SpcRecID" filterRenderer="wcmc.renderers.FilterRenderer" sharedObjectName="speciesGenus"/>
+					<!---
+					Filter on the F_SPECIES_SPECIES table in the database.
+					-->
+					<classes:Filter id="speciesAll" label="{resourceManager.getString('myResources', 'TEXT208')}" table="F_SPECIES_SPECIES" valueField="{application.commonNameField}" masterTableFilterFieldName="SpcRecID" filterRenderer="wcmc.renderers.FilterRenderer" sharedObjectName="speciesSpecies"/>
+					<!---
+					Filter on the F_SPECIES_REDLIST table in the database.
+					-->
+					<classes:Filter id="redlistAll" label="{resourceManager.getString('myResources', 'TEXT35')}" table="F_SPECIES_REDLIST" valueField="Category" masterTableFilterFieldName="SpcRecID" filterRenderer="wcmc.renderers.RDBFilterRenderer" sharedObjectName="speciesRDB"/>
+					<!---
+					Filter on the F_SPECIES_HABITAT_LEVEL1 table in the database.
+					-->
+					<classes:Filter id="habitat1All" label="{resourceManager.getString('myResources', 'TEXT36')}" table="F_SPECIES_HABITAT_LEVEL1" valueField="HabL1Desc" masterTableFilterFieldName="SpcRecID" filterRenderer="wcmc.renderers.FilterRenderer" sharedObjectName="speciesHab1"/>
+					<!---
+					Filter on the F_SPECIES_HABITAT_LEVEL2 table in the database.
+					-->
+					<classes:Filter id="habitat2All" label="{resourceManager.getString('myResources', 'TEXT37')}" table="F_SPECIES_HABITAT_LEVEL2" valueField="HabL2Desc" masterTableFilterFieldName="SpcRecID" filterRenderer="wcmc.renderers.FilterRenderer" sharedObjectName="speciesHab2"/>
+					<!---
+					Filter on the F_SPECIES_LEGAL table in the database.
+					-->
+					<classes:Filter id="legalAll" label="{resourceManager.getString('myResources', 'TEXT38')}" table="F_SPECIES_LEGAL" valueField="LegName" masterTableFilterFieldName="SpcRecID" filterRenderer="wcmc.renderers.FilterRenderer" sharedObjectName="speciesLegal"/>
+					<!---
+					Filter on the F_SPECIES_THREAT_LEVEL1 table in the database.
+					-->
+					<classes:Filter id="threatl1All" label="{resourceManager.getString('myResources', 'TEXT39')}" table="F_SPECIES_THREAT_LEVEL1" valueField="ThrL1Desc" masterTableFilterFieldName="SpcRecID" filterRenderer="wcmc.renderers.FilterRenderer" sharedObjectName="speciesThreat1"/>
+					<!---
+					Filter on the F_SPECIES_THREAT_LEVEL2 table in the database.
+					-->
+					<classes:Filter id="threatl2All" label="{resourceManager.getString('myResources', 'TEXT40')}" table="F_SPECIES_THREAT_LEVEL2" valueField="ThrL2Desc" masterTableFilterFieldName="SpcRecID" filterRenderer="wcmc.renderers.FilterRenderer" sharedObjectName="speciesThreat2"/>
+				</s:ArrayCollection>
+			</classes:filters>
+		</classes:FilterCollection>
+		<s:Fade id="fader" duration="250"/>
+		<!---A QueryTask that is used to retrieve a list of species for a country. This is used in the species list for a country tool on the Reports page.-->
+		<esri:QueryTask id="countrySpeciesQueryTask" url="http://dev.unep-wcmc.org/ArcGIS/rest/services/CSN/Reports/MapServer/4" showBusyCursor="true"/>
+		<!---The Query object for the countrySpeciesQueryTask. The where value is set to currently selected country in the country drop down box.-->
+		<esri:Query id="countrySpeciesQuery" outFields="*" returnGeometry="false"/>
+	</fx:Declarations>
+	<s:HGroup gap="3">
+		<s:VGroup width="183">
+			<s:Label text="{resourceManager.getString('myResources', 'TEXT208')}" fontSize="14"/>
+			<components:FilterUI filter="{familyAll}"/>
+			<components:FilterUI filter="{genusAll}"/>
+			<components:FilterUI filter="{speciesAll}"/>
+			<components:FilterUI filter="{redlistAll}"/>
+			<components:FilterUI filter="{legalAll}"/>
+			<components:FilterUI filter="{habitat1All}"/>
+			<components:FilterUI filter="{habitat2All}"/>
+			<components:FilterUI filter="{threatl1All}"/>
+			<components:FilterUI filter="{threatl2All}"/>
+		</s:VGroup>
+	</s:HGroup>
+	<fx:Script>
+		<![CDATA[
+			import wcmc.classes.Utilities;
+			private var _application:CSN;
+			import wcmc.classes.FilterResultCompleteEvent;
+			[Bindable]public var application:CSN;
+			private var _countryID:Number;
+			public function get countryID():Number
+			{
+				return _countryID;
+			}
+			public function set countryID(value:Number):void
+			{
+				_countryID = value;
+				countryAll.whereClause=allSpeciesFilter.masterTableName + ".CountryID IN (" + _countryID + ")"; //set the filter for the country
+				allSpeciesFilter.getMatchingIDs(); //get the matching species for this country
+			}
+			public function clearAllFilters(event:MouseEvent):void
+			{
+				allSpeciesFilter.clearAll();
+			}
+			protected function newFilterCollection_filterResultCompleteHandler(event:FilterResultCompleteEvent):void
+			{
+				var spcRecIDs:ArrayCollection=event.filterResult.matchingIDs;
+				var spcRecIDsString:String;
+				if (spcRecIDs.length>0)
+				{
+					spcRecIDsString=Utilities.arrayCollectionToString(spcRecIDs);
+					countrySpeciesQuery.where="SpcRecID IN (" + spcRecIDsString + ") and CountryID=" + countryID;
+				}
+				else
+				{
+					countrySpeciesQuery.where="CountryID=" + countryID;
+				}
+				countrySpeciesQueryTask.execute(countrySpeciesQuery); //run the querytask to get the matching species that will be bound to the datagrids
+			}
+		]]>
+	</fx:Script>
+</s:BorderContainer>

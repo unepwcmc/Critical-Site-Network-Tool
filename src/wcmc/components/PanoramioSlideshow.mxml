@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!---Custom BorderContainer that shows images for a site based on a spatial search in the Panoramio image sharing service.-->
+<s:BorderContainer xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		xmlns:s="library://ns.adobe.com/flex/spark" 
+		xmlns:mx="library://ns.adobe.com/flex/mx"
+		xmlns:components="wcmc.components.*"
+		xmlns:classes="wcmc.classes.*" height="183" rollOver="bordercontainer1_rollOverHandler(event)" rollOut="bordercontainer1_rollOutHandler(event)" currentState="images" borderVisible.noImages="false" borderVisible.images="true">
+	<s:states>
+		<s:State name="noImages"/>
+		<s:State name="images"/>
+	</s:states>
+	<fx:Declarations>
+		<classes:PanoramioProvider id="panoramioProvider" searchCompleted="panoramioProvider_searchCompletedHandler(event)"/>
+		<s:Fade id="fadeIn" alphaFrom="0" alphaTo="0.8" duration="300"/>
+		<s:Fade id="fadeOut" alphaFrom="0.8" alphaTo="0" duration="300"/>
+	</fx:Declarations>
+	<mx:SWFLoader source="{EmbeddedImages.loader}" verticalCenter="0" horizontalCenter="0" includeIn="images"/>
+	<s:Label text="{resourceManager.getString('myResources', 'TEXT52')}" includeIn="noImages" horizontalCenter="0" verticalCenter="0"/>
+	<components:MyList id="list" dataProvider="{getItems()}" itemRenderer="wcmc.renderers.PanoramioRenderer" skinClass="wcmc.skins.FlickrListSkin" rollOverColor="0xffffff" selectionColor="0xffffff" contentBackgroundAlpha="0" includeIn="images">
+		<components:layout>
+			<s:TileLayout id="panoramioListLayout" columnWidth="{IMAGEWIDTH}" clipAndEnableScrolling="true" requestedColumnCount="10" horizontalGap="0"/>
+		</components:layout>
+	</components:MyList>
+	<mx:Image id="prev" source="{EmbeddedImages.prev}" click="movePrevious()" left="0" top="70" showEffect="{fadeIn}" hideEffect="{fadeOut}" visible="{getPrevVisible()}" toolTip="{resourceManager.getString('myResources', 'TEXT53')}" includeIn="images"/>
+	<mx:Image id="next" source="{EmbeddedImages.next}" click="moveNext()" right="0" top="70" showEffect="{fadeIn}" hideEffect="{fadeOut}" visible="{getNextVisible()}" toolTip="{resourceManager.getString('myResources', 'TEXT54')}" includeIn="images"/>
+	<fx:Script>
+		<![CDATA[
+			import com.esri.ags.geometry.Polygon;
+			
+			import mx.collections.ArrayCollection;
+			
+			import wcmc.classes.EmbeddedImages;
+			import wcmc.classes.PanoramioSearchCompleted;
+			[Bindable]private var _position:Number=0;
+			private var _searchPolygon:Polygon;
+			private const IMAGEWIDTH:Number=240;
+			private var mouseOverList:Boolean=false;
+			/**
+			 * Gets/sets the integer position of the currently visible image in the image collection.
+			 */ 
+			public function get position():Number
+			{
+				return _position;
+			}
+			public function set position(value:Number):void
+			{
+				_position = value;
+				setVisibilities();
+				dispatchEvent(new Event("loadImage"));
+			}
+			[Bindable]
+			/**
+			 * The currently used polygon that is being used to filter the images from Panoramio.
+			 */ 
+			public function get searchPolygon():Polygon
+			{
+				return _searchPolygon;
+			}
+			public function set searchPolygon(value:Polygon):void
+			{
+				_searchPolygon = value;
+				executePanoramioRequest();
+			}
+			/**
+			 * Clears the photos and searches Panoramio for images for the searchPolygon.
+			 */ 
+			protected function executePanoramioRequest():void
+			{
+				if (panoramioProvider.photosInSearchPolygon) clearPhotos();
+				currentState="images";
+//				panoramioProvider.search(_searchPolygon);
+				panoramioProvider.searchUsingProxy(_searchPolygon);
+			}
+			/**
+			 * Removes all of the current photos and resets the position to the start.
+			 */ 
+			public function clearPhotos():void
+			{
+				panoramioProvider.photosInSearchPolygon.removeAll();
+				position=0;
+			}
+			/**
+			 * Asynchronous function that is called whent eh Panoramio search completes.
+			 */ 
+			protected function panoramioProvider_searchCompletedHandler(event:PanoramioSearchCompleted):void
+			{
+				if (event.photosInSearchPolygon.length==0) currentState="noImages";
+				dispatchEvent(new Event("loadImage"));
+				setVisibilities();
+			}
+			/**
+			 * Moves to the next image in the slideshow.
+			 */ 
+			protected function moveNext():void
+			{
+				panoramioListLayout.horizontalScrollPosition+=IMAGEWIDTH;
+				position+=1;
+			}
+			/**
+			 * Moves to the previous image in the slideshow.
+			 */ 
+			protected function movePrevious():void
+			{
+				panoramioListLayout.horizontalScrollPosition-=IMAGEWIDTH;
+				position-=1;
+			}
+			/**
+			 * Dispatched when the image is loaded.
+			 */ 
+			[Bindable (event="loadImage")]
+			protected function getItems():ArrayCollection
+			{
+				return new ArrayCollection(panoramioProvider.photosInSearchPolygon.source.slice(position,position+2));
+			}
+			[Bindable (event="setPrevVisibility")]
+			protected function getPrevVisible():Boolean
+			{
+				if ((position!=0)&&(mouseOverList)){return true}else{return false}; 
+			}
+			[Bindable (event="setNextVisibility")]
+			protected function getNextVisible():Boolean
+			{
+				if ((position<panoramioProvider.photosInSearchPolygon.length-1)&&(mouseOverList)){return true}else{return false};
+			}
+			protected function bordercontainer1_rollOverHandler(event:MouseEvent):void
+			{
+				mouseOverList=true;
+				setVisibilities();
+			}
+			protected function bordercontainer1_rollOutHandler(event:MouseEvent):void
+			{
+				mouseOverList=false;
+				setVisibilities();
+			}
+			protected function setVisibilities():void
+			{
+				dispatchEvent(new Event("setPrevVisibility"));
+				dispatchEvent(new Event("setNextVisibility"));
+			}
+		]]>
+	</fx:Script>
+</s:BorderContainer>

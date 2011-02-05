@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!---Renderer for the images in the Panoramio list control.-->
+<s:ItemRenderer xmlns:fx="http://ns.adobe.com/mxml/2009" 
+				xmlns:s="library://ns.adobe.com/flex/spark" 
+				xmlns:mx="library://ns.adobe.com/flex/mx"
+				xmlns:classes="wcmc.classes.*"
+				autoDrawBackground="true" height="181">
+	<mx:Canvas width="240" backgroundAlpha="0">
+		<classes:MyImage source="{data.imageUrl}" horizontalCenter="0" defaultHeight="{DEFAULTHEIGHT}" updateComplete="myimage1_updateCompleteHandler(event)"/>
+		<mx:HBox width="100%" top="{DEFAULTHEIGHT}">
+			<mx:HBox width="100%" top="{DEFAULTHEIGHT}">
+				<mx:Image source="{EmbeddedImages.panoramio}" toolTip="{resourceManager.getString('myResources', 'TEXT145')}" click="Utilities.navigateToUrl('http://www.panoramio.com')" useHandCursor="true"/>
+				<mx:LinkButton label="{data.title}" click="linkbutton1_clickHandler(event)" styleName="copyrightLabel" toolTip="{resourceManager.getString('myResources', 'TEXT146')}" width="212"/>
+			</mx:HBox>
+		</mx:HBox>
+	</mx:Canvas>
+	<fx:Script>
+		<![CDATA[
+			import mx.events.FlexEvent;
+			
+			import wcmc.classes.EmbeddedImages;
+			import wcmc.classes.ImageLoadedEvent;
+			import wcmc.classes.Utilities;
+			private const DEFAULTHEIGHT:Number=160;
+			/**
+			 * Opens the Flickr page for the image in a new browser window
+			 */ 
+			protected function linkbutton1_clickHandler(event:MouseEvent):void
+			{
+				var urlRequest:URLRequest=new URLRequest(data.sourceUrl); 
+				navigateToURL(urlRequest,"_blank");
+			}
+			/**
+			 * Not currently implemented
+			 */ 
+			protected function myimage1_updateCompleteHandler(event:FlexEvent):void
+			{
+				owner.dispatchEvent(new ImageLoadedEvent(ImageLoadedEvent.IMAGELOADED,data.imageUrl)); 
+			}
+		]]>
+	</fx:Script>
+</s:ItemRenderer>

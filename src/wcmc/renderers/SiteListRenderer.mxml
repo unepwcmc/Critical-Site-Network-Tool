@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!---Simple renderer that is used in the site search page to show a site name and a country.-->
+<mx:HBox xmlns:mx="http://www.adobe.com/2006/mxml" horizontalScrollPolicy="off">
+	<mx:VBox verticalAlign="middle" height="100%" width="15">
+		<mx:Image source="{Countries.getCountryFlag(data.countryCode)}" visible="{getVisible(data.countryCode)}"/>
+	</mx:VBox>
+	<mx:VBox>
+		<mx:Label text="{Countries.getCountryName(data.countryCode)}"/>
+	</mx:VBox>
+	<mx:VBox>
+		<mx:Label text="{data.name}"/>
+	</mx:VBox>
+	<mx:Script>
+		<![CDATA[
+			import wcmc.classes.Countries;
+			import mx.controls.Image;
+			private function getVisible(countryCode:String):Boolean
+			{
+				return (countryCode=="" ? false : true);
+			}
+		]]>
+	</mx:Script>
+</mx:HBox>

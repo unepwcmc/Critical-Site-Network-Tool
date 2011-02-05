@@ -1,0 +1,199 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!---Main component that is used in the application for showing the legend items associated with the currently visible layers in the map. This component is bound to the legend items that are created by each layer.-->
+<components:MyBorderContainer xmlns:fx="http://ns.adobe.com/mxml/2009" 
+				   xmlns:s="library://ns.adobe.com/flex/spark" 
+				   xmlns:mx="library://ns.adobe.com/flex/mx" bottom="95" left="5" minHeight="0" minWidth="0" styleName="InformationPanel" xmlns:supportClasses="com.esri.ags.components.supportClasses.*" xmlns:components="wcmc.components.*">
+	<s:BorderContainer styleName="ContentPanel" right="5" bottom="5" top="5" left="5" minHeight="0" minWidth="0">
+		<s:VGroup paddingBottom="5" paddingLeft="5" paddingRight="5" paddingTop="5" gap="1">
+			<components:BoxHeader dragComponent="{this}" target="{csn}" caption="{resourceManager.getString('myResources', 'TEXT59')}" paddingBottom="6"/>			
+			<s:List id="layerLegendsList" itemRenderer="wcmc.renderers.LayerLegendRenderer" skinClass="wcmc.skins.LayerLegendSkin" dataProvider="{layerLegends}" enabled="false" styleName="layerLegendItem"/>
+		</s:VGroup>
+		<fx:Script>
+			<![CDATA[
+				import com.esri.ags.Map;
+				import com.esri.ags.events.LayerEvent;
+				import com.esri.ags.events.MapEvent;
+				import com.esri.ags.layers.Layer;
+				
+				import mx.collections.ArrayCollection;
+				import mx.events.FlexEvent;
+				
+				import wcmc.classes.ILegend;
+				import wcmc.classes.LayerLegend;
+				import wcmc.classes.SymbologyChangedEvent;
+				[Bindable]
+				/**
+				 * ArrayCollection of the layer legend objects. Each layer legend object represents the symbology and captions from a single layer.
+				 */ 
+				protected var layerLegends:ArrayCollection=new ArrayCollection();
+				[Bindable]private var _map:Map;
+				[Bindable]public var csn:CSN;
+				/**
+				 * Reference to the map object in the main application file. When this object is set, listeners are added so that when layers are added or removed from the map, their legend items are bound or unbound to the legend. 
+				 */ 
+				public function set map(value:Map):void
+				{
+					_map=value;
+					if (_map.layers.length>0) //layers may already be present in the map - those that do no include the 'includeIn' mxml in their declaration - so add the listeners for these as well
+					{
+						for each (var layer:Layer in _map.layers)
+						{
+							if (layer is ILegend)
+							{
+								var iLegend:ILegend=layer as ILegend;
+								if (iLegend.showLegend()) addLayerListeners(layer);	
+							}
+						}
+					}
+					value.addEventListener(MapEvent.LAYER_ADD,layerAdd); //whenever layers are added to the map they need to have a listener added to their symbologyChanged event 
+					value.addEventListener(MapEvent.LAYER_REMOVE,removeLayerListeners); //whenever layers are added to the map they need to have a listener added to their symbologyChanged event 
+				}
+				public function get map():Map
+				{
+					return _map;
+				}
+				/**
+				 * Called when a layer is added. Listeners are added to the added layer to respond to layer refreshes and symbology changes.
+				 */ 
+				protected function layerAdd(event:MapEvent):void
+				{
+					addLayerListeners(event.layer);
+				}
+				/**
+				 * Adds layer listeners to layers that are already present on the map. Update start, symbology changes and remove from map events are listened for.
+				 */ 
+				protected function addLayerListeners(layer:Layer):void
+				{
+					layer.addEventListener(LayerEvent.UPDATE_START,updateStart);
+					layer.addEventListener(SymbologyChangedEvent.SYMBOLOGYCHANGED,symbologyChanged);
+					layer.addEventListener(FlexEvent.HIDE,removeLayerLegend); //when the layer is hidden then it is removed from the layerLegends array collection
+					layer.addEventListener(Event.REMOVED_FROM_STAGE,removeLayerLegend); //when the state changes the layer is removed from the stage - so remove the legend
+				}
+				/**
+				 * Removes the symbology changed listener.
+				 */ 
+				protected function removeLayerListeners(event:MapEvent):void
+				{
+					event.layer.removeEventListener(SymbologyChangedEvent.SYMBOLOGYCHANGED,symbologyChanged);
+				}
+				/**
+				 * Called when symbols have changed as the result of either a layer refresh or change in renderer
+				 */ 
+				protected function symbologyChanged(event:Event):void 
+				{
+					var layer:Layer=event.target as Layer;
+					updateLegend(layer,false); //update the legend
+				}
+				/**
+				 * Called when a layer update start event is dispatched - this function updates the legend.
+				 */ 
+				protected function updateStart(event:LayerEvent):void
+				{
+					updateLegend(event.layer,true);
+				}
+				/**
+				 * Updates the legend items by rebuilding the LayerLegend array.
+				 */ 
+				protected function updateLegend(layer:Layer,isLoading:Boolean):void
+				{
+					if ((!layer.visible)||(!layer.isInScaleRange)) return;
+					var iLegend:ILegend=getILegend(layer);
+					if (iLegend)
+					{
+						removeExistingLayerLegend(layer); //remove the existing layer legend - DATA BINDING DID NOT WORK USING AN EXISTING LEGEND
+						var layerLegend:LayerLegend=createLayerLegend(layer);
+						layerLegend.caption=iLegend.caption(); //set the caption of the layer legend
+						layerLegend.items=iLegend.items(); //get the legend items
+						layerLegend.loading=isLoading; //set the loading flag - this is used in the item renderer to show the loading icon
+					}
+				}
+				/**
+				 * Creates a layer legend for the passed layer. The layer legend is placed in the legend int he same position it is placed on the map.
+				 */ 
+				protected function createLayerLegend(layer:Layer):LayerLegend
+				{
+					var layerLegend:LayerLegend=new LayerLegend(layer); //create a new layer legend
+					var position:Number=getAddPosition(layer); //get the position to add the layer at in the legend
+					layerLegends.addItemAt(layerLegend,position); //add the layer legend to the legend
+					return layerLegend;					
+				}
+				/**
+				 * Returns an ILegend iterface to a layer if it supports it
+				 */
+				protected function getILegend(layer:Layer):ILegend
+				{
+					if (!layer) return null;
+					if (!layer is ILegend) return null;
+					var iLegend:ILegend=layer as ILegend;
+					if (!iLegend) return null;
+					if (!iLegend.showLegend()) return null;
+					return iLegend;
+				}
+				/**
+				 * Gets the layer legend for the passed layer
+				 */
+				protected function getLayerLegend(layer:Layer):LayerLegend
+				{
+					for each (var _layerLegend:LayerLegend in layerLegends)
+					{
+						if (_layerLegend.layer==layer) return _layerLegend;
+					}
+					return null;
+				}
+				/**
+				 * Removes a layer legend from the LayerLegends ArrayCollection.
+				 */ 
+				protected function removeLayerLegend(event:Event):void
+				{
+					for (var i:Number=0;i<layerLegends.length;i++)
+					{
+						var layerLegend:LayerLegend=layerLegends[i];
+						if (layerLegend.layer==event.target) layerLegends.removeItemAt(i);
+					}
+				}
+				/**
+				 * Removes a layer legend from the LayerLegends ArrayCollection.
+				 */ 
+				protected function removeExistingLayerLegend(layer:Layer):void
+				{
+					for each (var _layerLegend:LayerLegend in layerLegends)
+					{
+						if (_layerLegend.layer==layer)
+						{
+							layerLegends.removeItemAt(layerLegends.getItemIndex(_layerLegend));
+						}
+					}
+				}
+				/**
+				 * Returns the index position to add the layer at in the legend - this depends on where the layer is in relation to the other layers on the map.  
+				 */
+				protected function getAddPosition(layer:Layer):Number
+				{
+					var layerPosition:Number=getLayerPosition(layer);
+					var childPositions:Array=new Array();
+					for each (var _layerLegend:LayerLegend in layerLegends)
+					{
+						childPositions.push(getLayerPosition(_layerLegend.layer));
+					}
+					if (childPositions.length==0)
+					{
+						return 0;
+					}
+					else
+					{
+						childPositions.push(layerPosition);
+						childPositions.sort();
+						return childPositions.indexOf(layerPosition);
+					}
+				}
+				/**
+				 * Returns the layer position in the map.
+				 */ 
+				protected function getLayerPosition(layer:Layer):Number
+				{
+					return layer.parent.getChildIndex(layer);
+				}
+			]]>
+		</fx:Script>
+	</s:BorderContainer>
+</components:MyBorderContainer>

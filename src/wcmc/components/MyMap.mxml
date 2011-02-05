@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!---Custom esri.com.ags.Map component that adds a single event, a MapMouseEvent event.-->
+<esri:Map xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		  xmlns:s="library://ns.adobe.com/flex/spark" 
+		  xmlns:mx="library://ns.adobe.com/flex/mx" xmlns:esri="http://www.esri.com/2008/ags">
+	<fx:Metadata>
+		[Event(name="pointToolClick", type="com.esri.ags.events.MapMouseEvent")]
+	</fx:Metadata>
+</esri:Map>

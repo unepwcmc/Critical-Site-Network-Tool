@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!---A custom container that shows the user a set of base map types and allows them to choose which one is the active base map.-->
+<components:MyBorderContainer xmlns:fx="http://ns.adobe.com/mxml/2009" 
+							  xmlns:s="library://ns.adobe.com/flex/spark" 
+							  xmlns:mx="library://ns.adobe.com/flex/mx" xmlns:components="wcmc.components.*">
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+	</fx:Declarations>
+	<fx:Metadata>
+		[Event(name="basemapChanged", type="wcmc.classes.BasemapChangedEvent")]
+	</fx:Metadata>
+	<s:BorderContainer styleName="ContentPanel" right="5" bottom="5" top="5" left="5">
+		<s:VGroup paddingLeft="10" paddingBottom="8" paddingRight="10" paddingTop="10">
+			<components:BoxHeader dragComponent="{this}" target="{csn}" caption="{resourceManager.getString('myResources', 'TEXT24')}"/>
+			<s:List id="basemapList" itemRenderer="wcmc.renderers.BasemapGalleryRenderer" borderVisible="false" valueCommit="setURL()" change="setURL()">
+				<s:layout>
+					<s:TileLayout horizontalGap="5" verticalGap="5"/>
+				</s:layout>
+				<s:ArrayCollection id="basemaps">
+					<fx:Object image="{EmbeddedImages.mg4}" mapId="imagery" label="{resourceManager.getString('myResources', 'TEXT18')}" url="http://services.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer" isBing="false"/>
+					<fx:Object image="{EmbeddedImages.mg5}" mapId="imageryLabels" label="{resourceManager.getString('myResources', 'TEXT19')}" url="http://services.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer" labelurl="http://services.arcgisonline.com/ArcGIS/rest/services/Reference/World_Boundaries_and_Places/MapServer" isBing="false"/>
+					<fx:Object image="{EmbeddedImages.mg6}" mapId="streets" label="{resourceManager.getString('myResources', 'TEXT20')}" url="http://services.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer" isBing="false"/>
+					<fx:Object image="{EmbeddedImages.mg7}" mapId="topographic" label="{resourceManager.getString('myResources', 'TEXT21')}" url="http://services.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer" isBing="false"/>
+					<fx:Object image="{EmbeddedImages.mg10}" mapId="terrain" label="{resourceManager.getString('myResources', 'TEXT22')}" url="http://server.arcgisonline.com/ArcGIS/rest/services/World_Terrain_Base/MapServer" isBing="false"/>
+					<fx:Object image="{EmbeddedImages.mg11}" mapId="terrainLabels" label="{resourceManager.getString('myResources', 'TEXT23')}" url="http://server.arcgisonline.com/ArcGIS/rest/services/World_Terrain_Base/MapServer" labelurl="http://services.arcgisonline.com/ArcGIS/rest/services/Reference/World_Reference_Overlay/MapServer" isBing="false"/>
+					<fx:Object image="{EmbeddedImages.mg1}" mapId="bingAerial" label="{resourceManager.getString('myResources', 'TEXT245')}" mapStyle="aerial" isBing="true"/>
+					<fx:Object image="{EmbeddedImages.mg2}" mapId="bingAerialLabels" label="{resourceManager.getString('myResources', 'TEXT246')}" mapStyle="aerialWithLabels" isBing="true"/>
+					<fx:Object image="{EmbeddedImages.mg3}" mapId="bingRoad" label="{resourceManager.getString('myResources', 'TEXT247')}" mapStyle="road" isBing="true"/>
+					<!--couldnt find the REST endpoint			<fx:Object image="@Embed(source='/images/mg9.png')" label="OpenStreetMap" url=""/>
+					looks awful								<fx:Object image="@Embed(source='/images/mg12.png')" label="Shaded Relief" url="http://services.arcgisonline.com/ArcGIS/rest/services/World_Shaded_Relief/MapServer"/>-->
+				</s:ArrayCollection>
+			</s:List>
+		</s:VGroup>
+	</s:BorderContainer>
+	<fx:Script>
+		<![CDATA[
+			import com.esri.ags.Map;
+			
+			import wcmc.classes.BasemapChangedEvent;
+			import wcmc.classes.EmbeddedImages;
+			
+			public const DEFAULTBASEMAP:String="streets";
+			private var _mapId:String;
+			[Bindable]public var url:String; //url of the map data for ESRI layers
+			[Bindable]public var mapStyle:String; //mapstyle for Bing layers, e.g. aerial etc
+			[Bindable]public var labelurl:String; //url of the label data
+			[Bindable]public var isBing:Boolean;
+			[Bindable]public var map:Map;
+			[Bindable]public var csn:CSN;
+			public function get mapId():String
+			{
+				return _mapId;
+			}
+			public function set mapId(value:String):void
+			{
+				_mapId = value;
+				if (!(_mapId.substr(0,4)=="bing")) mapStyle="aerial"; //in order to initialise the map we must set the Bing mapstyle otherwise no cached tiles are loaded. So if the current map is not a Bing map, set a default value to load the Bing tiles.
+				for each (var object:Object in basemaps)
+				{
+					if (object.mapId==_mapId)
+					{
+						basemapList.selectedItem=object;
+						return;
+					}
+				}
+			}
+			protected function setURL():void
+			{
+				isBing=basemapList.selectedItem.isBing;
+				if (isBing)
+				{
+					mapStyle=basemapList.selectedItem.mapStyle;
+				}
+				else
+				{
+					url=basemapList.selectedItem.url;
+					labelurl=basemapList.selectedItem.labelurl;
+				}
+				_mapId=basemapList.selectedItem.mapId;
+				dispatchEvent(new BasemapChangedEvent(BasemapChangedEvent.BASEMAP_CHANGED,mapId));
+			}
+		]]>
+	</fx:Script>
+</components:MyBorderContainer>

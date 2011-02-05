@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!---Simple renderer that is used in the species list for a site data table to show a chart icon if the species has a trend at that site.-->
+<mx:HBox xmlns:fx="http://ns.adobe.com/mxml/2009" xmlns:mx="library://ns.adobe.com/flex/mx"  horizontalScrollPolicy="off" verticalAlign="middle" horizontalAlign="center">
+	<mx:Image id="image" source="{EmbeddedImages.chartSmall}" visible="{data.CountOfIWCCounts}" toolTip="{resourceManager.getString('myResources', 'TEXT144')}" rollOver="image1_rollOverHandler(event)"/>
+	<fx:Script>
+		<![CDATA[
+			import wcmc.classes.CreateIWCChartEvent;
+			import wcmc.classes.EmbeddedImages;
+			/**
+			 * Called when the user moves the mouse over the chart icon. A CreateIWCChartEvent event is dispatched to create the chart for this species at this site.
+			 */ 
+			protected function image1_rollOverHandler(event:MouseEvent):void
+			{
+				parentApplication.dispatchEvent(new CreateIWCChartEvent(CreateIWCChartEvent.CREATEIWCCHART,data,image.contentToGlobal(new Point()))); //bubbles up to the CSN class where it is handled				
+			}
+		]]>
+	</fx:Script>
+</mx:HBox>

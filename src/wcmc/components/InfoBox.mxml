@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!---Simple container which contains Help information for the application and is loaded into the infoPanel when the application state is set to 'info'.-->
+<s:VGroup xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		  xmlns:s="library://ns.adobe.com/flex/spark" 
+		  xmlns:mx="library://ns.adobe.com/flex/mx"
+		  xmlns:classes="wcmc.classes.*"
+		  xmlns:esri="http://www.esri.com/2008/ags"
+		  width="100%" height="100%" xmlns:components="wcmc.components.*" gap="10" paddingTop="8">
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+	</fx:Declarations>
+	<s:Label text="{resourceManager.getString('myResources', 'TEXT15')}" styleName="speciesSearchBox"/>
+	<s:Label text="{resourceManager.getString('myResources', 'TEXT234')}" width="100%"/>
+	<s:Label text="{resourceManager.getString('myResources', 'TEXT58')}" styleName="layerLegendLabel" width="100%"/>
+	<s:HGroup width="100%" verticalAlign="middle">
+		<mx:Image source="{EmbeddedImages.download}" click="image1_clickHandler(event)" />
+		<s:Label text="{resourceManager.getString('myResources', 'TEXT236')}" width="100%"/>
+	</s:HGroup>
+	<s:Label text="{resourceManager.getString('myResources', 'TEXT56')}" styleName="layerLegendLabel" width="100%"/>
+	<s:Label text="{resourceManager.getString('myResources', 'TEXT237')}" width="100%"/>
+	<mx:HBox paddingLeft="10">
+		<s:Label text="{resourceManager.getString('myResources', 'TEXT239')}" width="100%"/>
+		<s:Label text="{resourceManager.getString('myResources', 'TEXT240')}" width="100%"/>
+	</mx:HBox>
+	<mx:HBox paddingLeft="10">
+		<s:Label text="{resourceManager.getString('myResources', 'TEXT241')}" width="100%"/>
+	</mx:HBox>
+	<s:Label text="{resourceManager.getString('myResources', 'TEXT242')}" width="100%"/>
+	<mx:LinkButton bottom="10" label="{resourceManager.getString('myResources', 'TEXT9')}" click="Utilities.navigateToUrl('http://code.google.com/p/wingsoverwetlands/issues/list')" toolTip="{resourceManager.getString('myResources', 'TEXT11')}"/>
+	<s:Label text="{resourceManager.getString('myResources', 'TEXT55')}" styleName="layerLegendLabel" width="100%"/>
+	<s:Label text="{resourceManager.getString('myResources', 'TEXT235')}" width="100%"/>
+<!--	<mx:LinkButton bottom="10" label="{resourceManager.getString('myResources', 'TEXT57')}" click="Utilities.navigateToUrl('http://www.surveymonkey.com/s/RDRYDXN')" toolTip="{resourceManager.getString('myResources', 'TEXT57')}"/>-->
+	<fx:Script>
+		<![CDATA[
+			import wcmc.classes.EmbeddedImages;
+			import wcmc.classes.Utilities;
+			/**
+			 * Opens the user guide in a separate window.
+			 */ 
+			protected function image1_clickHandler(event:MouseEvent):void
+			{
+				navigateToURL(new URLRequest("http://dev.unep-wcmc.org/csn/UserGuide.doc"),"blank");
+			}
+
+		]]>
+	</fx:Script>
+</s:VGroup>

@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!---Renderer used in a number of datagrids to show a link to the species. When the link is clicked it navigates to that species.-->
+<mx:HBox xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" 
+		 xmlns:mx="library://ns.adobe.com/flex/mx" horizontalScrollPolicy="off" verticalAlign="middle" horizontalAlign="center">
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+	</fx:Declarations>
+	<mx:Image source="{EmbeddedImages.arrowRight}"  click="label1_clickHandler(event)" toolTip="{resourceManager.getString('myResources', 'TEXT148')}"/>
+	<fx:Script>
+		<![CDATA[
+			import wcmc.classes.EmbeddedImages;
+			import wcmc.classes.SetSpeciesEvent;
+			import wcmc.classes.Species;
+			/**
+			 * Navigates to the species - creates a species object and dispatches the SetSpecies event.
+			 */ 
+			protected function label1_clickHandler(event:MouseEvent):void
+			{
+				var species:Species=new Species();
+				species.spcRecID=data.SpcRecID;
+				species.scientificName=data.Species;
+				var csn:CSN=parentApplication as CSN;
+				species.commonName=data[csn.commonNameField];
+				species.spcRedCategory=data.SpcRedCategory;
+				parentApplication.dispatchEvent(new SetSpeciesEvent(SetSpeciesEvent.SETSPECIES,species));
+			}
+		]]>
+	</fx:Script>
+</mx:HBox>

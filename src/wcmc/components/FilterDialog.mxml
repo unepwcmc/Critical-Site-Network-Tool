@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!---
+MXML component that is a UI on an individual Filter object. An instance of this class is created when the user toggles on a filter using the FilterUI class.
+-->
+<mx:Canvas xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		   xmlns:s="library://ns.adobe.com/flex/spark" 
+		   xmlns:mx="library://ns.adobe.com/flex/mx"
+		   showEffect="{fader}" hideEffect="{fader}"
+		   styleName="border">
+	<fx:Metadata>
+		/***
+		* Event that is dispatched when the filter is saved.
+		**/
+		[Event(name="FilterSavedEvent", type="wcmc.classes.FilterSavedEvent")]
+	</fx:Metadata>
+	<fx:Declarations>
+		<mx:Fade id="fader" duration="250"/>
+	</fx:Declarations>
+		<s:BorderContainer styleName="InformationPanel">
+			<s:BorderContainer styleName="ContentPanel" right="5" bottom="5" top="5" left="5">
+				<s:VGroup paddingLeft="10" paddingBottom="8" paddingRight="10" paddingTop="10">
+					<mx:Canvas>
+						<!---The list component that will display all of the lookup values from the filter and allow the user to select/deselect lookup values.-->
+						<s:List itemRenderer="{filter.filterRenderer}" id="list" dataProvider="{filter.lookupValues}" showEffect="{fader}" hideEffect="{fader}" maxHeight="220" width="220" skinClass="wcmc.skins.FilterUIListSkin" visible="{filter.lookupValuesReturned}"/>
+						<!---Animation that is shown when the FilterDialog is loading its values from the web service.-->
+						<mx:SWFLoader source="{EmbeddedImages.loader}" horizontalCenter="0" verticalCenter="0" id="loader" showEffect="{fader}" hideEffect="{fader}" visible="{!filter.lookupValuesReturned}"/>
+					</mx:Canvas>
+					<mx:Spacer height="5"/>
+					<mx:Canvas>
+						<!---Checkbox that is used to select/deselect all of the values in the FilterDialog class. The default value is all are selected.-->
+						<s:CheckBox x="1" id="checkBox" click="checkBox_clickHandler(event)" creationComplete="checkBox.selected=true"/>
+						<s:Button click="close(true)" label="{resourceManager.getString('myResources', 'TEXT48')}" width="40" x="25" height="18"/>
+						<s:Button click="close(false)" label="{resourceManager.getString('myResources', 'TEXT49')}" width="60" x="70" height="18"/>
+						<!---Label that shows any error messages in the UI.-->
+						<s:Label x="133" text="{resourceManager.getString('myResources', 'TEXT50')}" y="5" color="0xff0000" alpha="0.7" id="errorLabel" visible="{filter.filterEmpty}"/>
+					</mx:Canvas>
+				</s:VGroup>
+			</s:BorderContainer>
+		</s:BorderContainer>
+	
+	<fx:Script>
+		<![CDATA[
+			import mx.core.IFlexDisplayObject;
+			import mx.managers.PopUpManager;
+			
+			import wcmc.classes.EmbeddedImages;
+			import wcmc.classes.Filter;
+			import wcmc.classes.LookupValue;
+			private var _filter:Filter;
+			[Bindable]
+			/**
+			 * Gets or sets the Filter object associated with this FilterDialog.
+			 */ 
+			public function get filter():Filter
+			{
+				return _filter;
+			}
+			public function set filter(value:Filter):void
+			{
+				_filter = value;
+				_filter.getLookupValues();
+			}
+			/**
+			 * Closes the FilterDialog box optionally with saving the state of the Filter to a shared object.
+			 */ 
+			public function close(saveChanges:Boolean):void
+			{
+				if (saveChanges)
+				{
+					filter.save();
+					if (!filter.filterEmpty)
+					{
+						if (list.dataProvider)
+						{
+							if (list.dataProvider.length>0) filter.filterCollection.getMatchingIDs(); //get the matching IBA siteRecIDs for the filterCollection
+						}
+						closeDialog();
+					}
+				}
+				else
+				{
+					closeDialog();	
+				}
+			}
+			/**
+			 * Sets the value of the selected variable in the corresponding LookupValue when the user checks/unckecks a check box
+			 */ 
+			protected function checkBox_clickHandler(event:MouseEvent):void
+			{
+				if (list.dataProvider.length>0)
+				{
+					for each (var lookupValue:LookupValue in list.dataProvider)
+					{
+						lookupValue.selected=checkBox.selected;
+					}
+				}
+			}
+			private function closeDialog():void
+			{
+				PopUpManager.removePopUp(this as IFlexDisplayObject);
+				dispatchEvent(new Event("filterDialogClosed"));
+			}
+		]]>
+	</fx:Script>
+</mx:Canvas>

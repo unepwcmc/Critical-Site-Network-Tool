@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!---Renderer that shows the country name and a flag and has the country name as a tooltip. This renderer is used in the application data grids.-->
+<mx:HBox xmlns:mx="http://www.adobe.com/2006/mxml" horizontalScrollPolicy="off" verticalAlign="middle" paddingLeft="5">
+		<mx:Image source="{Countries.getCountryFlag(data.Country)}"/>
+		<mx:Label text="{Countries.getCountryName(data.Country)}" toolTip="{Countries.getCountryName(data.Country)}"/>
+	<mx:Script>
+		<![CDATA[
+			import wcmc.classes.Countries;
+		]]>
+	</mx:Script>
+</mx:HBox>

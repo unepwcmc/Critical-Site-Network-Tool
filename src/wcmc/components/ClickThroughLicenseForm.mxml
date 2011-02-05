@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!---Custom box that displays a click through license agreemnt that the user must agree to before they can download or print and of the data int he applcaiton. This box is only shown once until the user agrees to the license agreement.-->
+<components:MyBorderContainer xmlns:fx="http://ns.adobe.com/mxml/2009" 
+			   xmlns:s="library://ns.adobe.com/flex/spark" 
+			   xmlns:mx="library://ns.adobe.com/flex/mx" width="400" height="270" styleName="InformationPanel" xmlns:components="wcmc.components.*">
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+	</fx:Declarations>
+	<s:BorderContainer styleName="ContentPanel" right="5" bottom="5" top="5" left="5" minHeight="0" minWidth="0">
+		<s:VGroup paddingBottom="5" paddingLeft="5" paddingRight="5" paddingTop="5" horizontalAlign="center" gap="10">
+			<components:BoxHeader caption="{resourceManager.getString('myResources', 'TEXT228')}" boxClosed="PopUpManager.removePopUp(this)" dragComponent="{this}" target="{parentApplication}"/>
+			<s:TextArea x="8" y="0" width="90%" editable="false" text="{resourceManager.getString('myResources', 'TEXT229')}"/>
+			<s:CheckBox label="{resourceManager.getString('myResources', 'TEXT230')}" id="agreeCheckbox"/>
+			<s:HGroup>
+				<s:Button label="{resourceManager.getString('myResources', 'TEXT231')}" enabled="{agreeCheckbox.selected}" click="button1_clickHandler(event)"/>
+				<s:Button label="{resourceManager.getString('myResources', 'TEXT232')}" enabled="true" click="button2_clickHandler(event)"/>
+			</s:HGroup>
+		</s:VGroup>
+	</s:BorderContainer>
+	<fx:Script>
+		<![CDATA[
+			import mx.managers.PopUpManager;
+			protected function button1_clickHandler(event:MouseEvent):void
+			{
+				dispatchEvent(new Event("licenseAccepted"));
+				PopUpManager.removePopUp(this);
+			}
+			protected function button2_clickHandler(event:MouseEvent):void
+			{
+				dispatchEvent(new Event("licenseRejected"));
+				PopUpManager.removePopUp(this);
+			}
+		]]>
+	</fx:Script>
+</components:MyBorderContainer>

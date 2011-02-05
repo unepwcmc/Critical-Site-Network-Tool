@@ -1,0 +1,408 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!---Container component that is used at the bottom of all data grids to report the number of matching records and to present tools to print the data as a report and to copy it to the clipboard.-->
+<s:HGroup xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		  xmlns:s="library://ns.adobe.com/flex/spark" 
+		  xmlns:mx="library://ns.adobe.com/flex/mx" width="100%" paddingRight="5" paddingLeft="10" verticalAlign="middle">
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+	</fx:Declarations>
+	<s:Label text="{(dataGrid.dataProvider as ArrayCollection).length} {resourceManager.getString('myResources', 'TEXT226')}" fontSize="11"/>
+	<mx:Spacer width="100%"/>
+<!--	<mx:Image id="wowImage" source="{EmbeddedImages.wowLogo}" alpha="0"/>-->
+	<mx:Image source="{EmbeddedImages.print}" toolTip="{resourceManager.getString('myResources', 'TEXT72')}" click="print(event)"/>
+	<mx:Image source="{EmbeddedImages.copyToClipboard}" toolTip="{resourceManager.getString('myResources', 'TEXT73')}" click="save(event)"/>
+	<fx:Script>
+		<![CDATA[
+			import mx.collections.ArrayCollection;
+			import mx.controls.Alert;
+			import mx.controls.DataGrid;
+			import mx.controls.dataGridClasses.DataGridColumn;
+			import mx.core.IFlexDisplayObject;
+			import mx.managers.CursorManager;
+			import mx.managers.PopUpManager;
+			import mx.printing.FlexPrintJob;
+			
+			import org.alivepdf.colors.RGBColor;
+			import org.alivepdf.data.Grid;
+			import org.alivepdf.data.GridColumn;
+			import org.alivepdf.drawing.Joint;
+			import org.alivepdf.fonts.CoreFont;
+			import org.alivepdf.fonts.FontFamily;
+			import org.alivepdf.fonts.IFont;
+			import org.alivepdf.layout.Orientation;
+			import org.alivepdf.layout.Size;
+			import org.alivepdf.layout.Unit;
+			import org.alivepdf.links.HTTPLink;
+			import org.alivepdf.links.ILink;
+			import org.alivepdf.pdf.PDF;
+			import org.alivepdf.saving.Download;
+			import org.alivepdf.saving.Method;
+			
+			import spark.components.Label;
+			
+			import wcmc.classes.Countries;
+			import wcmc.classes.EmbeddedImages;
+			import wcmc.classes.Filter;
+			import wcmc.classes.FilterCollection;
+			import wcmc.classes.LookupValue;
+			[Bindable]public var dataGrid:DataGrid;
+			[Bindable]public var reportTitle:String;
+			[Bindable]public var outputFilters:Boolean=false;
+			[Bindable]public var filterCollection:FilterCollection;
+			public var reportOrientation:String=Orientation.PORTRAIT;
+			public var outputDate:Boolean=true;
+			public var reportLink:String;
+			private var filtersCount:Number=0;
+			private var filtersReturned:Number=0;
+			private var iFont:IFont=new CoreFont(FontFamily.TIMES);
+			private var italicFont:IFont=new CoreFont(FontFamily.TIMES_ITALIC);
+			private var myPDF:PDF;
+			private var outputType:String;
+			/**
+			 * Prints the data from the data grid as a pdf.
+			 */ 
+			protected function print(event:MouseEvent):void
+			{
+				outputType="pdf";
+				agreeLicense();
+			}
+			private function exportAsPDF():void
+			{
+				CursorManager.setBusyCursor();
+				myPDF=new PDF(reportOrientation,Unit.MM,Size.A4);
+				myPDF.addPage();
+				myPDF.setTitle(reportTitle);
+				myPDF.setFont(iFont,10);
+				myPDF.writeText(10,reportTitle);
+				myPDF.moveTo(10,19);
+				myPDF.lineTo(130,19);
+				myPDF.end();
+				myPDF.newLine(15);
+				var label:String;
+				myPDF.setFont(iFont,8);
+				myPDF.textStyle(new RGBColor(0),1);
+				myPDF.addGrid(getGrid());
+				(outputFilters) ? outputFilterString() : exportPDF();
+			}
+			private function getGrid():Grid
+			{
+				var labelsArray:Array=getGridLabels();
+				var columns:Array=new Array();
+				for each (var dataGridColumn:DataGridColumn in dataGrid.columns)
+				{
+					if ((dataGridColumn.visible)&&(dataGridColumn.headerText!="")) //dont include non-visible columns or link columns
+					{
+						var dataField:String;
+						(!dataGridColumn.dataField) ? dataField=dataGridColumn.headerText : dataField=dataGridColumn.dataField;  //if the datafield is not specified then it will have a custom itemRenderer property - but in order for the Grid to output values it needs a column with a datafield - in the getGridLabels method we are populating this array so we can set the datafield property to the column heading
+						columns.push(new GridColumn(dataGridColumn.headerText,dataField,dataGridColumn.width/4));
+					}
+				}
+				var grid:Grid=new Grid (labelsArray,1,1,new RGBColor(0xcccccc),new RGBColor(0xf5f5f5),true,new RGBColor(0xaaaaaa),1,Joint.ROUND,columns);
+				return grid;
+			}
+			private function getGridLabels():Array // there are some values in the datagrid which need to be parsed to get their text equivalent - this is the purpose of this function
+			{
+				if (!dataGrid.dataProvider) return null;
+				var returnValue:Array;
+				returnValue=cloneDataProvider(dataGrid.dataProvider); //clone the datagrids dataprovider property
+				if (!returnValue) return null;
+				for each (var dataGridColumn:DataGridColumn in dataGrid.columns) //iterate through the columns
+				{
+					if (dataGridColumn.visible)
+					{
+						for (var i:int=0;i<returnValue.length;i++) //iterate through the rows
+						{
+							var row:Object=returnValue[i];
+							if (dataGridColumn.dataField) row[dataGridColumn.dataField]=dataGridColumn.itemToLabel(row); //use any labelFunction in place
+							switch (dataGridColumn.headerText) //the following is a bit of a hack, but there was no way to get the actual itemRenderer instances to get to the data
+							{
+								case "Country":
+									row.Country=Countries.getCountryName(row.Country);
+									break;
+								case "CSN1":
+									(row.CSN1==1) ? row.CSN1="x" : row.CSN1=" ";
+									break;
+								case "CSN2":
+									(row.CSN2==1) ? row.CSN2="x" : row.CSN2=" ";
+									break;
+								case "IBA":
+									(row.IsIBA==1) ? row.IBA="x" : row.IBA=" ";
+									break;
+								default:
+									break;
+							}
+						}
+					}
+				}
+				return returnValue;
+			}
+			private function cloneDataProvider(dataprovider:Object):Array
+			{
+				var source:Array;
+				if (dataprovider is ArrayCollection) //could be sorted
+				{
+					var ac:ArrayCollection=dataprovider as ArrayCollection;
+					source=ac.toArray(); //returns the sorted array
+				}
+				else
+				{
+					source=dataprovider as Array;
+				}
+				var returnVal:Array=new Array();
+				for each (var obj:Object in source)
+				{
+					returnVal.push(cloneObject(obj));
+				}
+				return returnVal;
+			}
+			private function cloneObject(source:Object):Object
+			{
+				var obj:Object=new Object;
+				for (var propertyName:String in source)
+				{
+					obj[propertyName]=source[propertyName];	
+				}
+				return obj;
+			}
+			private function outputFilterString():void
+			{
+				if (!filterCollection) return;
+				myPDF.newLine(3);
+				myPDF.setFont(iFont,8);
+				if (filterCollection.filtered)
+				{
+					myPDF.writeText(3,resourceManager.getString('myResources', 'TEXT74'))
+					for each (var filter:Filter in filterCollection.filters)
+					{
+						if (filter.filtered)
+						{
+							filtersCount+=1;
+							filter.addEventListener("lookupValuesReturned",lookupValuesReturned);
+							filter.getLookupValues(); 
+						}
+					}
+				}
+				else
+				{
+					myPDF.writeText(3,resourceManager.getString('myResources', 'TEXT75'))
+					exportPDF();
+				}
+			}
+			private function outputDateStamp():void
+			{
+				myPDF.setFont(iFont,8);
+				myPDF.newLine(5);
+				myPDF.writeText(3,resourceManager.getString('myResources', 'TEXT76') + new Date().toLocaleDateString() + " " + resourceManager.getString('myResources', 'TEXT77') + new Date().toLocaleTimeString() + " " + resourceManager.getString('myResources', 'TEXT78'));
+				if (reportLink) //insert a hyperlink to the page in the CSN tool if it is specified
+				{
+					var iLink:ILink=new HTTPLink(reportLink)
+					myPDF.setFont(iFont,8,true);
+					myPDF.textStyle(new RGBColor(0x0000ff));
+					myPDF.writeText(3,resourceManager.getString('myResources', 'TEXT79'),iLink);
+					myPDF.setFont(iFont,8,false);
+					myPDF.textStyle(new RGBColor(0x000000));
+				}
+			}
+			private function lookupValuesReturned(event:Event):void
+			{
+				var filter:Filter=event.target as Filter;
+				filter.removeEventListener("lookupValuesReturned",lookupValuesReturned);
+				var lookupText:String=getLookupValuesAsText(filter.lookupValues);
+				myPDF.newLine(3);
+				myPDF.writeText(3,"  " + filter.label + ": " + lookupText);
+				filtersReturned+=1;
+				if (filtersReturned==filtersCount)
+				{
+					exportPDF();
+					filtersCount=0;
+					filtersReturned=0;
+				}
+			}
+			private function exportPDF():void
+			{
+				if (outputDate) outputDateStamp();
+				//				if (wowImage) myPDF.addImage(wowImage,null,0,myPDF.getY()-5,30,8);
+				myPDF.save(Method.REMOTE,"http://dev.unep-wcmc.org/create.php",Download.INLINE,"csnReport.pdf");
+				CursorManager.removeBusyCursor();
+			}
+			/*Returns all of the values from a set of filter lookup values as a comma separated string  */
+			private function getLookupValuesAsText(lookupValues:ArrayCollection):String
+			{
+				var lookupText:String="";
+				for each (var lookupValue:LookupValue in lookupValues)
+				{
+					if (lookupValue.selected)
+					{
+						(lookupText=="") ? lookupText=lookupValue.value : lookupText+=", " + lookupValue.value;
+					}
+				}
+				return lookupText;
+			}
+			/**
+			 * Saves the data to the clipboard.
+			 */ 
+			protected function save(event:MouseEvent):void
+			{
+				outputType="csv";
+				agreeLicense();
+			}
+			private function saveAsCSV():void
+			{
+				var str:String=exportCSV();
+				System.setClipboard(str);	
+				Alert.show(resourceManager.getString('myResources', 'TEXT80'),resourceManager.getString('myResources', 'TEXT79'));
+			}
+			private function exportCSV(csvSeparator:String="\t", lineSeparator:String="\n"):String
+			{
+				if (!dataGrid.dataProvider) return "";
+				var data:String = "";
+				var columns:Array = dataGrid.columns;
+				var columnCount:int = columns.length;
+				var column:DataGridColumn;
+				var header:String = "";
+				var headerGenerated:Boolean = false;
+				var rowCount:int = dataGrid.dataProvider.length;
+				var labels:Array=getGridLabels();
+				var j:int = 0;
+				var text:String;
+				//loop through rows
+				for each (var obj:Object in labels)
+				{
+					//loop through all columns for the row
+					for (var k:int = 0; k < columnCount; k++)
+					{
+						column = columns[k];
+						//Exclude column data which is invisible (hidden) or when it is a link field	
+						if ((!column.visible)||(column.headerText=="")) continue;
+						if (!column.dataField)
+						{
+							switch (column.headerText) 
+							{
+								case "Country":
+									text=obj.Country;
+									break;
+								case "CSN1":
+									text=obj.CSN1;;
+									break;
+								case "CSN2":
+									text=obj.CSN2;
+									break;
+								case "IBA":
+									text=obj.IBA;
+									break;
+								default:
+									break;
+							}
+						}
+						else
+						{
+							if (column.headerText=="Species")
+							{
+								text=obj.SpcRedCategory + csvSeparator + obj.Species;
+							}
+							else
+							{
+								text=column.itemToLabel(obj);
+							}
+						}
+						data+=text; 
+						if(k < (columnCount -1))
+						{
+							data += csvSeparator;
+						}
+						//generate header of CSV, only if it's not genereted yet
+						if (!headerGenerated)
+						{
+							if (column.headerText=="Species") header+="RDB Status" + csvSeparator; //add the RDB status as a header
+							header += column.headerText;
+							if (k < columnCount - 1)
+							{
+								header += csvSeparator;
+							}
+						}
+					}
+					headerGenerated = true;
+					if (j < (rowCount - 1))
+					{
+						data += lineSeparator;
+					}
+					j++;
+				}
+				return (header + "\r\n" + data);
+			}
+			private function print2(myFlexPrintJobScaleType:String):void
+			{
+				// Create an instance of the FlexPrintJob class.
+				var myPrintJob:FlexPrintJob = new FlexPrintJob();
+				// Start the print job.
+				if (myPrintJob.start())
+				{
+					try
+					{
+						myPrintJob.addObject(dataGrid, myFlexPrintJobScaleType);
+					}
+					catch (error:Error)
+					{
+						Alert.show(error.toString());
+					}
+					// Send the job to the printer.
+					myPrintJob.send();
+				}
+			}
+			private function agreeLicense():void //output type is 'pdf' or 'csv'
+			{
+				//show the click through license agreement if the user has not already agreed it
+				if (!loadLicenseState())
+				{
+					showClickThroughForm();
+				}
+				else
+				{
+					switch (outputType)
+					{
+						case "pdf":
+							exportAsPDF();
+							break;
+						case "csv":
+							saveAsCSV();
+							break;
+						default:
+							break;
+							
+					}
+				}
+			}
+			private function saveLicenseState(acceptedLicense:Boolean):void
+			{
+				var mySO:SharedObject=SharedObject.getLocal(parentApplication.SHAREDOBJECT_NAME);
+				mySO.data.acceptedLicense=acceptedLicense;
+				mySO.flush();
+			}
+			private function loadLicenseState():Boolean
+			{
+				var returnValue:Boolean;
+				var mySO:SharedObject=SharedObject.getLocal(parentApplication.SHAREDOBJECT_NAME);
+				(mySO) ? returnValue=mySO.data.acceptedLicense : returnValue=false;
+				return returnValue;
+			}
+			private function showClickThroughForm():void
+			{
+				var iFlexDisplayObject:IFlexDisplayObject = PopUpManager.createPopUp(parentApplication as DisplayObject, ClickThroughLicenseForm, true) as IFlexDisplayObject;
+				iFlexDisplayObject.addEventListener("licenseAccepted",licenseAccepted);
+				iFlexDisplayObject.addEventListener("licenseRejected",licenseRejected);
+				PopUpManager.centerPopUp(iFlexDisplayObject);
+			}
+			private function licenseAccepted(event:Event):void
+			{
+				event.target.removeEventListener("licenseAccepted",licenseAccepted);
+				saveLicenseState(true);
+				agreeLicense();
+			}
+			private function licenseRejected(event:Event):void
+			{
+				event.target.removeEventListener("licenseRejected",licenseRejected);
+				saveLicenseState(false);
+			}
+		]]>
+	</fx:Script>
+</s:HGroup>

@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!---
+The SpeciesSearchBox is an MXML component that is used in the CSN tool to search for a species. The component uses asynchronouse calls to web services to get the data to populate the search box.
+<p>The life cycle of the SpeciesSearchBox is the following:</p>
+<ol>
+<li>The page is loaded and a query is run on initialisation to load the records. If the user has selected a different language then the species common names will be returned in that language.</li>
+<li>The user enters search text in the box and the data in the list box is filtered.</li>
+<li>The list is populated with the matching items.</li>
+<li>If a filter is applied, then the filtered results are also filtered.</li>
+</ol>
+-->
+<s:VGroup xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		  xmlns:s="library://ns.adobe.com/flex/spark" 
+		  xmlns:mx="library://ns.adobe.com/flex/mx"
+		  xmlns:classes="wcmc.classes.*"
+		  width="100%" height="100%" 
+		  initialize="init()"
+		  creationComplete="searchBox.setFocus()" xmlns:esri="http://www.esri.com/2008/ags">
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+	</fx:Declarations>
+	<s:HGroup width="100%" verticalAlign="middle" paddingTop="5" paddingBottom="5">
+		<s:Label text="{resourceManager.getString('myResources', 'TEXT13')}" styleName="speciesSearchBox"/>
+		<classes:SearchBox id="searchBox" keyUp="searchBox_keyUpHandler(event)" width="132"/>
+	</s:HGroup>
+	<!---The list where the matching species names are shown.-->
+	<classes:ListFiltered id="matchingList" itemRenderer="wcmc.renderers.SpeciesListRenderer" change="matchingList_changeHandler(event)" width="100%" height="100%" existingFilterFunction="{filter}" rowHeight="24"/>
+	<fx:Script>
+		<![CDATA[
+			import mx.collections.ArrayCollection;
+			import mx.events.ListEvent;
+			import mx.managers.CursorManager;
+			
+			import wcmc.classes.AGSResult;
+			import wcmc.classes.DAO;
+			import wcmc.classes.LanguageChangedEvent;
+			import wcmc.classes.SetSpeciesEvent;
+			import wcmc.classes.Species;
+			import wcmc.renderers.SpeciesListRenderer;
+			/**
+			 * The name of the field that contains the common names. This depends on the language set for the application. 
+			 */ 
+			[Bindable]public var commonNameField:String;
+			/**
+			 * A pointer to the data access object singleton.
+			 */ 
+			[Bindable]public var dao:DAO;
+			/**
+			 * The search text entered in the search box.
+			 */ 
+			protected var searchText:String;
+			/**
+			 * Called on initialisation this function adds a listener for when the language changes in the application. When this occurs the species are reloaded.
+			 */ 
+			protected function init():void
+			{
+				parentApplication.addEventListener(LanguageChangedEvent.LANGUAGECHANGED,loadRecords);
+				loadRecords(null);
+			}
+			/**
+			 * Loads the species from the server.
+			 */ 
+			protected function loadRecords(event:LanguageChangedEvent):void
+			{
+				dao.addEventListener(AGSResult.SPECIES,speciesReturned);
+				CursorManager.setBusyCursor();
+				dao.getSpecies(commonNameField);
+			}
+			/**
+			 * Asynchronouse function call that is called when the species are returned. Binds the results to the matching species list.
+			 */ 
+			protected function speciesReturned(event:AGSResult):void
+			{
+				dao.removeEventListener(AGSResult.SPECIES,speciesReturned); //remove listener
+				CursorManager.removeBusyCursor(); //reset cursor
+				matchingList.dataProvider=event.results; //bind the results to the mathing list
+				filterListBox(); //filters the matching results by the search text in the search box
+			}
+			/**
+			 * Handles a key up event on the keyboard. If the CR key is pressed and there is only one item in the list of species, then this species is selected and the species page for that species is loaded. <p>If it is not a CR key then the species list is filtered for the matching text string.</p>
+			 */ 
+			protected function searchBox_keyUpHandler(event:KeyboardEvent):void
+			{
+				if (event.charCode==13) //CR pressed
+				{
+					if (matchingList.dataProvider.length==1)
+					{
+						selectSpecies(); //select the species
+					}
+				}
+				else
+				{
+					searchText=event.target.text; //set the search text
+					filterListBox(); //filter the values in the matching list
+				}
+			}
+			/**
+			 * Filters the list box according tot he text entered in the search box.
+			 */ 
+			protected function filterListBox():void
+			{
+				var ac:ArrayCollection = matchingList.dataProvider as ArrayCollection;
+				if (!ac) return;
+				ac.filterFunction = filter;	
+				ac.refresh();	
+				matchingList.rowCount = ac.length;
+				if (matchingList.rowCount==1) matchingList.selectedIndex=0;
+			}
+			/**
+			 * Custom filter function which returns a boolean indicating if the passed object matches the filteron value
+			 */ 
+			protected function filter(obj:Object):Boolean 
+			{
+				if (!obj.hasOwnProperty("commonName")){return true}
+				if (!obj["commonName"]){return true};
+				var _testName:String = obj["commonName"].toUpperCase();
+				var pos:int = _testName.indexOf(searchBox.text.toUpperCase());
+				if (pos<0)
+				{
+					_testName=obj["scientificName"].toUpperCase();
+					pos=_testName.indexOf(searchBox.text.toUpperCase());
+				}
+				if ((pos > -1) || (searchBox.text==""))
+				{
+					return true;
+				}
+				else
+				{
+					return false;
+				}
+			}		
+			/**
+			 * Called when the user selects a species and dispatches the SetSpeciesEvent with the selected species.
+			 */ 
+			protected function selectSpecies():void
+			{
+				var species:Species=matchingList.selectedItem as Species;
+				dispatchEvent(new SetSpeciesEvent(SetSpeciesEvent.SETSPECIES,matchingList.selectedItem as Species));
+			}
+			/**
+			 * Selects a species.
+			 */
+			protected function matchingList_changeHandler(event:ListEvent):void
+			{
+				selectSpecies();
+				matchingList.selectedIndex=-1;
+			}
+			/**
+			 * Not currently used.
+			 */ 
+			protected function getRenderer(commonNameField:String):IFactory
+			{
+				var returnValue:IFactory;
+//				(commonNameField=="NameAR") ? returnValue=new ClassFactory(SpeciesListRendererAR) : returnValue=new ClassFactory(SpeciesListRenderer);
+				return returnValue;
+			}
+		]]>
+	</fx:Script>
+	
+</s:VGroup>

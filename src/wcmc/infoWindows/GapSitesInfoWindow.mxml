@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!---InfoWindow for the Gap sites layer-->
+<mx:VBox xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" 
+		 xmlns:mx="library://ns.adobe.com/flex/mx" styleName="Tooltip" xmlns:components="wcmc.components.*" filters="{shadow}">
+	<fx:Script>
+		<![CDATA[
+			import wcmc.classes.Countries;
+			private function getPriority():String
+			{
+				if (data.Priority)
+				{
+					return data.Priority;
+				}
+				else
+				{
+					return resourceManager.getString('myResources', 'TEXT141');
+				}
+			}
+		]]>
+	</fx:Script>
+	<fx:Declarations>
+		<mx:DropShadowFilter id="shadow" alpha="0.4"/>
+	</fx:Declarations>
+	<mx:HBox verticalAlign="middle" width="100%" minWidth="160">
+		<mx:Image source="{Countries.getCountryFlag(data.CountryCode)}" verticalAlign="middle" height="100%" toolTip="{Countries.getCountryName(data.CountryCode)}"/>
+		<mx:Text text="{data.Site}" styleName="toolLabel"/>
+		<mx:Spacer width="100%"/>
+		<components:MyCloseButton closeTarget="{parent}"/>
+	</mx:HBox>
+	<s:Label text="{resourceManager.getString('myResources', 'TEXT249')}: {getPriority()}" styleName="toolLabel"/>
+</mx:VBox>

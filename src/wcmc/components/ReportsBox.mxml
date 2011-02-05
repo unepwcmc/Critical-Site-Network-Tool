@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!---
+Main reports box that contains all of the controls for turning on/off the various report tools. This box is loaded into the infoPanel when the application state is set to 'reports'. 
+-->
+<s:VGroup xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		  xmlns:s="library://ns.adobe.com/flex/spark" 
+		  xmlns:mx="library://ns.adobe.com/flex/mx"
+		  xmlns:classes="wcmc.classes.*"
+		  xmlns:esri="http://www.esri.com/2008/ags"
+		  width="100%" height="100%" xmlns:components="wcmc.components.*" currentState="fullFilter">
+	<fx:Declarations>
+	</fx:Declarations>
+	<s:states>
+		<s:State name="fullFilter"/>
+		<s:State name="speciesFilter"/>
+		<s:State name="flywaysFilter"/>
+		<s:State name="pointFilter"/>
+	</s:states>
+	<s:Scroller width="100%" height="100%">
+		<s:VGroup width="100%" height="100%">
+			<s:HGroup width="100%" verticalAlign="middle" paddingTop="8" paddingBottom="5">
+				<s:Label text="{resourceManager.getString('myResources', 'TEXT16')}" styleName="speciesSearchBox"/>
+			</s:HGroup>
+			<s:Label text="{resourceManager.getString('myResources', 'TEXT61')}" styleName="textLabel" width="100%"/>
+			<s:VGroup width="100%" paddingBottom="8" paddingTop="8" paddingLeft="5">
+				<components:FilterBox id="filterBox" spcRecIDsChanged="spcRecIDsChanged(event)" siteRecIDsChanged="siteRecIDsChanged(event)" width="100%" application="{csn}" includeIn="fullFilter" showEffect="{csn.fadeIn10}" hideEffect="{csn.fadeOut10}"/>
+				<components:SpeciesFilterBox id="speciesFilterBox" width="100%" application="{csn}" includeIn="speciesFilter"/>
+				<components:PopulationFilterBox id="populationFilterBox" width="100%" application="{csn}" includeIn="flywaysFilter"/>
+				<components:PointFilterBox id="pointFilterBox" width="100%" application="{csn}" includeIn="pointFilter"/>
+				<s:HGroup verticalAlign="middle" paddingLeft="5">
+					<s:CheckBox id="showSpecies" toolTip="{resourceManager.getString('myResources', 'TEXT62')}"/>
+					<mx:Image source="{EmbeddedImages.speciesList}" toolTip="{resourceManager.getString('myResources', 'TEXT62')}"/>
+					<mx:Spacer width="117"/>
+					<s:CheckBox id="showSites" toolTip="{resourceManager.getString('myResources', 'TEXT63')}"/>
+					<mx:Image source="{EmbeddedImages.siteList}" toolTip="{resourceManager.getString('myResources', 'TEXT63')}"/>
+					<mx:Spacer width="115"/>
+					<mx:Image source="{EmbeddedImages.searchIcon}" click="filterBox.clearAllFilters(event)" enabled="{filterBox.filterCollection.filtered}" toolTip="{resourceManager.getString('myResources', 'TEXT64')}" visible="{filterBox.filterCollection.filtered}" includeIn="fullFilter"/>
+				</s:HGroup>
+			</s:VGroup>
+			<s:Label text="{resourceManager.getString('myResources', 'TEXT65')}" styleName="textLabel" width="100%"/>
+			<s:VGroup width="100%" paddingTop="5" paddingLeft="5" paddingRight="5">
+				<components:Tool id="reportSpeciesListForCountry" imageSource="{EmbeddedImages.listSpeciesCountry}" label="{resourceManager.getString('myResources', 'TEXT66')}" description="{resourceManager.getString('myResources', 'TEXT67')}"/>
+				<components:Tool id="reportFlywayListForCountry" imageSource="{EmbeddedImages.listFlywayCountry}" label="{resourceManager.getString('myResources', 'TEXT68')}" description="{resourceManager.getString('myResources', 'TEXT69')}"/>
+				<components:Tool id="reportFlywayListForPoint" imageSource="{EmbeddedImages.listXY}" label="{resourceManager.getString('myResources', 'TEXT70')}" description="{resourceManager.getString('myResources', 'TEXT71')}" toolActivated="activatePointTool()" toolDeactivated="deactivatePointTool()"/>
+			</s:VGroup>
+		</s:VGroup>
+	</s:Scroller>
+	
+	<fx:Script>
+		<![CDATA[
+			import com.esri.ags.Map;
+			import com.esri.ags.events.MapMouseEvent;
+			
+			import mx.collections.ArrayCollection;
+			
+			import wcmc.classes.AGSResult;
+			import wcmc.classes.DAO;
+			import wcmc.classes.EmbeddedImages;
+			import wcmc.classes.SiteRecIDsChangedEvent;
+			import wcmc.classes.SpcRecIDsChangedEvent;
+			[Bindable]
+			/**
+			 * A reference to the map component.
+			 */ 
+			public var map:Map;
+			[Bindable]
+			/**
+			 * A reference to the DAO singleton object.
+			 */ 
+			public var dao:DAO;
+			[Bindable]
+			/**
+			 * A refernce to the CSN object.
+			 */ 
+			public var csn:CSN;
+			[Bindable]
+			/**
+			 * An ArrayCollection of the SpcRecIDs of all of the species that are currently matching in the filter.
+			 */ 
+			public var filteredSpecies:ArrayCollection;
+			[Bindable]
+			/**
+			 * An ArrayCollection of the SiteRecIDs of all of the sites that are currently matching in the filter.
+			 */ 
+			public var filteredSites:ArrayCollection;
+			/**
+			 * Called when the species IDs in the filter have changed. This function gets the matching species from the server. 
+			 */ 
+			protected function spcRecIDsChanged(event:SpcRecIDsChangedEvent):void
+			{
+				dao.addEventListener(AGSResult.SPECIES,speciesReturned); //add a listener for when we get back the species information
+				dao.getSpecies(csn.commonNameField,event.spcRecIDs,false); //get the species information
+			}
+			/**
+			 * Asynchronous function that is called when the species records are returned.
+			 */ 
+			protected function speciesReturned(event:AGSResult):void
+			{
+				dao.removeEventListener(AGSResult.SPECIES,speciesReturned);
+				filteredSpecies=event.results;
+			}
+			/**
+			 * Called when the site IDs in the filter have changed. This function gets the matching sites from the server.
+			 */ 
+			protected function siteRecIDsChanged(event:SiteRecIDsChangedEvent):void
+			{
+				if (!csn.sitePointsLayer) return;
+				(event.siteRecIDs) ? csn.sitePointsLayer.definitionExpression=event.siteRecIDsStringInClause : csn.sitePointsLayer.definitionExpression=""; //filters the site points on the map using the filter SiteRecIDs
+			}
+
+			////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+			//// SPECIES AT A POINT TOOL FUNCTIONS
+			////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+			/**
+			 * Activates the species at a point tool. Changes the cursor and adds and event handler for when the user clicks on the map.
+			 */ 
+			protected function activatePointTool():void
+			{
+				if (!map)return;
+				map.useHandCursor=true;
+				map.addEventListener(MapMouseEvent.MAP_CLICK,mapClicked);
+				dispatchEvent(new Event("pointToolActivated"));
+			}
+			/**
+			 * Deactivates the species at a point tool - resets the cursor and removes teh event listener.
+			 */ 
+			protected function deactivatePointTool():void
+			{
+				if (!map)return;
+				map.useHandCursor=false;
+				map.removeEventListener(MapMouseEvent.MAP_CLICK,mapClicked);
+				dispatchEvent(new Event("pointToolDeactivated"));
+			}
+			/**
+			 * Called when the user clicks on the map and dispatches the MapMouseEvent.
+			 */ 
+			protected function mapClicked(event:MapMouseEvent):void
+			{
+				map.dispatchEvent(new MapMouseEvent("pointToolClick",map,event.mapPoint));
+			}
+
+			////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+			//// FILTERBOX FUNCTIONS
+			////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+			/**
+			 * Not currently used.
+			 */ 
+			protected function getSiteList():void
+			{
+				var selectedSites:Array=filterBox.site.selectedItems;
+				if (selectedSites.length>0) 
+				{
+					filteredSites=new ArrayCollection(selectedSites);
+				}
+				else
+				{
+					filterBox.site.addEventListener("lookupValuesReturned",sitelookupValuesReturned);
+					filterBox.site.getLookupValues();
+				}
+				//				myPDF.addImage(map,null,0,0,map.width,map.height,0,1,true,ImageFormat.JPG);
+			}
+			/**
+			 * Not currently used.
+			 */ 
+			protected function sitelookupValuesReturned(event:Event):void
+			{
+				filterBox.species.removeEventListener("lookupValuesReturned",sitelookupValuesReturned);
+				filteredSites=filterBox.site.lookupValues;
+			}
+		]]>
+	</fx:Script>
+</s:VGroup>

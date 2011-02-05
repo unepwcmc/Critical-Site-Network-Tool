@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!---
+MXML component that shows information about the CSN tool and has controls to navigate the application, change the language and go to the site or species pages.
+-->
+<s:VGroup xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		  xmlns:s="library://ns.adobe.com/flex/spark" 
+		  xmlns:mx="library://ns.adobe.com/flex/mx" width="100%" height="100%" xmlns:renderers="wcmc.renderers.*" xmlns:components="wcmc.components.*">
+	
+	<fx:Declarations>  
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+	</fx:Declarations>
+	<mx:HBox width="100%" textAlign="center" styleName="commonNameBox" backgroundColor="0xaaaaaa" paddingTop="15">
+		<s:Label text="{resourceManager.getString('myResources', 'TEXT1')}" fontFamily="Tahoma" fontSize="20" color="0xffffff" width="100%"/>
+	</mx:HBox>
+	<s:HGroup width="100%" paddingLeft="10" paddingRight="10">
+		<s:Label text="{resourceManager.getString('myResources', 'TEXT2')}" styleName="startText3" width="100%" direction="{csn.direction}"/>
+	</s:HGroup>
+	<s:VGroup paddingLeft="20" paddingRight="10" paddingTop="10" width="100%">
+		<s:Label text="{resourceManager.getString('myResources', 'TEXT3')}" fontSize="14"/>
+		<s:VGroup width="100%">
+			<components:RollOverHGroup>
+				<s:HGroup verticalAlign="middle" width="100%" click="csn.currentState='speciesSearch'">
+					<mx:Image source="{EmbeddedImages.species}"/>
+					<s:Label text="{resourceManager.getString('myResources', 'TEXT4')}" styleName="starttext3"/>
+				</s:HGroup>		
+			</components:RollOverHGroup>
+			<components:RollOverHGroup>
+				<s:HGroup verticalAlign="middle" width="100%" click="csn.currentState='siteSearch'" paddingLeft="5">
+					<mx:Image source="{EmbeddedImages.sitessmall}"/>
+					<s:Label text="{resourceManager.getString('myResources', 'TEXT5')}" styleName="startText3" paddingLeft="5"/>
+				</s:HGroup>		
+			</components:RollOverHGroup>
+			<components:RollOverHGroup>
+				<s:HGroup verticalAlign="middle" width="100%" click="csn.currentState='reports'" paddingLeft="5">
+					<mx:Image source="{EmbeddedImages.reports}"/>
+					<s:Label text="{resourceManager.getString('myResources', 'TEXT6')}" styleName="startText3" paddingLeft="5"/>
+				</s:HGroup>		
+			</components:RollOverHGroup>
+			<components:RollOverHGroup>
+				<s:HGroup verticalAlign="middle" width="100%" click="csn.currentState='info'" paddingLeft="5">
+					<mx:Image source="{EmbeddedImages.info}"/>
+					<s:Label text="{resourceManager.getString('myResources', 'TEXT7')}" styleName="startText3" paddingLeft="5"/>
+				</s:HGroup>		
+			</components:RollOverHGroup>
+		</s:VGroup>
+		<s:VGroup gap="0" height="100%" verticalAlign="bottom">
+			<s:HGroup width="100%">
+				<mx:Button scaleX="0.45" scaleY="0.45" upSkin="@Embed(source='/images/gef-bw.jpg')" toolTip="Global Environment Facility" overSkin="@Embed(source='/images/gef.jpg')" click="Utilities.navigateToUrl('http://www.gefweb.org/')"/>	
+				<mx:Button scaleX="0.45" scaleY="0.45" upSkin="@Embed(source='/images/unep-bw.jpg')" toolTip="United Nations Environment Programme" overSkin="@Embed(source='/images/unep.jpg')" click="Utilities.navigateToUrl('http://www.unep.org/')"/>	
+				<mx:Button scaleX="0.45" scaleY="0.45" upSkin="@Embed(source='/images/wetland-bw.jpg')" toolTip="Wetlands International" overSkin="@Embed(source='/images/wetland.jpg')" click="Utilities.navigateToUrl('http://www.wetlands.org/')"/>	
+				<mx:Button scaleX="0.45" scaleY="0.45" upSkin="@Embed(source='/images/birdLife-bw.jpg')" toolTip="BirdLife International" overSkin="@Embed(source='/images/birdLife.jpg')" click="Utilities.navigateToUrl('http://www.birdLife.org/')"/>	
+				<mx:Button scaleX="0.45" scaleY="0.45" upSkin="@Embed(source='/images/aewa-bw.jpg')" toolTip="African-Eurasian Waterbird Agreement" overSkin="@Embed(source='/images/aewa.jpg')" click="Utilities.navigateToUrl('http://www.unep-aewa.org/about/introduction.htm')"/>	
+				<mx:Button scaleX="0.45" scaleY="0.45" upSkin="@Embed(source='/images/bfn-bw.jpg')" toolTip="Bundesamt für Naturschutz" overSkin="@Embed(source='/images/bfn.jpg')" click="Utilities.navigateToUrl('http://www.bfn.de/')"/>	
+				<mx:Button scaleX="0.45" scaleY="0.45" upSkin="@Embed(source='/images/unops-bw.jpg')" toolTip="United Nations Office for Project Services" overSkin="@Embed(source='/images/unops.jpg')" click="Utilities.navigateToUrl('http://www.unops.org/english/Pages/default.aspx')"/>	
+				<mx:Button scaleX="0.45" scaleY="0.45" upSkin="@Embed(source='/images/ramsar-bw.jpg')" toolTip="Ramsar Bureau" overSkin="@Embed(source='/images/ramsar.jpg')" click="Utilities.navigateToUrl('http://www.ramsar.org/')"/>	
+				<mx:Button scaleX="0.45" scaleY="0.45" upSkin="@Embed(source='/images/unep-wcmc-bw.jpg')" toolTip="UNEP-WCMC" overSkin="@Embed(source='/images/unep-wcmc.jpg')" click="Utilities.navigateToUrl('http://www.unep-wcmc.org/')"/>
+				<mx:Spacer height="20"/>
+			</s:HGroup>
+			<mx:Image id="wowImage" source="{EmbeddedImages.wowLogo}" horizontalCenter="0"/>
+		</s:VGroup>
+	</s:VGroup>
+	
+	<fx:Script>
+		<![CDATA[
+			import wcmc.classes.EmbeddedImages;
+			import wcmc.classes.Utilities;
+			[Bindable]public var csn:CSN;
+		]]>
+	</fx:Script>
+</s:VGroup>

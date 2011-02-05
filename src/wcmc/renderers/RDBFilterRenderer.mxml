@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!---Renderer for a RDB status that shows the RDB category and the color swatch-->
+<s:ItemRenderer xmlns:fx="http://ns.adobe.com/mxml/2009" 
+				xmlns:s="library://ns.adobe.com/flex/spark" 
+				xmlns:mx="library://ns.adobe.com/flex/mx" 
+				autoDrawBackground="true">
+	<s:HGroup verticalAlign="middle">
+		<mx:CheckBox selected="{data.selected}" click="data.selected=!data.selected"/>
+		<s:BorderContainer height="10" width="10" backgroundColor="{RDBConstants.instance.getColorForRDB(data.value)}" backgroundAlpha="0.7" verticalCenter="0" toolTip="{data.value}" borderColor="0x777777"/>
+		<mx:Label text="{data.value}"/>
+	</s:HGroup>
+	
+	<fx:Script>
+		<![CDATA[
+			import wcmc.classes.Countries;
+			import wcmc.classes.RDBConstants;
+		]]>
+	</fx:Script>
+</s:ItemRenderer>

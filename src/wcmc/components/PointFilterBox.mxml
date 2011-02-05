@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!---A sophisticated set of data filters that control the display of matching species populations depending on a whole range of filters, e.g. country, RDB status. This box is part of the reports box.-->
+<s:BorderContainer xmlns:fx="http://ns.adobe.com/mxml/2009" 
+				   xmlns:s="library://ns.adobe.com/flex/spark" 
+				   xmlns:mx="library://ns.adobe.com/flex/mx" xmlns:classes="wcmc.classes.*" xmlns:components="wcmc.components.*" borderAlpha="0" xmlns:esri="http://www.esri.com/2008/ags">
+	
+	<fx:Declarations>
+		<!---The allSpeciesFilter is used for filtering the reports for country list for species, population list for species and population list for a point. The filter includes all species.-->
+		<classes:FilterCollection id="flywaysFilter" masterTableName="V_FLYWAYS" filterResultComplete="filterResultsComplete(event)">
+			<classes:filters>
+				<s:ArrayCollection>
+					<!---
+					Filter on the F_SPECIES_FLYWAY table in the database.
+					-->
+					<classes:Filter id="speciesFlywayPoint" table="V_FLYWAYS" masterTableFilterFieldName="SpcFlyRecID" sharedObjectName="flywaysSpcFlyRecIDPt"/>
+					<!---
+					Filter on the F_SPECIES_FAMILY table in the database.
+					-->
+					<classes:Filter id="familyPoint" label="{resourceManager.getString('myResources', 'TEXT32')}" table="F_SPECIES_FAMILY" valueField="FamName" masterTableFilterFieldName="SpcRecID" filterRenderer="wcmc.renderers.FilterRenderer" sharedObjectName="flywaysSpeciesFamilyPt"/>
+					<!---
+					Filter on the F_SPECIES_GENUS table in the database.
+					-->
+					<classes:Filter id="genusPoint" label="{resourceManager.getString('myResources', 'TEXT33')}" table="F_SPECIES_GENUS" valueField="GenName" masterTableFilterFieldName="SpcRecID" filterRenderer="wcmc.renderers.FilterRenderer" sharedObjectName="flywaysSpeciesPt"/>
+					<!---
+					Filter on the F_SPECIES_SPECIES table in the database.
+					-->
+					<classes:Filter id="speciesPoint" label="{resourceManager.getString('myResources', 'TEXT208')}" table="F_SPECIES_SPECIES" valueField="{application.commonNameField}" masterTableFilterFieldName="SpcRecID" filterRenderer="wcmc.renderers.FilterRenderer" sharedObjectName="flywaysSpeciesSpeciesPt"/>
+					<!---
+					Filter on the F_SPECIES_REDLIST table in the database.
+					-->
+					<classes:Filter id="redlistPoint" label="{resourceManager.getString('myResources', 'TEXT35')}" table="F_SPECIES_REDLIST" valueField="Category" masterTableFilterFieldName="SpcRecID" filterRenderer="wcmc.renderers.RDBFilterRenderer" sharedObjectName="flywaysSpeciesRDBPt"/>
+					<!---
+					Filter on the F_SPECIES_HABITAT_LEVEL1 table in the database.
+					-->
+					<classes:Filter id="habitat1Point" label="{resourceManager.getString('myResources', 'TEXT36')}" table="F_SPECIES_HABITAT_LEVEL1" valueField="HabL1Desc" masterTableFilterFieldName="SpcRecID" filterRenderer="wcmc.renderers.FilterRenderer" sharedObjectName="flywaysSpeciesHab1Pt"/>
+					<!---
+					Filter on the F_SPECIES_HABITAT_LEVEL2 table in the database.
+					-->
+					<classes:Filter id="habitat2Point" label="{resourceManager.getString('myResources', 'TEXT37')}" table="F_SPECIES_HABITAT_LEVEL2" valueField="HabL2Desc" masterTableFilterFieldName="SpcRecID" filterRenderer="wcmc.renderers.FilterRenderer" sharedObjectName="flywaysSpeciesHab2Pt"/>
+					<!---
+					Filter on the F_SPECIES_LEGAL table in the database.
+					-->
+					<classes:Filter id="legalPoint" label="{resourceManager.getString('myResources', 'TEXT38')}" table="F_SPECIES_LEGAL" valueField="LegName" masterTableFilterFieldName="SpcRecID" filterRenderer="wcmc.renderers.FilterRenderer" sharedObjectName="flywaysSpeciesLegalPt"/>
+					<!---
+					Filter on the F_SPECIES_THREAT_LEVEL1 table in the database.
+					-->
+					<classes:Filter id="threatl1Point" label="{resourceManager.getString('myResources', 'TEXT39')}" table="F_SPECIES_THREAT_LEVEL1" valueField="ThrL1Desc" masterTableFilterFieldName="SpcRecID" filterRenderer="wcmc.renderers.FilterRenderer" sharedObjectName="flywaysSpeciesThreat1Pt"/>
+					<!---
+					Filter on the F_SPECIES_THREAT_LEVEL2 table in the database.
+					-->
+					<classes:Filter id="threatl2Point" label="{resourceManager.getString('myResources', 'TEXT40')}" table="F_SPECIES_THREAT_LEVEL2" valueField="ThrL2Desc" masterTableFilterFieldName="SpcRecID" filterRenderer="wcmc.renderers.FilterRenderer" sharedObjectName="flywaysSpeciesThreat2Pt"/>
+				</s:ArrayCollection>
+			</classes:filters>
+		</classes:FilterCollection>
+		<s:Fade id="fader" duration="250"/>
+		<!---A QueryTask that is used to retrieve a list of species populations based on the SpcFlyRecIDs - these are either passed from a matching country or a user-defined point.-->
+		<esri:QueryTask id="flywaysQueryTask" url="http://dev.unep-wcmc.org/ArcGIS/rest/services/CSN/Reports/MapServer/0" showBusyCursor="true"/>
+		<!---The Query object for the countrySpeciesQueryTask. The where value is set to currently selected country in the country drop down box.-->
+		<esri:Query id="flywaysQuery" outFields="*" returnGeometry="false"/>
+	</fx:Declarations>
+	<s:HGroup gap="3">
+		<s:VGroup width="183">
+			<s:Label text="{resourceManager.getString('myResources', 'TEXT208')}" fontSize="14"/>
+			<components:FilterUI filter="{familyPoint}"/>
+			<components:FilterUI filter="{genusPoint}"/>
+			<components:FilterUI filter="{speciesPoint}"/>
+			<components:FilterUI filter="{redlistPoint}"/>
+			<components:FilterUI filter="{legalPoint}"/>
+			<components:FilterUI filter="{habitat1Point}"/>
+			<components:FilterUI filter="{habitat2Point}"/>
+			<components:FilterUI filter="{threatl1Point}"/>
+			<components:FilterUI filter="{threatl2Point}"/>
+		</s:VGroup>
+	</s:HGroup>
+	<fx:Script>
+		<![CDATA[
+			import wcmc.classes.Utilities;
+			private var _application:CSN;
+			import wcmc.classes.FilterResultCompleteEvent;
+			[Bindable]public var application:CSN;
+			private var _spcFlyRecIDs:ArrayCollection;
+			public function get spcFlyRecIDs():ArrayCollection
+			{
+				return _spcFlyRecIDs;
+			}
+			public function set spcFlyRecIDs(value:ArrayCollection):void
+			{
+				_spcFlyRecIDs=value;
+				var spcFlyRecIDsString:String="";
+				for each (var obj:Object in value)
+				{
+					spcFlyRecIDsString+="'" + obj + "',";
+				}
+				spcFlyRecIDsString=spcFlyRecIDsString.substr(0,spcFlyRecIDsString.length-1);
+				(spcFlyRecIDsString!="") ? speciesFlywayPoint.whereClause="V_FLYWAYS.SpcFlyRecID IN (" + spcFlyRecIDsString + ")" : speciesPoint.whereClause=null; //set the species filter in the filter collection
+				flywaysFilter.getMatchingIDs();
+			}
+			public function clearAllFilters(event:MouseEvent):void
+			{
+				flywaysFilter.clearAll();
+			}
+			public function filterResultsComplete(event:FilterResultCompleteEvent):void
+			{
+				if (!spcFlyRecIDs) return; //if the user hasnt selected a country, or clicked on the map yet then there will be no spcFlyRecIDs
+				if (!event.filterResult)
+				{
+					getNoData(); //no matching flyways
+					return;
+				}
+				if (event.filterResult.filterFieldName!="SpcFlyRecID") return; //only get matching flyways using the SpcFlyRecIDs
+				var spcflyRecIDs:ArrayCollection=event.filterResult.matchingIDs; //get the matching IDs
+				var spcFlyRecIDsString:String; //create an In Clause for the SQL
+				if (spcflyRecIDs.length>0)
+				{
+					spcFlyRecIDsString=Utilities.arrayCollectionToString(spcflyRecIDs);
+					flywaysQuery.where="SpcFlyRecID IN (" + spcFlyRecIDsString + ")";
+					flywaysQueryTask.execute(flywaysQuery); //run the querytask to get the matching flyways that will be bound to the datagrids
+				}
+				else
+				{
+					getNoData(); //there are no matching IDs - therefore run the query to get no flyways which will bind to the data grids
+				}
+			}
+			public function getNoData():void
+			{
+				var query:Query=new Query();
+				query.where="OBJECTID<0"; //bit of a hack
+				flywaysQueryTask.execute(query);
+			}
+		]]>
+	</fx:Script>
+</s:BorderContainer>

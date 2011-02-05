@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!---InfoWindow for the IWC trend charts-->
+<mx:VBox xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" 
+		 xmlns:mx="library://ns.adobe.com/flex/mx"
+		 xmlns:components="wcmc.components.*" 
+		 xmlns:supportClasses="com.esri.ags.components.supportClasses.*"
+		 styleName="Tooltip"
+		 dataChange="vbox1_dataChangeHandler(event)" filters="{shadow}">
+	<fx:Declarations>
+		<mx:DropShadowFilter id="shadow" alpha="0.4"/>
+	</fx:Declarations>
+	<mx:HBox width="100%" verticalAlign="middle">
+		<mx:Image source="{Countries.getCountryFlag(data.CountryCode)}" verticalAlign="middle" height="100%" toolTip="{Countries.getCountryName(data.CountryCode)}"/>
+		<mx:Text text="{data.Name}" width="100%"/>
+		<mx:Image source="{EmbeddedImages.print}" click="image2_clickHandler(event)" buttonMode="true" toolTip="{resourceManager.getString('myResources', 'TEXT132')}"/>
+		<components:DragBox dragComponent="{parent}" target="{(parent as InfoWindow).map}"/>
+		<components:MyCloseButton closeTarget="{parent}"/>
+	</mx:HBox>
+	<mx:Canvas>
+		<mx:SWFLoader source="{EmbeddedImages.loader}" horizontalCenter="0" verticalCenter="-20" visible="{loading}"/>
+		<mx:LineChart id="myChart" dataProvider="{counts}" showDataTips="true" width="300" height="100" visible="{counts.length!=0}" styleName="lineChart">
+			<mx:horizontalAxis>
+				<mx:CategoryAxis dataProvider="{counts}" categoryField="_year"/>
+			</mx:horizontalAxis>
+			<mx:series>
+				<mx:LineSeries yField="abundance" displayName="Abundance" id="lineSeries"/>
+			</mx:series>
+			<mx:verticalAxis >
+				<mx:LinearAxis minimum="0" maximumLabelPrecision="0" autoAdjust="false" baseAtZero="true"/>
+			</mx:verticalAxis>
+		</mx:LineChart>
+	</mx:Canvas>
+	<s:HGroup width="{myChart.width}">
+		<mx:Image source="{EmbeddedImages.warning}"/>
+		<s:Label text=" {resourceManager.getString('myResources', 'TEXT133')}" width="100%" styleName="caveats"/>
+	</s:HGroup>
+	<fx:Script>
+		<![CDATA[
+			import com.esri.ags.components.InfoWindow;
+			
+			import mx.collections.ArrayCollection;
+			import mx.controls.Alert;
+			import mx.events.FlexEvent;
+			import mx.printing.FlexPrintJob;
+			import mx.printing.FlexPrintJobScaleType;
+			
+			import wcmc.classes.AGSResult;
+			import wcmc.classes.Countries;
+			import wcmc.classes.DAO;
+			import wcmc.classes.EmbeddedImages;
+			[Bindable]
+			/**
+			 * Flag to indicate if the count data is loading
+			 */ 
+			protected var loading:Boolean=true;
+			[Bindable]
+			/**
+			 * ArrayCollection of species counts for the site. These are bound to the chart.
+			 */ 
+			public var counts:ArrayCollection=new ArrayCollection();
+			private const MINYEARWIDTH:int=12;
+			/**
+			 * Called when the data changes for the infoWindow, i.e whenever a Graphic is clicked on. A request is made for the count data.
+			 */ 			
+			protected function vbox1_dataChangeHandler(event:FlexEvent):void
+			{
+				if (!data.hasOwnProperty("SpcRecID")) return;
+				if (!data.SiteCode) return;
+				if (!owner) return;
+				loading=true;
+				counts.removeAll(); //clear all of the exisitng counts
+				var infoWindow:InfoWindow=owner as InfoWindow; //get a pointer to the infoWindow
+				var dao:DAO=infoWindow.parentApplication.dao as DAO; //and to the DAO
+				dao.addEventListener(AGSResult.IWCCOUNTS,loadComplete); //request the count data
+				dao.getCountsForIWC(data.SiteCode,data.SpcRecID);
+			}
+			private function loadComplete(event:AGSResult):void
+			{
+				loading=false;
+				counts=event.results;
+				event.target.removeEventListener(AGSResult.IWCCOUNTS,loadComplete);
+				if ((myChart.width/counts.length)<MINYEARWIDTH) myChart.width=(MINYEARWIDTH* counts.length);
+			}
+			/**
+			 * Prints the current chart.
+			 */ 
+			protected function image2_clickHandler(event:MouseEvent):void
+			{
+				var myPrintJob:FlexPrintJob = new FlexPrintJob();
+				if (myPrintJob.start())
+				{
+					try
+					{
+						myPrintJob.addObject(this, FlexPrintJobScaleType.SHOW_ALL);
+					}
+					catch (error:Error)
+					{
+						Alert.show(error.toString());
+					}
+					myPrintJob.send();
+				}
+			}
+		]]>
+	</fx:Script>
+
+</mx:VBox>

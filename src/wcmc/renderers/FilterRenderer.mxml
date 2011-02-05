@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!---Simple renderer that is used in the Filter class to show a list of values next to a set of checkboxes that can be selected. The filter renderer is used in a FilterDialog class to create the instance at runtime depending on the filter. @see wcmc.classes.Filter @see wcmc.components.FilterDialog.-->
+<s:ItemRenderer xmlns:fx="http://ns.adobe.com/mxml/2009" 
+				xmlns:s="library://ns.adobe.com/flex/spark" 
+				xmlns:mx="library://ns.adobe.com/flex/mx" 
+				autoDrawBackground="true">
+	<s:layout>
+		<s:HorizontalLayout verticalAlign="middle"/>
+	</s:layout>
+	<!---The checkbox next to the filter value.-->
+	<s:CheckBox id="checkBox" selected="{data.selected}" click="data.selected=!data.selected"/>
+	<s:Label text="{data.value}"/>	
+</s:ItemRenderer>

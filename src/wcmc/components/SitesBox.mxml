@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!---
+Main site box that contains all of the controls for turning on/off the various site tools. This box is loaded into the infoPanel when the application state is set to 'site'. The site object is used to populate the various UI controls, e.g. the site name box.
+-->
+<s:VGroup xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		  xmlns:s="library://ns.adobe.com/flex/spark" 
+		  xmlns:esri="http://www.esri.com/2008/ags" 
+		  xmlns:components="wcmc.components.*"
+		  xmlns:mx="library://ns.adobe.com/flex/mx" width="100%" height="100%">
+	<fx:Declarations>
+		<mx:DropShadowFilter id="shadow" alpha="0.4"/>
+	</fx:Declarations>
+	<s:VGroup width="100%">
+		<mx:HBox styleName="commonNameBox" width="100%" backgroundColor="0x095490">
+			<mx:Text text="{site.name}" styleName="commonNameLabel" width="100%"/>
+			<mx:VBox verticalAlign="middle" height="100%">
+				<mx:Image source="{Countries.getCountryFlag(site.countryCode)}" toolTip="{Countries.getCountryName(site.countryCode)}"/>
+			</mx:VBox>
+		</mx:HBox>
+		<s:HGroup verticalAlign="bottom" width="100%">
+			<components:PanoramioSlideshow id="panoramioSlideshow" filters="{shadow}"/>
+			<s:VGroup width="100%" visible="{site.isIBA}" gap="0">
+				<s:Label text="{resourceManager.getString('myResources', 'TEXT81')}" textAlign="right" width="100%" paddingRight="10" />
+				<components:LinkLabel text="{resourceManager.getString('myResources', 'TEXT82')}" click="Utilities.navigateToUrl('http://www.birdlife.org/datazone/sites/index.html?action=SitHTMDetails.asp&amp;sid=' + site.siteRecID.toString() + '&amp;m=0')" textAlign="right" width="100%" paddingRight="10"/>
+			</s:VGroup>
+		</s:HGroup>
+	</s:VGroup>
+	<s:VGroup width="100%" paddingTop="10" paddingLeft="5" paddingRight="5" gap="0">
+		<components:Tool id="dMap" imageSource="{EmbeddedImages.siteMap}" label="{resourceManager.getString('myResources', 'TEXT83')}" description="{resourceManager.getString('myResources', 'TEXT84')}"/>
+		<components:Tool id="ibaMap" imageSource="{EmbeddedImages.ibaSite}" label="{resourceManager.getString('myResources', 'TEXT109')}" description="{resourceManager.getString('myResources', 'TEXT233')}"/>
+		<components:Tool id="iwcMap" imageSource="{EmbeddedImages.speciesIWC}" label="{resourceManager.getString('myResources', 'TEXT85')}" description="{resourceManager.getString('myResources', 'TEXT86')}"/>
+		<components:Tool id="wdpaMap" imageSource="{EmbeddedImages.siteWDPA}" label="{resourceManager.getString('myResources', 'TEXT87')}" description="{resourceManager.getString('myResources', 'TEXT88')}"/>
+		<!--<components:Tool id="ppeMap" imageURL="{EmbeddedImages.siteWDPA}" label="{resourceManager.getString('myResources', 'TEXT89')}" description="{resourceManager.getString('myResources', 'TEXT90')}"/>-->
+		<components:Tool id="ramsarMap" imageSource="{EmbeddedImages.siteRamsar}" label="{resourceManager.getString('myResources', 'TEXT91')}" description="{resourceManager.getString('myResources', 'TEXT92')}"/>
+		<components:Tool id="speciesList" imageSource="{EmbeddedImages.tablebig}"  label="{resourceManager.getString('myResources', 'TEXT93')}" description="{resourceManager.getString('myResources', 'TEXT94')}"/>
+	</s:VGroup>
+	<fx:Script>
+		<![CDATA[
+			import com.esri.ags.Graphic;
+			import com.esri.ags.Map;
+			import com.esri.ags.geometry.Extent;
+			import com.esri.ags.geometry.MapPoint;
+			import com.esri.ags.geometry.Polygon;
+			
+			import wcmc.classes.AGSResult;
+			import wcmc.classes.Countries;
+			import wcmc.classes.EmbeddedImages;
+			import wcmc.classes.Site;
+			import wcmc.classes.Utilities;
+			[Bindable]private var _site:Site;
+			[Bindable]public var map:Map;
+			[Bindable]public var csn:CSN;
+			[Bindable]
+			/**
+			 * Gets or sets the value of the site. Many of the properties of the SitesBox are bound to the properties of the site object.
+			 */ 
+			public function get site():Site
+			{
+				return _site;
+			}
+			public function set site(value:Site):void
+			{
+				_site = value;
+				csn.dao.addEventListener(AGSResult.SITE,criticalSiteReturned);
+				csn.dao.getSiteFeature(value);
+			}
+			/**
+			 * Called asynchronously when the site has been returned.
+			 */ 
+			protected function criticalSiteReturned(event:AGSResult):void
+			{
+				csn.dao.removeEventListener(AGSResult.SITE,criticalSiteReturned);
+				if (event.results.length>0)
+				{
+					var graphic:Graphic=event.results[0];
+					if (graphic) zoomToGraphic(graphic);
+				}
+			}
+			/**
+			 * Zooms to the critical site
+			 */ 
+			protected function zoomToGraphic(graphic:Graphic):void
+			{
+				if (graphic.geometry is MapPoint) //critical site is a point
+				{
+					map.centerAt(graphic.geometry as MapPoint);
+					map.level=12;
+					panoramioSlideshow.currentState="noImages"; //no images can be returned for a point because the images need to be within a polygon
+				}
+				else
+				{
+					var extent:Extent=graphic.geometry.extent; //polygon
+					panoramioSlideshow.searchPolygon=graphic.geometry as Polygon;
+					map.extent=extent;
+					if (!map.extent.contains(extent)) map.level--;
+					//					map.level=12;
+				}
+			}
+			
+		]]>
+	</fx:Script>
+</s:VGroup>

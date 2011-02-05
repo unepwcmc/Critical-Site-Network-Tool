@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!---InfoWindow for the Demo sites layer-->
+<mx:VBox xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" 
+		 xmlns:mx="library://ns.adobe.com/flex/mx" styleName="Tooltip" xmlns:components="wcmc.components.*" filters="{shadow}">
+	<fx:Declarations>
+		<mx:DropShadowFilter id="shadow" alpha="0.4"/>
+	</fx:Declarations>
+	<mx:HBox verticalAlign="middle" width="100%" minWidth="160">
+		<mx:Image source="{Countries.getCountryFlag(data.Country)}" verticalAlign="middle" height="100%" toolTip="{data.Country}"/>
+		<mx:Text text="{data.Demo_site}" styleName="toolLabel"/>
+		<mx:Spacer width="100%"/>
+		<mx:Image source="{EmbeddedImages.arrowRight}"  click="label1_clickHandler(event)" toolTip="{resourceManager.getString('myResources', 'TEXT147')}"/>
+		<components:MyCloseButton closeTarget="{parent}"/>
+	</mx:HBox>
+	<mx:LinkButton label="{resourceManager.getString('myResources', 'TEXT136')}" click="linkbutton1_clickHandler(event)" styleName="toolLabel"/>
+	<fx:Script>
+		<![CDATA[
+			import wcmc.classes.Countries;
+			import wcmc.classes.EmbeddedImages;
+			import wcmc.classes.EmbeddedImages;
+			import wcmc.classes.SetSiteEvent;
+			import wcmc.classes.Site;
+			/**
+			 * Opens the link to the demo site in the Wings Over Wetlands website in a new browser window
+			 */ 
+			protected function linkbutton1_clickHandler(event:MouseEvent):void
+			{
+				navigateToURL(new URLRequest(data.url),"_blank");
+			}
+			/**
+			 * Navigates to the site - creates a new site object and then dispatches the SetNewSite event.
+			 */ 
+			protected function label1_clickHandler(event:MouseEvent):void
+			{
+				var site:Site=new Site();
+				site.countryCode=data.Country;
+				site.name=data.Demo_site;
+				site.isPoly=data.IsPoly;
+				site.isIBA=data.IsIBA;
+				site.siteRecID=data.SiteRecID;
+				parentApplication.dispatchEvent(new SetSiteEvent(SetSiteEvent.SETSITE,site));
+			}
+		]]>
+	</fx:Script>
+</mx:VBox>

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!---Simple container that has its background set to a color when the user moves a mouse over it-->
+<s:BorderContainer xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		  xmlns:s="library://ns.adobe.com/flex/spark" 
+		  xmlns:mx="library://ns.adobe.com/flex/mx" rollOver="setBackground(0xeff3fa)" rollOut="setBackground(0xffffff)" width="100%" minHeight="0" borderAlpha="0">
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+	</fx:Declarations>
+	<fx:Script>
+		<![CDATA[
+			private function setBackground(color:int):void
+			{
+				setStyle("backgroundColor", color);
+			}
+			
+		]]>
+	</fx:Script>
+</s:BorderContainer>

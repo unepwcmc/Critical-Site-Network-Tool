@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!---Renderer used in the basemap gallery component to show the images for the types of basemap that can be selected. @see wcmc.components.BasemapGallery-->
+<s:ItemRenderer xmlns:fx="http://ns.adobe.com/mxml/2009" 
+				xmlns:s="library://ns.adobe.com/flex/spark" 
+				xmlns:mx="library://ns.adobe.com/flex/mx" 
+				autoDrawBackground="true">
+	<s:layout>
+		<s:VerticalLayout horizontalAlign="center" paddingTop="8"/>
+	</s:layout>
+	<mx:Image source="{data.image}">
+		<mx:filters>
+			<s:GlowFilter blurX="12" blurY="12" color="0x000000"/>
+		</mx:filters>
+	</mx:Image>
+	<s:Label text="{data.label}" width="112" textAlign="center" styleName="toolLabel" height="100%" verticalAlign="middle"/>
+</s:ItemRenderer>

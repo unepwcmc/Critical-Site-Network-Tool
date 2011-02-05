@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!---Custom DropDownList component that enables the user to change the renderer for a feature layer on the fly. @see wcmc.classes.RendererOption-->
+<s:DropDownList xmlns:fx="http://ns.adobe.com/mxml/2009" 
+				xmlns:s="library://ns.adobe.com/flex/spark" 
+				xmlns:mx="library://ns.adobe.com/flex/mx" change="dropdownlist1_changeHandler(event)" labelField="UIText">
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+	</fx:Declarations>
+	<fx:Script>
+		<![CDATA[
+			import com.esri.ags.layers.GraphicsLayer;
+			import com.esri.ags.renderers.Renderer;
+			
+			import mx.collections.ArrayCollection;
+			
+			import spark.events.IndexChangeEvent;
+			
+			import wcmc.classes.RendererOption;
+			/**
+			 * The currently selected renderer.
+			 */ 
+			[Bindable]public var currentRenderer:Renderer;
+			[Bindable]private var _renderers:ArrayCollection;
+			[Bindable]
+			/**
+			 * An ArrayCollection that holds all of the possible renderers.
+			 */ 
+			public function get renderers():ArrayCollection
+			{
+				return _renderers;
+			}
+			public function set renderers(value:ArrayCollection):void
+			{
+				_renderers = value;
+				dataProvider=_renderers; //bind the dataprovider property to the renderers collection
+				if ((_renderers.length>0)&&(!currentRenderer)) setRenderer((_renderers[0] as RendererOption).renderer);//set the default renderer to being the first
+			}
+			/**
+			 * Sets the renderer when the user changes the selected item.
+			 */ 
+			protected function dropdownlist1_changeHandler(event:IndexChangeEvent):void
+			{
+				setRenderer(dataProvider[event.newIndex].renderer);
+			}
+			/**
+			 * The setRenderer method is used to set the currentRenderer property. 
+			 */ 
+			public function setRenderer(renderer:Renderer):void
+			{
+				currentRenderer=renderer;
+			}
+		]]>
+	</fx:Script>
+</s:DropDownList>

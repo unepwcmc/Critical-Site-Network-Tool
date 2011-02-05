@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!---Renderer for the images in the Flickr slideshow component-->
+<s:ItemRenderer xmlns:fx="http://ns.adobe.com/mxml/2009" 
+				xmlns:s="library://ns.adobe.com/flex/spark" 
+				xmlns:mx="library://ns.adobe.com/flex/mx"
+				xmlns:classes="wcmc.classes.*"
+				autoDrawBackground="true" height="181">
+	<fx:Declarations>
+		<mx:GlowFilter id="shadow" alpha="0.4" blurX="4" blurY="4" strength="6"/>
+	</fx:Declarations>
+	<mx:Canvas width="240" backgroundAlpha="0" dropShadowVisible="true">
+		<classes:MyImage source="{data.url}" horizontalCenter="0" defaultHeight="{DEFAULTHEIGHT}" updateComplete="myimage1_updateCompleteHandler(event)"/>
+		<mx:HBox width="100%" top="{DEFAULTHEIGHT}">
+			<mx:Image source="{EmbeddedImages.flickr}" toolTip="{resourceManager.getString('myResources', 'TEXT142')}" click="Utilities.navigateToUrl('http://www.flickr.com')" useHandCursor="true"/>
+			<mx:LinkButton label="{data.title}" click="linkbutton1_clickHandler(event)" styleName="copyrightLabel" toolTip="{resourceManager.getString('myResources', 'TEXT143')}" maxWidth="212"/>
+		</mx:HBox>
+	</mx:Canvas>
+	<fx:Script>
+		<![CDATA[
+			import mx.events.FlexEvent;
+			
+			import wcmc.classes.EmbeddedImages;
+			import wcmc.classes.ImageLoadedEvent;
+			import wcmc.classes.Utilities;
+			private const DEFAULTHEIGHT:Number=160;
+			/**
+			 * Opens the image at its page in Flickr in a new browser window
+			 */ 
+			protected function linkbutton1_clickHandler(event:MouseEvent):void
+			{
+				var urlRequest:URLRequest=new URLRequest(data.flickrPage); 
+				navigateToURL(urlRequest,"_blank");
+			}
+			/**
+			 * Not currently used.
+			 */ 
+			protected function myimage1_updateCompleteHandler(event:FlexEvent):void
+			{
+				owner.dispatchEvent(new ImageLoadedEvent(ImageLoadedEvent.IMAGELOADED,data.url)); 
+			}
+		]]>
+	</fx:Script>
+</s:ItemRenderer>

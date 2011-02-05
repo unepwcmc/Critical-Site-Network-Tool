@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!---InfoWindow for the site with a link that navigates to the site page - this is used for the Demo sites-->
+<mx:VBox xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" 
+		 xmlns:mx="library://ns.adobe.com/flex/mx"
+		 styleName="Tooltip" xmlns:components="wcmc.components.*" filters="{shadow}">
+	<fx:Declarations>
+		<mx:DropShadowFilter id="shadow" alpha="0.4"/>
+	</fx:Declarations>
+	<mx:HBox width="100%" verticalAlign="middle" minWidth="160">
+		<mx:Image source="{Countries.getCountryFlag(data.Country)}" toolTip="{Countries.getCountryName(data.Country)}"/>
+		<s:Label text="{data.Name}"/>
+		<mx:Spacer width="100%"/>
+		<mx:Image source="{EmbeddedImages.arrowRight}"  click="image1_clickHandler(event)" toolTip="{resourceManager.getString('myResources', 'TEXT147')}"/>
+		<components:MyCloseButton closeTarget="{parent}"/>
+	</mx:HBox>
+	<fx:Script>
+		<![CDATA[
+			import wcmc.classes.Countries;
+			import wcmc.classes.EmbeddedImages;
+			import wcmc.classes.SetSiteEvent;
+			import wcmc.classes.Site;
+			/**
+			 * Create a site object and link to the site page
+			 */ 
+			protected function image1_clickHandler(event:MouseEvent):void
+			{
+				var site:Site=new Site();
+				site.countryCode=data.Country;
+				site.name=data.Name;
+				site.isPoly=data.IsPoly;
+				site.isIBA=data.IsIBA;
+				site.siteRecID=data.SiteRecID;
+				parentApplication.dispatchEvent(new SetSiteEvent(SetSiteEvent.SETSITE,site));
+			}
+
+		]]>
+	</fx:Script>
+</mx:VBox>

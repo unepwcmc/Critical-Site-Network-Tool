@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!---
+Generic component that is used to display a check box next to a title and description as a 'tool'. This checkbox can be used to set the visibility for layers and UI components. It is used on most of the tabs (i.e. species, sites,reports). 
+-->
+<s:SkinnableContainer xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		  xmlns:s="library://ns.adobe.com/flex/spark" 
+		  xmlns:mx="library://ns.adobe.com/flex/mx" width="100%" rollOver="setBackground(0xeff3fa)" rollOut="setBackground(0xffffff)">
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+		<fx:Boolean id="selected">{checkBox.selected}</fx:Boolean>
+		<s:GlowFilter blurX="12" blurY="12" color="0x000000" id="blur" alpha="0.1"/>
+	</fx:Declarations>
+	<fx:Metadata>
+		[Event(name="toolActivated", type="flash.events.Event")]
+		[Event(name="toolDeactivated", type="flash.events.Event")]
+	</fx:Metadata>
+	<s:HGroup width="100%" paddingBottom="3" paddingTop="3" paddingLeft="3" gap="2">
+		<s:HGroup height="100%">
+			<mx:Image source="{imageSource}" filters="{[blur]}"/>
+			<s:CheckBox id="checkBox" click="checkBox_clickHandler(event)"/>
+		</s:HGroup>
+		<s:VGroup width="100%">
+			<s:Label text="{label}" styleName="toolLabel" width="100%"/>
+			<s:Label text="{description}" width="100%" fontSize="9" color="0xaaaaaa"/>	
+		</s:VGroup>
+	</s:HGroup>
+	<fx:Script>
+		<![CDATA[
+			import mx.controls.Alert;
+			[Bindable]
+			/**
+			 * The path to the image that is used in the UI.
+			 */ 
+			public var imageSource:Class;
+			[Bindable]
+			/**
+			 * The label that is shown at the top of the Tool UI.
+			 */ 
+			public var label:String;
+			[Bindable]
+			/**
+			 * The description that is shown at the bottom of the Tool UI.
+			 */ 
+			public var description:String;
+			/**
+			 * Dispatches the tool activates/deactivated events.
+			 */ 
+			protected function checkBox_clickHandler(event:MouseEvent):void
+			{
+				(checkBox.selected) ? dispatchEvent(new Event("toolActivated")) : dispatchEvent(new Event("toolDeactivated"));
+			}
+			private function setBackground(color:int):void
+			{
+				setStyle("backgroundColor", color);
+			}
+			
+		]]>
+	</fx:Script>
+</s:SkinnableContainer>

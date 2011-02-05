@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!---Custom Image component that shows a drag bar that a user can use to move a component in the application to a new location on the screen.-->
+<mx:Image xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		  xmlns:s="library://ns.adobe.com/flex/spark" 
+		  xmlns:mx="library://ns.adobe.com/flex/mx" source="{EmbeddedImages.dragImage}" mouseMove="image1_mouseMoveHandler(event)" toolTip="{resourceManager.getString('myResources', 'TEXT227')}">
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+	</fx:Declarations>
+	<fx:Script>
+		<![CDATA[
+			import mx.core.DragSource;
+			import mx.core.UIComponent;
+			import mx.events.DragEvent;
+			import mx.managers.DragManager;
+			
+			import wcmc.classes.EmbeddedImages;
+			[Bindable]public var dragComponent:UIComponent;
+			[Bindable]public var target:UIComponent;
+			private var startX:Number;
+			private var startY:Number;
+
+			protected function image1_mouseMoveHandler(event:MouseEvent):void
+			{
+				if (!dragComponent) return;
+				if (event.buttonDown)
+				{
+					startX=event.stageX;
+					startY=event.stageY;
+					var dragSource:DragSource = new DragSource();
+					DragManager.doDrag(dragComponent, dragSource, event);
+					if (target)
+					{
+						target.addEventListener(DragEvent.DRAG_ENTER,dragEnter);
+						target.addEventListener(DragEvent.DRAG_DROP,dragDrop);
+					}
+				}
+			}
+			protected function dragEnter(event:DragEvent):void
+			{
+				DragManager.acceptDragDrop(UIComponent(event.currentTarget));
+			}
+			protected function dragDrop(event:DragEvent):void
+			{
+				target.removeEventListener(DragEvent.DRAG_ENTER,dragEnter);
+				target.removeEventListener(DragEvent.DRAG_DROP,dragDrop);
+				if (dragComponent.getStyle("horizontalCenter")==0) dragComponent.setStyle("horizontalCenter",NaN);
+				if (dragComponent.getStyle("verticalCenter")==0) dragComponent.setStyle("verticalCenter",NaN);
+				if (dragComponent.getStyle("top")) dragComponent.setStyle("top",NaN);
+				if (dragComponent.getStyle("left")) dragComponent.setStyle("left",NaN);
+				if (dragComponent.getStyle("bottom")) dragComponent.setStyle("bottom",NaN);
+				if (dragComponent.getStyle("right")) dragComponent.setStyle("right",NaN);
+				(parentApplication.layoutDirection=="ltr") ? dragComponent.x+=event.stageX-startX : dragComponent.x-=event.stageX-startX ; //reverse the direction if the application direction is rtl - otherwise it moves the wrong way
+				dragComponent.y+=event.stageY-startY;
+			}
+		]]>
+	</fx:Script>
+</mx:Image>

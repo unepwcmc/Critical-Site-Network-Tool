@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!---Renderer for a layer in the Legend component. This renderer shows the name of the layer and has a list component that lists each of the symbols in the current renderer for the layer. @see wcmc.components.Legend @see wcmc.classes.LayerLegend @see wcmc.classes.LayerLegendItem @see wcmc.renderers.LayerLegendItemRenderer-->
+<s:ItemRenderer xmlns:fx="http://ns.adobe.com/mxml/2009" 
+				xmlns:s="library://ns.adobe.com/flex/spark" 
+				xmlns:mx="library://ns.adobe.com/flex/mx" 
+				autoDrawBackground="true" dataChange="itemrenderer1_dataChangeHandler(event)">
+	<s:states>
+		<s:State name="loading"/>
+		<s:State name="loaded"/>
+	</s:states>
+	<s:VGroup paddingBottom="6" paddingTop="4" paddingLeft="4" paddingRight="4" width="100%">
+		<mx:Canvas width="100%">
+			<s:Label id="layerLegendLabel" text="{data.caption}" styleName="layerLegendLabel" width="100%"/>
+			<s:List y="{layerLegendLabel.height+3}" alpha.loaded="1" alpha.loading="0.1" itemRenderer="wcmc.renderers.LayerLegendItemRenderer" dataProvider="{data.items}" skinClass="wcmc.skins.LayerLegendItemSkin" styleName="legendItem" x="8"/>
+			<mx:SWFLoader includeIn="loading" source="{EmbeddedImages.loader}" horizontalCenter="0" y="{layerLegendLabel.height+3}"/>
+		</mx:Canvas>
+	</s:VGroup>
+	<fx:Script>
+		<![CDATA[
+			import mx.events.FlexEvent;
+			
+			import wcmc.classes.EmbeddedImages;
+			/**
+			 * Sets the current state when the data is changed. The visibility of the loading animation is set by states.
+			 */ 
+			protected function itemrenderer1_dataChangeHandler(event:FlexEvent):void
+			{
+				if (data)
+				{
+					(data.loading) ? currentState="loading" : currentState="loaded";
+				}
+			}
+		]]>
+	</fx:Script>
+</s:ItemRenderer>
