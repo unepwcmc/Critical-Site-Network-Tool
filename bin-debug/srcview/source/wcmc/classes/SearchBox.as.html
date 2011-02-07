@@ -1,0 +1,82 @@
+<!-- saved from url=(0014)about:internet -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<title>SearchBox.as</title>
+<link rel="stylesheet" type="text/css" href="../../../SourceStyles.css"/>
+</head>
+
+<body><pre><span class="ActionScriptpackage">package</span> <span class="ActionScriptDefault_Text">wcmc</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">classes</span>
+<span class="ActionScriptBracket/Brace">{</span>
+    <span class="ActionScriptReserved">import</span> <span class="ActionScriptDefault_Text">flash</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">events</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">KeyboardEvent</span>;
+    <span class="ActionScriptReserved">import</span> <span class="ActionScriptDefault_Text">flash</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">events</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">MouseEvent</span>;
+    
+    <span class="ActionScriptReserved">import</span> <span class="ActionScriptDefault_Text">mx</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">binding</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">utils</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">BindingUtils</span>;
+    <span class="ActionScriptReserved">import</span> <span class="ActionScriptDefault_Text">mx</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">controls</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">Image</span>;
+    <span class="ActionScriptReserved">import</span> <span class="ActionScriptDefault_Text">mx</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">controls</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">TextInput</span>;
+    <span class="ActionScriptReserved">import</span> <span class="ActionScriptDefault_Text">mx</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">resources</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">IResourceManager</span>;
+
+    <span class="ActionScriptASDoc">/**
+     * Class that extends the TextInput component with a clear search image. 
+     * @author andrewcottam
+     * 
+     */</span>    
+    <span class="ActionScriptReserved">public</span> <span class="ActionScriptclass">class</span> <span class="ActionScriptDefault_Text">SearchBox</span> <span class="ActionScriptReserved">extends</span> <span class="ActionScriptDefault_Text">TextInput</span>
+    <span class="ActionScriptBracket/Brace">{</span>
+        <span class="ActionScriptReserved">private</span> <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">searchImg</span>:<span class="ActionScriptDefault_Text">Image</span>;
+        <span class="ActionScriptASDoc">/**
+         * Overriden function which instantiates the clear search icon and adds the event wiring in. 
+         * 
+         */</span>        
+        <span class="ActionScriptReserved">override</span> <span class="ActionScriptReserved">protected</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptDefault_Text">createChildren</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptBracket/Brace">)</span>:<span class="ActionScriptReserved">void</span>
+        <span class="ActionScriptBracket/Brace">{</span>
+            <span class="ActionScriptReserved">super</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">createChildren</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptBracket/Brace">)</span>; <span class="ActionScriptComment">//call the super createChildren
+</span>            <span class="ActionScriptDefault_Text">styleName</span><span class="ActionScriptOperator">=</span><span class="ActionScriptString">"TextInput"</span>;
+            <span class="ActionScriptDefault_Text">searchImg</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptReserved">new</span> <span class="ActionScriptDefault_Text">Image</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptBracket/Brace">)</span>; <span class="ActionScriptComment">//create a new image for the clear search box icon
+</span>            <span class="ActionScriptDefault_Text">searchImg</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">source</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">EmbeddedImages</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">searchIcon</span>; <span class="ActionScriptComment">//set the source
+</span>            <span class="ActionScriptDefault_Text">searchImg</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">width</span><span class="ActionScriptOperator">=</span>14; <span class="ActionScriptComment">//set the width
+</span>            <span class="ActionScriptDefault_Text">searchImg</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">height</span><span class="ActionScriptOperator">=</span>14; <span class="ActionScriptComment">//set the height
+</span>            <span class="ActionScriptDefault_Text">searchImg</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">x</span> <span class="ActionScriptOperator">=</span> 142; <span class="ActionScriptComment">//set the position of the icon in the TextInput
+</span>            <span class="ActionScriptDefault_Text">searchImg</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">y</span> <span class="ActionScriptOperator">=</span> 4; <span class="ActionScriptComment">//set the y position
+</span>            <span class="ActionScriptDefault_Text">searchImg</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">visible</span><span class="ActionScriptOperator">=</span><span class="ActionScriptReserved">false</span>; <span class="ActionScriptComment">//not visible by default
+</span>            <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">chain</span>:<span class="ActionScriptDefault_Text">Object</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptReserved">new</span> <span class="ActionScriptDefault_Text">Object</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptBracket/Brace">)</span>; <span class="ActionScriptComment">//chain object to use in the databinding 
+</span>            <span class="ActionScriptDefault_Text">chain</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">name</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptString">"getString"</span>; <span class="ActionScriptComment">//set the chain name
+</span>            <span class="ActionScriptDefault_Text">chain</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">getter</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptfunction">function</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">resMan</span>:<span class="ActionScriptDefault_Text">IResourceManager</span><span class="ActionScriptBracket/Brace">)</span>:<span class="ActionScriptDefault_Text">String</span> <span class="ActionScriptBracket/Brace">{</span><span class="ActionScriptReserved">return</span> <span class="ActionScriptDefault_Text">resMan</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">getString</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptString">'myResources'</span><span class="ActionScriptOperator">,</span> <span class="ActionScriptString">'TEXT17'</span><span class="ActionScriptBracket/Brace">)</span><span class="ActionScriptBracket/Brace">}</span>; <span class="ActionScriptComment">//set the chain getter function
+</span>            <span class="ActionScriptDefault_Text">BindingUtils</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">bindProperty</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">searchImg</span><span class="ActionScriptOperator">,</span><span class="ActionScriptString">"toolTip"</span><span class="ActionScriptOperator">,</span><span class="ActionScriptDefault_Text">resourceManager</span><span class="ActionScriptOperator">,</span><span class="ActionScriptDefault_Text">chain</span><span class="ActionScriptBracket/Brace">)</span>; <span class="ActionScriptComment">//bind the tooltip to a function which returns a string
+</span>            <span class="ActionScriptDefault_Text">searchImg</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">addEventListener</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">MouseEvent</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">MOUSE_DOWN</span><span class="ActionScriptOperator">,</span><span class="ActionScriptDefault_Text">mouseDown</span><span class="ActionScriptBracket/Brace">)</span>; <span class="ActionScriptComment">//add a listener to change the image on mouse down
+</span>            <span class="ActionScriptDefault_Text">searchImg</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">addEventListener</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">MouseEvent</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">MOUSE_UP</span><span class="ActionScriptOperator">,</span><span class="ActionScriptDefault_Text">mouseUp</span><span class="ActionScriptBracket/Brace">)</span>; <span class="ActionScriptComment">//add a listener to change the image on mouse up
+</span>            <span class="ActionScriptDefault_Text">addChild</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">searchImg</span><span class="ActionScriptBracket/Brace">)</span>; <span class="ActionScriptComment">//add the image
+</span>        <span class="ActionScriptBracket/Brace">}</span>
+        <span class="ActionScriptASDoc">/**
+         * Constructor. Adds the event wiring for keyUp. 
+         * 
+         */</span>        
+        <span class="ActionScriptReserved">public</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptDefault_Text">SearchBox</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptBracket/Brace">)</span>:<span class="ActionScriptReserved">void</span>
+        <span class="ActionScriptBracket/Brace">{</span>
+            <span class="ActionScriptDefault_Text">addEventListener</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">KeyboardEvent</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">KEY_UP</span><span class="ActionScriptOperator">,</span><span class="ActionScriptDefault_Text">keyUp</span><span class="ActionScriptBracket/Brace">)</span>; <span class="ActionScriptComment">//add the listener for key downs
+</span>        <span class="ActionScriptBracket/Brace">}</span>
+        <span class="ActionScriptReserved">private</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptDefault_Text">keyUp</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">event</span>:<span class="ActionScriptDefault_Text">KeyboardEvent</span><span class="ActionScriptBracket/Brace">)</span>:<span class="ActionScriptReserved">void</span>
+        <span class="ActionScriptBracket/Brace">{</span>
+            <span class="ActionScriptReserved">if</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">text</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">length</span><span class="ActionScriptOperator">&gt;</span>0<span class="ActionScriptBracket/Brace">)</span>
+            <span class="ActionScriptBracket/Brace">{</span>
+                <span class="ActionScriptDefault_Text">searchImg</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">visible</span><span class="ActionScriptOperator">=</span><span class="ActionScriptReserved">true</span>;
+            <span class="ActionScriptBracket/Brace">}</span>
+            <span class="ActionScriptReserved">else</span>
+            <span class="ActionScriptBracket/Brace">{</span>
+                <span class="ActionScriptDefault_Text">searchImg</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">visible</span><span class="ActionScriptOperator">=</span><span class="ActionScriptReserved">false</span>;
+            <span class="ActionScriptBracket/Brace">}</span>
+        <span class="ActionScriptBracket/Brace">}</span>
+        <span class="ActionScriptReserved">private</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptDefault_Text">mouseDown</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">event</span>:<span class="ActionScriptDefault_Text">MouseEvent</span><span class="ActionScriptBracket/Brace">)</span>:<span class="ActionScriptReserved">void</span>
+        <span class="ActionScriptBracket/Brace">{</span>
+            <span class="ActionScriptDefault_Text">searchImg</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">source</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">EmbeddedImages</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">searchIconClick</span>;
+        <span class="ActionScriptBracket/Brace">}</span>
+        <span class="ActionScriptReserved">private</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptDefault_Text">mouseUp</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">event</span>:<span class="ActionScriptDefault_Text">MouseEvent</span><span class="ActionScriptBracket/Brace">)</span>:<span class="ActionScriptReserved">void</span>
+        <span class="ActionScriptBracket/Brace">{</span>
+            <span class="ActionScriptDefault_Text">searchImg</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">source</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">EmbeddedImages</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">searchIcon</span>;
+            <span class="ActionScriptDefault_Text">text</span><span class="ActionScriptOperator">=</span><span class="ActionScriptString">""</span>;
+            <span class="ActionScriptDefault_Text">dispatchEvent</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptReserved">new</span> <span class="ActionScriptDefault_Text">KeyboardEvent</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptString">"keyUp"</span><span class="ActionScriptBracket/Brace">)</span><span class="ActionScriptBracket/Brace">)</span>;
+        <span class="ActionScriptBracket/Brace">}</span>
+    <span class="ActionScriptBracket/Brace">}</span>
+<span class="ActionScriptBracket/Brace">}</span></pre></body>
+</html>
