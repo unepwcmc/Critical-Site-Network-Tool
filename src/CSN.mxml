@@ -80,13 +80,13 @@ Main application class.
 
 		<!--Map Symbols-->
 		<!--these are no longer used as the map data for all of these layers is now loaded as a dynamic map service
-		<classes:MySimpleMarkerSymbol id="iwcSymbol" color="0x0000FF" style="circle" size="13" alpha="0.5" legendCaption="{resourceManager.getString('myResources', 'TEXT157')}"><esri:SimpleLineSymbol alpha="0.5"/></classes:MySimpleMarkerSymbol>
 		<classes:MySimpleMarkerSymbol id="sitePointSymbol" color="0xFF00FF" style="circle" size="13" legendCaption="{resourceManager.getString('myResources', 'TEXT150')}"><esri:SimpleLineSymbol/></classes:MySimpleMarkerSymbol>
 		<classes:MySimpleFillSymbol id="sitePolySymbol" color="0xFF00FF" legendCaption="{resourceManager.getString('myResources', 'TEXT151')}"><esri:SimpleLineSymbol/></classes:MySimpleFillSymbol>
 		<classes:MySimpleMarkerSymbol id="wdpaPointSymbol" color="0xff0000" style="circle" size="13" legendCaption="{resourceManager.getString('myResources', 'TEXT152')}"><esri:SimpleLineSymbol/></classes:MySimpleMarkerSymbol>
 		<classes:MySimpleFillSymbol id="wdpaPolySymbol" color="0xff0000" legendCaption="{resourceManager.getString('myResources', 'TEXT153')}"><esri:SimpleLineSymbol/></classes:MySimpleFillSymbol>
 		<classes:MySimpleMarkerSymbol id="ramsarPointSymbol" color="0x44FF00" style="triangle" size="23" legendCaption="{resourceManager.getString('myResources', 'TEXT154')}"><esri:SimpleLineSymbol/></classes:MySimpleMarkerSymbol>
 		<classes:MySimpleFillSymbol id="ramsarPolySymbol" color="0x44FF00" legendCaption="{resourceManager.getString('myResources', 'TEXT155')}"><esri:SimpleLineSymbol/></classes:MySimpleFillSymbol>-->
+		<classes:MySimpleMarkerSymbol id="iwcSymbol" color="0x0000FF" style="circle" size="13" alpha="0.5" legendCaption="{resourceManager.getString('myResources', 'TEXT157')}"><esri:SimpleLineSymbol alpha="0.5"/></classes:MySimpleMarkerSymbol>
 
 		<!--Renderers for the Critical Sites-->
 		<!---A set of renderers that are used to render the map data for the critical sites on the species page. @see wcmc.classes.RendererChooser -->
@@ -408,6 +408,9 @@ Main application class.
 			</classes:visibleLayers>
 		</classes:MyArcGISDynamicMapServiceLayer>
 		
+		<!--Species IWC site layer for the User-defined polygon tool-->
+		<classes:MyFeatureLayer id="iwcFeatureLayer" url="http://dev.unep-wcmc.org/ArcGIS/rest/services/CSN/Species/MapServer/4" includeIn="species" definitionExpression="SpcRecID={speciesBox.species.spcRecID}" visible="{speciesBox.iwcCustomAreaTool.selected}" outFields="[Name,CountryCode,SiteCode]" showEffect="{fadeIn07}" hideEffect="{fadeOut07}" legendCaption="{resourceManager.getString('myResources', 'TEXT83')}" symbol="{iwcSymbol}" infoWindowRenderer="wcmc.infoWindows.IWCChartInfoWindow"/>
+		
 		<!--Species IWC Time Slider layer-->
 		<!---The species IWC time slider layer is the MapService available through the ArcGIS Server REST Directory: http://dev.unep-wcmc.org/ArcGIS/rest/services/CSN/IWCTimeSlider/MapServer. The species and year that is shown is set using a DefinitionExpression on the MapService using the current SpcRecID in the url and the year from the timeslider control that is shown when the user turns on the IWC time slider. This service is separate from the other services because it accesses and maps over 60 million records.-->
 		<classes:MyArcGISDynamicMapServiceLayer url="http://dev.unep-wcmc.org/ArcGIS/rest/services/CSN/IWCTimeSlider/MapServer" id="iwcNonCumulativeTimeLayer" includeIn="species" visible="{speciesBox.timeSliderTool.selected}" load="iwcNonCumulativeTimeLayer_loadHandler(event)" legendCaption="{resourceManager.getString('myResources', 'TEXT149')} ({myDateFormatter.format(timeSlider.timeExtent.endTime)})" legendImage="{EmbeddedImages.timeSeriesMap}" infoWindowRenderer="wcmc.infoWindows.IWCCountInfoWindow">
@@ -454,7 +457,6 @@ Main application class.
 		
 		<!--Site IWC Layer-->
 		<!---The IWC layer represents the point locations of IWC sites (the fifth layer) in the MapService available through the ArcGIS Server REST Directory: http://dev.unep-wcmc.org/ArcGIS/rest/services/CSN/Sites/MapServer. Unlike the species layers, there are no definition expressions on the sites layers since all sites are shown.-->
-<!--		<classes:MyFeatureLayer url="http://dev.unep-wcmc.org/ArcGIS/rest/services/CSN/Sites/MapServer/4" minScale="{STATIC_DYNAMIC_SCALE_CUT_OFF}" includeIn="site" visible="{sitesBox.iwcMap.selected}" outFields="[Name,CountryCode,SiteCode]" showEffect="{fadeIn07}" hideEffect="{fadeOut07}" legendCaption="{resourceManager.getString('myResources', 'TEXT85')}" symbol="{iwcSymbol}" infoWindowRenderer="wcmc.infoWindows.IWCSimpleInfoWindow"/>-->
 		<classes:MyArcGISDynamicMapServiceLayer id="iwcLayer" url="http://dev.unep-wcmc.org/ArcGIS/rest/services/CSN/Sites/MapServer" includeIn="site" visible="{sitesBox.iwcMap.selected}" showEffect="{fadeIn07}" hideEffect="{fadeOut07}" legendCaption="{resourceManager.getString('myResources', 'TEXT149')}" infoWindowRenderer="wcmc.infoWindows.IWCSimpleInfoWindow" legendImage="{EmbeddedImages.speciesIWCL}">
 			<classes:visibleLayers>
 				<mx:ArrayCollection>
@@ -489,7 +491,7 @@ Main application class.
 		</classes:MyArcGISDynamicMapServiceLayer>
 	
 		<!--Polygon Draw layer-->
-<!--		<esri:GraphicsLayer id="drawLayer" showEffect="{fadeIn07}" hideEffect="{fadeOut07}" includeIn="species" visible="{speciesBox.iwcCustomAreaTool.selected}"/>-->
+		<esri:GraphicsLayer id="drawLayer" showEffect="{fadeIn07}" hideEffect="{fadeOut07}" includeIn="species" visible="{speciesBox.iwcCustomAreaTool.selected}"/>
 		
 		<!--REPORTS PAGE LAYERS-->
 		
@@ -601,14 +603,14 @@ Main application class.
 	</s:BorderContainer>
 	
 	<!--Draw toolbar for user-defined polygon-->
-<!--	<components:MyBorderContainer id="drawToolbar" styleName="InformationPanel" visible="{((speciesBox.iwcCustomAreaTool.selected)&amp;&amp;(currentState=='species'))}" minHeight="0" show="drawToolbar_showHandler(event)">
+	<components:MyBorderContainer id="drawToolbar" styleName="InformationPanel" visible="{((speciesBox.iwcCustomAreaTool.selected)&amp;&amp;(currentState=='species'))}" minHeight="0" show="drawToolbar_showHandler(event)">
 		<s:BorderContainer styleName="ContentPanel" right="5" bottom="5" top="5" left="5" minHeight="0">
 			<s:VGroup paddingBottom="8" paddingLeft="10" paddingTop="10" paddingRight="10" horizontalAlign="center">
 				<components:BoxHeader dragComponent="{drawToolbar}" target="{map}" caption="Draw toolbar" boxClosed="speciesBox.iwcCustomAreaTool.checkBox.selected=false;drawTools.deactivateTool();"/>
 				<components:DrawToolbar id="drawTools" map="{map}" drawLayer="{drawLayer}" creationComplete="drawToolbar_creationCompleteHandler(event)" drawToolActivated="resetDrawTool(event)" drawToolDeactivated="resetDrawTool(event)"/>
 			</s:VGroup>
 		</s:BorderContainer>
-	</components:MyBorderContainer>-->		
+	</components:MyBorderContainer>		
 	
 	<!--Species critical sites data table-->
 	<!---A custom border container that shows information relating to the critical sites for a species. @see wcmc.components.MyBorderContainer-->
@@ -910,6 +912,7 @@ Main application class.
 			import mx.managers.CursorManagerPriority;
 			import mx.managers.IBrowserManager;
 			import mx.managers.PopUpManager;
+			import mx.rpc.AsyncResponder;
 			
 			import org.alivepdf.layout.Orientation;
 			
@@ -1371,20 +1374,20 @@ Main application class.
 			/**
 			 * Fired when the drawToolbar has finished being created. This adds the event listeners for the user-defined polygon drawing.
 			 */			
-			protected function drawToolbar_creationCompleteHandler(event:FlexEvent):void //TODO: REMOVE FOR USER-DEFINED AREA
+			protected function drawToolbar_creationCompleteHandler(event:FlexEvent):void 
 			{
-//				drawTools.drawTool.addEventListener(DrawEvent.DRAW_END,drawEnd);
-//				addEventListener(StateChangeEvent.CURRENT_STATE_CHANGE,resetDrawTool);
+				drawTools.drawTool.addEventListener(DrawEvent.DRAW_END,drawEnd);
+				addEventListener(StateChangeEvent.CURRENT_STATE_CHANGE,resetDrawTool);
 			}
 			/**
 			 * Fired when the user has finished drawing the user-defined polygon.  
 			 */			
 			protected function drawEnd(event:DrawEvent):void
 			{
-//				var query:Query=new Query();
-//				query.geometry=event.graphic.geometry;
-//				iwcFeatureLayer.selectionColor=0xff0000;
-//				iwcFeatureLayer.selectFeatures(query,"new",new AsyncResponder(onResult,null));
+				var query:Query=new Query();
+				query.geometry=event.graphic.geometry;
+				iwcFeatureLayer.selectionColor=0xff0000;
+				iwcFeatureLayer.selectFeatures(query,"new",new AsyncResponder(onResult,null));
 			}
 			/**
 			 * Fired when the features within the user-defined polygon are returned.
@@ -1428,10 +1431,10 @@ Main application class.
 			 */			
 			protected function resetDrawTool(event:Event):void
 			{
-//				if (!drawLayer) return;
-//				drawLayer.clear();
-//				iwcFeatureLayer.clearSelection();
-//				map.infoWindow.hide();
+				if (!drawLayer) return;
+				drawLayer.clear();
+				iwcFeatureLayer.clearSelection();
+				map.infoWindow.hide();
 			}
 
 			////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1630,9 +1633,9 @@ Main application class.
 			 */			
 			protected function drawToolbar_showHandler(event:FlexEvent):void
 			{
-//				var point:Point=speciesBox.iwcCustomAreaTool.contentToGlobal(new Point());
-//				drawToolbar.bottom=height-point.y+!5;
-//				drawToolbar.x=infoPanel.x-40;
+				var point:Point=speciesBox.iwcCustomAreaTool.contentToGlobal(new Point());
+				drawToolbar.bottom=height-point.y+!5;
+				drawToolbar.x=infoPanel.x-40;
 			} 
 
 			////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

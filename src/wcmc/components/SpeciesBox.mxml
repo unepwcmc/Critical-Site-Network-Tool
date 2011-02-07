@@ -36,7 +36,7 @@ Main species box that contains all of the controls for turning on/off the variou
 				<components:Tool id="csnMap" imageSource="{EmbeddedImages.speciesAbundance}" label="{resourceManager.getString('myResources', 'TEXT107')}" description="{resourceManager.getString('myResources', 'TEXT108')}"/>
 				<components:Tool id="ibaMap" imageSource="{EmbeddedImages.ibaMap}" label="{resourceManager.getString('myResources', 'TEXT109')}" description="{resourceManager.getString('myResources', 'TEXT110')}"/>
 				<components:Tool id="iwcMap" imageSource="{EmbeddedImages.chart}" label="{resourceManager.getString('myResources', 'TEXT111')}" description="{resourceManager.getString('myResources', 'TEXT112')}"/>
-	<!--			<components:Tool id="iwcCustomAreaTool" imageSource="{EmbeddedImages.chart}" label="{resourceManager.getString('myResources', 'TEXT113')}" description="{resourceManager.getString('myResources', 'TEXT114')}"/>-->
+				<components:Tool id="iwcCustomAreaTool" imageSource="{EmbeddedImages.chart}" label="{resourceManager.getString('myResources', 'TEXT113')}" description="{resourceManager.getString('myResources', 'TEXT114')}"/>
 				<components:Tool id="timeSliderTool" imageSource="{EmbeddedImages.timeSlider}" label="{resourceManager.getString('myResources', 'TEXT115')}" description="{resourceManager.getString('myResources', 'TEXT116')}"/>
 				<components:Tool id="wpeTable" imageSource="{EmbeddedImages.list}" label="{resourceManager.getString('myResources', 'TEXT117')}" description="{resourceManager.getString('myResources', 'TEXT118')}"/>
 			</s:VGroup>
