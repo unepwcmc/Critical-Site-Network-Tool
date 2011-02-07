@@ -88,16 +88,80 @@ Main application class.
 		<classes:MySimpleMarkerSymbol id="ramsarPointSymbol" color="0x44FF00" style="triangle" size="23" legendCaption="{resourceManager.getString('myResources', 'TEXT154')}"><esri:SimpleLineSymbol/></classes:MySimpleMarkerSymbol>
 		<classes:MySimpleFillSymbol id="ramsarPolySymbol" color="0x44FF00" legendCaption="{resourceManager.getString('myResources', 'TEXT155')}"><esri:SimpleLineSymbol/></classes:MySimpleFillSymbol>-->
 
+		<!--Renderer options - these are used in a number of renderers-->
+		<!--Protection renderer option-->
+		<classes:RendererOption id="protectionRendererOption" UIText="{resourceManager.getString('myResources', 'TEXT198')}"><!--protection status-->
+			<classes:renderer>
+				<esri:UniqueValueRenderer attribute="Protected">
+					<esri:infos>
+						<esri:UniqueValueInfo value="whole" >
+							<classes:MySimpleMarkerSymbol color="0x008000" size="13" style="circle" legendCaption="{resourceManager.getString('myResources', 'TEXT169')}"><esri:SimpleLineSymbol alpha="0.5"/></classes:MySimpleMarkerSymbol>
+						</esri:UniqueValueInfo>
+						<esri:UniqueValueInfo value="little/none" >
+							<classes:MySimpleMarkerSymbol color="0xff0000" size="13" style="circle" legendCaption="{resourceManager.getString('myResources', 'TEXT170')}"><esri:SimpleLineSymbol alpha="0.5"/></classes:MySimpleMarkerSymbol>
+						</esri:UniqueValueInfo>
+						<esri:UniqueValueInfo value="unknown">
+							<classes:MySimpleMarkerSymbol color="0x0000ff" size="13" style="circle" legendCaption="{resourceManager.getString('myResources', 'TEXT141')}"><esri:SimpleLineSymbol alpha="0.5"/></classes:MySimpleMarkerSymbol>
+						</esri:UniqueValueInfo>
+						<esri:UniqueValueInfo value="some">
+							<classes:MySimpleMarkerSymbol color="0xff8000" size="13" style="circle" legendCaption="{resourceManager.getString('myResources', 'TEXT171')}"><esri:SimpleLineSymbol alpha="0.5"/></classes:MySimpleMarkerSymbol>
+						</esri:UniqueValueInfo>
+						<esri:UniqueValueInfo value="most">
+							<classes:MySimpleMarkerSymbol color="0xffff00" size="13" style="circle" legendCaption="{resourceManager.getString('myResources', 'TEXT172')}"><esri:SimpleLineSymbol alpha="0.5"/></classes:MySimpleMarkerSymbol>
+						</esri:UniqueValueInfo>
+					</esri:infos>
+				</esri:UniqueValueRenderer>
+			</classes:renderer>
+		</classes:RendererOption>
+
+		<!--CSN presence renderer option-->
+		<classes:RendererOption id="presenceRendererOption" UIText="{resourceManager.getString('myResources', 'TEXT156')}"><!--presence-->
+			<classes:renderer>
+				<esri:SimpleRenderer>
+					<classes:MySimpleMarkerSymbol color="0xFF00FF" style="circle" size="13" legendCaption="{resourceManager.getString('myResources', 'TEXT157')}"><esri:SimpleLineSymbol alpha="0.5"/></classes:MySimpleMarkerSymbol>
+				</esri:SimpleRenderer>
+			</classes:renderer>
+		</classes:RendererOption>
+		
+		<!--Season renderer option-->
+		<classes:RendererOption id="seasonRendererOption" UIText="{resourceManager.getString('myResources', 'TEXT159')}"><!--season-->
+			<classes:renderer>
+				<esri:UniqueValueRenderer attribute="Season">
+					<esri:infos>
+						<esri:UniqueValueInfo value="breeding" >
+							<classes:MySimpleMarkerSymbol color="0xfcfc39" size="13" style="circle" legendCaption="{resourceManager.getString('myResources', 'TEXT160')}"><esri:SimpleLineSymbol alpha="0.5"/></classes:MySimpleMarkerSymbol>
+						</esri:UniqueValueInfo>
+						<esri:UniqueValueInfo value="non-breeding" >
+							<classes:MySimpleMarkerSymbol color="0x1e89fb" size="13" style="circle" legendCaption="{resourceManager.getString('myResources', 'TEXT161')}"><esri:SimpleLineSymbol alpha="0.5"/></classes:MySimpleMarkerSymbol>
+						</esri:UniqueValueInfo>
+						<esri:UniqueValueInfo value="passage">
+							<classes:MySimpleMarkerSymbol color="0x0ee1011" size="13" style="circle" legendCaption="{resourceManager.getString('myResources', 'TEXT162')}"><esri:SimpleLineSymbol alpha="0.5"/></classes:MySimpleMarkerSymbol>
+						</esri:UniqueValueInfo>
+						<esri:UniqueValueInfo value="winter">
+							<classes:MySimpleMarkerSymbol color="0xd730fb" size="13" style="circle" legendCaption="{resourceManager.getString('myResources', 'TEXT163')}"><esri:SimpleLineSymbol alpha="0.5"/></classes:MySimpleMarkerSymbol>
+						</esri:UniqueValueInfo>
+						<esri:UniqueValueInfo value="resident">
+							<classes:MySimpleMarkerSymbol color="0x1d8216" size="13" style="circle" legendCaption="{resourceManager.getString('myResources', 'TEXT164')}"><esri:SimpleLineSymbol alpha="0.5"/></classes:MySimpleMarkerSymbol>
+						</esri:UniqueValueInfo>
+						<esri:UniqueValueInfo value="unknown">
+							<classes:MySimpleMarkerSymbol color="0xcccccc" size="13" style="circle" legendCaption="{resourceManager.getString('myResources', 'TEXT141')}"><esri:SimpleLineSymbol alpha="0.5"/></classes:MySimpleMarkerSymbol>
+						</esri:UniqueValueInfo>
+					</esri:infos>
+				</esri:UniqueValueRenderer>
+			</classes:renderer>
+		</classes:RendererOption>
+		
+		<!--Population mean renderer option-->
+		<classes:RendererOption id="popMeanRendererOption" UIText="{resourceManager.getString('myResources', 'TEXT191')}"><!--mean population-->
+			<classes:renderer>
+				<classes:MyClassBreaksRenderer attribute="PopMean" classes="3" maxSymbolSize="15"><classes:simpleLineSymbol><esri:SimpleLineSymbol alpha="0.5"/></classes:simpleLineSymbol></classes:MyClassBreaksRenderer>
+			</classes:renderer>
+		</classes:RendererOption>
+		
 		<!--Renderers for the Critical Sites-->
 		<!---A set of renderers that are used to render the map data for the critical sites on the species page. @see wcmc.classes.RendererChooser -->
 		<s:ArrayCollection id="csnRenderers">
-			<classes:RendererOption UIText="{resourceManager.getString('myResources', 'TEXT156')}"><!--presence-->
-				<classes:renderer>
-					<esri:SimpleRenderer>
-						<classes:MySimpleMarkerSymbol color="0xFF00FF" style="circle" size="13" legendCaption="{resourceManager.getString('myResources', 'TEXT157')}"><esri:SimpleLineSymbol alpha="0.5"/></classes:MySimpleMarkerSymbol>
-					</esri:SimpleRenderer>
-				</classes:renderer>
-			</classes:RendererOption>
+			<classes:RendererOption>{presenceRendererOption}</classes:RendererOption>
 			<classes:RendererOption UIText="{resourceManager.getString('myResources', 'TEXT158')}"><!--flyway name-->
 				<classes:renderer>
 					<classes:MyUniqueValueRenderer attribute="FlyRecID" legendLabelField="Flyway">
@@ -117,37 +181,8 @@ Main application class.
 					</classes:MyUniqueValueRenderer>
 				</classes:renderer>
 			</classes:RendererOption>
-			<classes:RendererOption UIText="{resourceManager.getString('myResources', 'TEXT159')}"><!--season-->
-				<classes:renderer>
-					<esri:UniqueValueRenderer attribute="Season">
-						<esri:infos>
-							<esri:UniqueValueInfo value="breeding" >
-								<classes:MySimpleMarkerSymbol color="0xfcfc39" size="13" style="circle" legendCaption="{resourceManager.getString('myResources', 'TEXT160')}"><esri:SimpleLineSymbol alpha="0.5"/></classes:MySimpleMarkerSymbol>
-							</esri:UniqueValueInfo>
-							<esri:UniqueValueInfo value="non-breeding" >
-								<classes:MySimpleMarkerSymbol color="0x1e89fb" size="13" style="circle" legendCaption="{resourceManager.getString('myResources', 'TEXT161')}"><esri:SimpleLineSymbol alpha="0.5"/></classes:MySimpleMarkerSymbol>
-							</esri:UniqueValueInfo>
-							<esri:UniqueValueInfo value="passage">
-								<classes:MySimpleMarkerSymbol color="0x0ee1011" size="13" style="circle" legendCaption="{resourceManager.getString('myResources', 'TEXT162')}"><esri:SimpleLineSymbol alpha="0.5"/></classes:MySimpleMarkerSymbol>
-							</esri:UniqueValueInfo>
-							<esri:UniqueValueInfo value="winter">
-								<classes:MySimpleMarkerSymbol color="0xd730fb" size="13" style="circle" legendCaption="{resourceManager.getString('myResources', 'TEXT163')}"><esri:SimpleLineSymbol alpha="0.5"/></classes:MySimpleMarkerSymbol>
-							</esri:UniqueValueInfo>
-							<esri:UniqueValueInfo value="resident">
-								<classes:MySimpleMarkerSymbol color="0x1d8216" size="13" style="circle" legendCaption="{resourceManager.getString('myResources', 'TEXT164')}"><esri:SimpleLineSymbol alpha="0.5"/></classes:MySimpleMarkerSymbol>
-							</esri:UniqueValueInfo>
-							<esri:UniqueValueInfo value="unknown">
-								<classes:MySimpleMarkerSymbol color="0xcccccc" size="13" style="circle" legendCaption="{resourceManager.getString('myResources', 'TEXT141')}"><esri:SimpleLineSymbol alpha="0.5"/></classes:MySimpleMarkerSymbol>
-							</esri:UniqueValueInfo>
-						</esri:infos>
-					</esri:UniqueValueRenderer>
-				</classes:renderer>
-			</classes:RendererOption>
-			<classes:RendererOption UIText="{resourceManager.getString('myResources', 'TEXT191')}"><!--mean population-->
-				<classes:renderer>
-					<classes:MyClassBreaksRenderer attribute="PopMean" classes="3" maxSymbolSize="15"><classes:simpleLineSymbol><esri:SimpleLineSymbol alpha="0.5"/></classes:simpleLineSymbol></classes:MyClassBreaksRenderer>
-				</classes:renderer>
-			</classes:RendererOption>
+			<classes:RendererOption>{seasonRendererOption}</classes:RendererOption>
+			<classes:RendererOption>{popMeanRendererOption}</classes:RendererOption>
 			<classes:RendererOption UIText="{resourceManager.getString('myResources', 'TEXT167')}"><!--percent flyway-->
 				<classes:renderer>
 					<esri:ClassBreaksRenderer attribute="PercentFlyway">
@@ -175,29 +210,7 @@ Main application class.
 					</esri:ClassBreaksRenderer>
 				</classes:renderer>
 			</classes:RendererOption>
-			<classes:RendererOption UIText="{resourceManager.getString('myResources', 'TEXT198')}"><!--protection status-->
-				<classes:renderer>
-					<esri:UniqueValueRenderer attribute="Protected">
-						<esri:infos>
-							<esri:UniqueValueInfo value="whole" >
-								<classes:MySimpleMarkerSymbol color="0x00ff00" size="13" style="circle" legendCaption="{resourceManager.getString('myResources', 'TEXT169')}"><esri:SimpleLineSymbol alpha="0.5"/></classes:MySimpleMarkerSymbol>
-							</esri:UniqueValueInfo>
-							<esri:UniqueValueInfo value="little/none" >
-								<classes:MySimpleMarkerSymbol color="0xff0000" size="13" style="circle" legendCaption="{resourceManager.getString('myResources', 'TEXT170')}"><esri:SimpleLineSymbol alpha="0.5"/></classes:MySimpleMarkerSymbol>
-							</esri:UniqueValueInfo>
-							<esri:UniqueValueInfo value="unknown">
-								<classes:MySimpleMarkerSymbol color="0x0000ff" size="13" style="circle" legendCaption="{resourceManager.getString('myResources', 'TEXT141')}"><esri:SimpleLineSymbol alpha="0.5"/></classes:MySimpleMarkerSymbol>
-							</esri:UniqueValueInfo>
-							<esri:UniqueValueInfo value="some">
-								<classes:MySimpleMarkerSymbol color="0xffff00" size="13" style="circle" legendCaption="{resourceManager.getString('myResources', 'TEXT171')}"><esri:SimpleLineSymbol alpha="0.5"/></classes:MySimpleMarkerSymbol>
-							</esri:UniqueValueInfo>
-							<esri:UniqueValueInfo value="most">
-								<classes:MySimpleMarkerSymbol color="0xffff00" size="13" style="circle" legendCaption="{resourceManager.getString('myResources', 'TEXT172')}"><esri:SimpleLineSymbol alpha="0.5"/></classes:MySimpleMarkerSymbol>
-							</esri:UniqueValueInfo>
-						</esri:infos>
-					</esri:UniqueValueRenderer>
-				</classes:renderer>
-			</classes:RendererOption>
+			<classes:RendererOption>{protectionRendererOption}</classes:RendererOption>
 		</s:ArrayCollection>
 
 		<!--Renderers for the IBA Sites-->
@@ -210,95 +223,16 @@ Main application class.
 					</esri:SimpleRenderer>
 				</classes:renderer>
 			</classes:RendererOption>
-			<classes:RendererOption UIText="{resourceManager.getString('myResources', 'TEXT159')}"><!--season-->
-				<classes:renderer>
-					<esri:UniqueValueRenderer attribute="Season">
-						<esri:infos>
-							<esri:UniqueValueInfo value="breeding" >
-								<classes:MySimpleMarkerSymbol color="0xfcfc39" size="13" style="circle" legendCaption="{resourceManager.getString('myResources', 'TEXT160')}"><esri:SimpleLineSymbol alpha="0.5"/></classes:MySimpleMarkerSymbol>
-							</esri:UniqueValueInfo>
-							<esri:UniqueValueInfo value="non-breeding" >
-								<classes:MySimpleMarkerSymbol color="0x1e89fb" size="13" style="circle" legendCaption="{resourceManager.getString('myResources', 'TEXT161')}"><esri:SimpleLineSymbol alpha="0.5"/></classes:MySimpleMarkerSymbol>
-							</esri:UniqueValueInfo>
-							<esri:UniqueValueInfo value="passage">
-								<classes:MySimpleMarkerSymbol color="0x0ee1011" size="13" style="circle" legendCaption="{resourceManager.getString('myResources', 'TEXT162')}"><esri:SimpleLineSymbol alpha="0.5"/></classes:MySimpleMarkerSymbol>
-							</esri:UniqueValueInfo>
-							<esri:UniqueValueInfo value="winter">
-								<classes:MySimpleMarkerSymbol color="0xd730fb" size="13" style="circle" legendCaption="{resourceManager.getString('myResources', 'TEXT163')}"><esri:SimpleLineSymbol alpha="0.5"/></classes:MySimpleMarkerSymbol>
-							</esri:UniqueValueInfo>
-							<esri:UniqueValueInfo value="resident">
-								<classes:MySimpleMarkerSymbol color="0x1d8216" size="13" style="circle" legendCaption="{resourceManager.getString('myResources', 'TEXT164')}"><esri:SimpleLineSymbol alpha="0.5"/></classes:MySimpleMarkerSymbol>
-							</esri:UniqueValueInfo>
-							<esri:UniqueValueInfo value="unknown">
-								<classes:MySimpleMarkerSymbol color="0x1d8216" size="13" style="circle" legendCaption="{resourceManager.getString('myResources', 'TEXT141')}"><esri:SimpleLineSymbol alpha="0.5"/></classes:MySimpleMarkerSymbol>
-							</esri:UniqueValueInfo>
-						</esri:infos>
-					</esri:UniqueValueRenderer>
-				</classes:renderer>
-			</classes:RendererOption>
-			<classes:RendererOption UIText="{resourceManager.getString('myResources', 'TEXT191')}"><!--population mean-->
-				<classes:renderer>
-					<classes:MyClassBreaksRenderer attribute="PopMean" classes="3" maxSymbolSize="15"><classes:simpleLineSymbol><esri:SimpleLineSymbol alpha="0.5"/></classes:simpleLineSymbol></classes:MyClassBreaksRenderer>
-				</classes:renderer>
-			</classes:RendererOption>
-			<classes:RendererOption UIText="{resourceManager.getString('myResources', 'TEXT198')}"><!--protection status-->
-				<classes:renderer>
-					<esri:UniqueValueRenderer attribute="Protected">
-						<esri:infos>
-							<esri:UniqueValueInfo value="whole" >
-								<classes:MySimpleMarkerSymbol color="0x00ff00" size="13" style="circle" legendCaption="{resourceManager.getString('myResources', 'TEXT169')}"><esri:SimpleLineSymbol alpha="0.5"/></classes:MySimpleMarkerSymbol>
-							</esri:UniqueValueInfo>
-							<esri:UniqueValueInfo value="little/none" >
-								<classes:MySimpleMarkerSymbol color="0xff0000" size="13" style="circle" legendCaption="{resourceManager.getString('myResources', 'TEXT170')}"><esri:SimpleLineSymbol alpha="0.5"/></classes:MySimpleMarkerSymbol>
-							</esri:UniqueValueInfo>
-							<esri:UniqueValueInfo value="unknown">
-								<classes:MySimpleMarkerSymbol color="0x0000ff" size="13" style="circle" legendCaption="{resourceManager.getString('myResources', 'TEXT141')}"><esri:SimpleLineSymbol alpha="0.5"/></classes:MySimpleMarkerSymbol>
-							</esri:UniqueValueInfo>
-							<esri:UniqueValueInfo value="some">
-								<classes:MySimpleMarkerSymbol color="0xffff00" size="13" style="circle" legendCaption="{resourceManager.getString('myResources', 'TEXT171')}"><esri:SimpleLineSymbol alpha="0.5"/></classes:MySimpleMarkerSymbol>
-							</esri:UniqueValueInfo>
-							<esri:UniqueValueInfo value="most">
-								<classes:MySimpleMarkerSymbol color="0xffff00" size="13" style="circle" legendCaption="{resourceManager.getString('myResources', 'TEXT172')}"><esri:SimpleLineSymbol alpha="0.5"/></classes:MySimpleMarkerSymbol>
-							</esri:UniqueValueInfo>
-						</esri:infos>
-					</esri:UniqueValueRenderer>
-				</classes:renderer>
-			</classes:RendererOption>
+			<classes:RendererOption>{seasonRendererOption}</classes:RendererOption>
+			<classes:RendererOption>{popMeanRendererOption}</classes:RendererOption>
+			<classes:RendererOption>{protectionRendererOption}</classes:RendererOption>
 		</s:ArrayCollection>
 
 		<!--Renderers for the Reports Site List-->
 		<!---A set of renderers that are used to render the sites on the reports page. @see wcmc.classes.RendererChooser -->
 		<s:ArrayCollection id="siteListRenderers">
-			<classes:RendererOption UIText="{resourceManager.getString('myResources', 'TEXT156')}"><!--presence-->
-				<classes:renderer>
-					<esri:SimpleRenderer>
-						<classes:MySimpleMarkerSymbol color="0xFF00FF" style="circle" size="13" legendCaption="{resourceManager.getString('myResources', 'TEXT157')}"><esri:SimpleLineSymbol alpha="0.5"/></classes:MySimpleMarkerSymbol>
-					</esri:SimpleRenderer>
-				</classes:renderer>
-			</classes:RendererOption>
-			<classes:RendererOption UIText="{resourceManager.getString('myResources', 'TEXT198')}"><!--protection status-->
-				<classes:renderer>
-					<esri:UniqueValueRenderer attribute="Protected">
-						<esri:infos>
-							<esri:UniqueValueInfo value="whole" >
-								<classes:MySimpleMarkerSymbol color="0x00ff00" size="13" style="circle" legendCaption="{resourceManager.getString('myResources', 'TEXT169')}"><esri:SimpleLineSymbol alpha="0.5"/></classes:MySimpleMarkerSymbol>
-							</esri:UniqueValueInfo>
-							<esri:UniqueValueInfo value="little/none" >
-								<classes:MySimpleMarkerSymbol color="0xff0000" size="13" style="circle" legendCaption="{resourceManager.getString('myResources', 'TEXT170')}"><esri:SimpleLineSymbol alpha="0.5"/></classes:MySimpleMarkerSymbol>
-							</esri:UniqueValueInfo>
-							<esri:UniqueValueInfo value="unknown">
-								<classes:MySimpleMarkerSymbol color="0x0000ff" size="13" style="circle" legendCaption="{resourceManager.getString('myResources', 'TEXT141')}"><esri:SimpleLineSymbol alpha="0.5"/></classes:MySimpleMarkerSymbol>
-							</esri:UniqueValueInfo>
-							<esri:UniqueValueInfo value="some">
-								<classes:MySimpleMarkerSymbol color="0xffff00" size="13" style="circle" legendCaption="{resourceManager.getString('myResources', 'TEXT171')}"><esri:SimpleLineSymbol alpha="0.5"/></classes:MySimpleMarkerSymbol>
-							</esri:UniqueValueInfo>
-							<esri:UniqueValueInfo value="most">
-								<classes:MySimpleMarkerSymbol color="0xffff00" size="13" style="circle" legendCaption="{resourceManager.getString('myResources', 'TEXT172')}"><esri:SimpleLineSymbol alpha="0.5"/></classes:MySimpleMarkerSymbol>
-							</esri:UniqueValueInfo>
-						</esri:infos>
-					</esri:UniqueValueRenderer>
-				</classes:renderer>
-			</classes:RendererOption>
+			<classes:RendererOption>{presenceRendererOption}</classes:RendererOption>
+			<classes:RendererOption>{protectionRendererOption}</classes:RendererOption>
 			<classes:RendererOption UIText="{resourceManager.getString('myResources', 'TEXT173')}"><!--number of critical species-->
 				<classes:renderer>
 					<classes:MyClassBreaksRenderer attribute="CSNSpc" classes="3" maxSymbolSize="15"><classes:simpleLineSymbol><esri:SimpleLineSymbol alpha="0.5"/></classes:simpleLineSymbol></classes:MyClassBreaksRenderer>
