@@ -49,6 +49,7 @@
 			[Bindable]public var reportTitle:String;
 			[Bindable]public var outputFilters:Boolean=false;
 			[Bindable]public var filterCollection:FilterCollection;
+			[Bindable]public var wowImage:Image;
 			public var reportOrientation:String=Orientation.PORTRAIT;
 			public var outputDate:Boolean=true;
 			public var reportLink:String;
@@ -221,7 +222,7 @@
 			private function exportPDF():void
 			{
 				if (outputDate) outputDateStamp();
-				//				if (wowImage) myPDF.addImage(wowImage,null,0,myPDF.getY()-5,30,8);
+				if (wowImage) myPDF.addImage(wowImage,null,0,myPDF.getY()-5,30,8);
 				myPDF.save(Method.REMOTE,"http://dev.unep-wcmc.org/create.php",Download.INLINE,"csnReport.pdf");
 				CursorManager.removeBusyCursor();
 			}

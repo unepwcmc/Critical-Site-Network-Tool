@@ -35,6 +35,7 @@ Layout component that is at the bottom of the infoPanel and holds various tools 
 	<fx:Script>
 		<![CDATA[
 			import mx.controls.Alert;
+			import mx.core.IVisualElement;
 			import mx.graphics.ImageSnapshot;
 			import mx.graphics.codec.JPEGEncoder;
 			import mx.printing.FlexPrintJob;
@@ -70,6 +71,7 @@ Layout component that is at the bottom of the infoPanel and holds various tools 
 			{
 				// Create an instance of the FlexPrintJob class.
 				var myPrintJob:FlexPrintJob = new FlexPrintJob();
+				
 				// Start the print job.
 				if (myPrintJob.start())
 				{
@@ -78,6 +80,9 @@ Layout component that is at the bottom of the infoPanel and holds various tools 
 						// hide the zoom slider so it won't be printed
 						csn.map.zoomSliderVisible = false;
 						// Add the panel to print.
+						var iVE:IVisualElement=csn.map.staticLayer.addElement(csn.welcomeBox.wowImage);
+						iVE.bottom=10;
+						iVE.right=10;
 						myPrintJob.addObject(csn.map, myFlexPrintJobScaleType);
 						
 						// turn the zoom slider back on
@@ -87,6 +92,9 @@ Layout component that is at the bottom of the infoPanel and holds various tools 
 					{
 						Alert.show(error.toString());
 					}
+					//remove the wowo logo
+					csn.map.staticLayer.removeElement(iVE);
+					
 					// Send the job to the printer.
 					myPrintJob.send();
 				}

@@ -579,7 +579,7 @@ Main application class.
 						<mx:DataGridColumn headerText="" width="{wLink}" itemRenderer="wcmc.renderers.SiteLinkRenderer"/>
 					</components:columns>
 				</components:MyDataGrid> 
-				<components:ReportToolbar dataGrid="{csnDataGrid}" reportTitle="{resourceManager.getString('myResources', 'TEXT199')} {speciesBox.species.commonName}" reportOrientation="{Orientation.LANDSCAPE}" reportLink="http://dev.unep-wcmc.org/csn/default.html#state=species&amp;SpcRecID={speciesBox.species.spcRecID}"/>
+				<components:ReportToolbar dataGrid="{csnDataGrid}" reportTitle="{resourceManager.getString('myResources', 'TEXT199')} {speciesBox.species.commonName}" reportOrientation="{Orientation.LANDSCAPE}" reportLink="http://dev.unep-wcmc.org/csn/default.html#state=species&amp;SpcRecID={speciesBox.species.spcRecID}" wowImage="{welcomeBox.wowImage}"/>
 			</s:VGroup>
 		</s:BorderContainer>
 	</components:MyBorderContainer>
@@ -614,7 +614,7 @@ Main application class.
 						<mx:DataGridColumn headerText="" width="{wLink}" itemRenderer="wcmc.renderers.SiteLinkRenderer"/>
 					</components:columns>
 				</components:MyDataGrid> 
-				<components:ReportToolbar dataGrid="{ibaDataGrid}" reportTitle="{resourceManager.getString('myResources', 'TEXT200')} {speciesBox.species.commonName}" reportOrientation="{Orientation.LANDSCAPE}" reportLink="http://dev.unep-wcmc.org/csn/default.html#state=species&amp;SpcRecID={speciesBox.species.spcRecID}"/>
+				<components:ReportToolbar dataGrid="{ibaDataGrid}" reportTitle="{resourceManager.getString('myResources', 'TEXT200')} {speciesBox.species.commonName}" reportOrientation="{Orientation.LANDSCAPE}" reportLink="http://dev.unep-wcmc.org/csn/default.html#state=species&amp;SpcRecID={speciesBox.species.spcRecID}" wowImage="{welcomeBox.wowImage}"/>
 			</s:VGroup>
 		</s:BorderContainer>
 	</components:MyBorderContainer>
@@ -634,7 +634,7 @@ Main application class.
 						<mx:DataGridColumn headerText="{resourceManager.getString('myResources', 'TEXT203')}" dataField="OnePercentCalc" textAlign="right"/>
 					</mx:columns>
 				</mx:DataGrid>
-				<components:ReportToolbar dataGrid="{wpeTable}" reportTitle="{resourceManager.getString('myResources', 'TEXT204')} {speciesBox.species.commonName}" reportLink="http://dev.unep-wcmc.org/csn/default.html#state=species&amp;SpcRecID={speciesBox.species.spcRecID}"/>
+				<components:ReportToolbar dataGrid="{wpeTable}" reportTitle="{resourceManager.getString('myResources', 'TEXT204')} {speciesBox.species.commonName}" reportLink="http://dev.unep-wcmc.org/csn/default.html#state=species&amp;SpcRecID={speciesBox.species.spcRecID}" wowImage="{welcomeBox.wowImage}"/>
 			</s:VGroup>
 		</s:BorderContainer>
 	</components:MyBorderContainer>
@@ -667,7 +667,7 @@ Main application class.
 						<mx:DataGridColumn headerText="" width="{wLink}" itemRenderer="wcmc.renderers.SpeciesLinkRenderer"/>
 					</mx:columns>
 				</mx:DataGrid>
-				<components:ReportToolbar dataGrid="{speciesListTable}" reportTitle="{resourceManager.getString('myResources', 'TEXT207')} {sitesBox.site.name}" reportOrientation="{Orientation.LANDSCAPE}" reportLink="http://dev.unep-wcmc.org/csn/default.html#state=site&amp;SiteRecID={sitesBox.site.siteRecID}"/>
+				<components:ReportToolbar dataGrid="{speciesListTable}" reportTitle="{resourceManager.getString('myResources', 'TEXT207')} {sitesBox.site.name}" reportOrientation="{Orientation.LANDSCAPE}" reportLink="http://dev.unep-wcmc.org/csn/default.html#state=site&amp;SiteRecID={sitesBox.site.siteRecID}" wowImage="{welcomeBox.wowImage}"/>
 			</s:VGroup>
 		</s:BorderContainer>
 	</components:MyBorderContainer>
@@ -686,7 +686,7 @@ Main application class.
 						<mx:DataGridColumn headerText="" width="{wLink}" itemRenderer="wcmc.renderers.SpeciesLinkRenderer"/>
 					</components:columns>
 				</components:MyDataGrid>
-				<components:ReportToolbar dataGrid="{reportSpeciesListTable}" reportTitle="{resourceManager.getString('myResources', 'TEXT93')}" outputFilters="true" filterCollection="{reportsBox.filterBox.filterCollection}" reportLink="http://dev.unep-wcmc.org/csn/default.html#state=reports"/>
+				<components:ReportToolbar dataGrid="{reportSpeciesListTable}" reportTitle="{resourceManager.getString('myResources', 'TEXT93')}" outputFilters="true" filterCollection="{reportsBox.filterBox.filterCollection}" reportLink="http://dev.unep-wcmc.org/csn/default.html#state=reports" wowImage="{welcomeBox.wowImage}"/>
 			</s:VGroup>
 		</s:BorderContainer>
 	</components:MyBorderContainer>
@@ -720,7 +720,7 @@ Main application class.
 						</components:columns>
 					</components:MyDataGrid> 
 				</mx:Canvas>
-				<components:ReportToolbar dataGrid="{reportSiteListTable}" reportTitle="{resourceManager.getString('myResources', 'TEXT211')}" outputFilters="true" filterCollection="{reportsBox.filterBox.filterCollection}" reportLink="http://dev.unep-wcmc.org/csn/default.html#state=reports"/>
+				<components:ReportToolbar dataGrid="{reportSiteListTable}" reportTitle="{resourceManager.getString('myResources', 'TEXT211')}" outputFilters="true" filterCollection="{reportsBox.filterBox.filterCollection}" reportLink="http://dev.unep-wcmc.org/csn/default.html#state=reports" wowImage="{welcomeBox.wowImage}"/>
 			</s:VGroup>
 		</s:BorderContainer>
 	</components:MyBorderContainer>
@@ -747,7 +747,7 @@ Main application class.
 						<mx:DataGridColumn headerText="" width="20" itemRenderer="wcmc.renderers.SpeciesLinkRenderer"/>
 					</mx:columns>
 				</mx:DataGrid>
-				<components:ReportToolbar dataGrid="{reportSpeciesListForCountryTable}" reportTitle="{resourceManager.getString('myResources', 'TEXT207')} {countryDropDown.selectedItem.Name}" outputFilters="true" filterCollection="{reportsBox.speciesFilterBox.allSpeciesFilter}" reportLink="http://dev.unep-wcmc.org/csn/default.html#state=reports"/>
+				<components:ReportToolbar dataGrid="{reportSpeciesListForCountryTable}" reportTitle="{resourceManager.getString('myResources', 'TEXT207')} {countryDropDown.selectedItem.Name}" outputFilters="true" filterCollection="{reportsBox.speciesFilterBox.allSpeciesFilter}" reportLink="http://dev.unep-wcmc.org/csn/default.html#state=reports" wowImage="{welcomeBox.wowImage}"/>
 			</s:VGroup>
 		</s:BorderContainer>
 	</components:MyBorderContainer>
@@ -800,7 +800,7 @@ Main application class.
 						<mx:DataGridColumn headerText="" width="20" itemRenderer="wcmc.renderers.SpeciesLinkRenderer"/>
 					</mx:columns>
 				</mx:DataGrid> 
-				<components:ReportToolbar dataGrid="{speciesPointTable}" reportTitle="{resourceManager.getString('myResources', 'TEXT216')}{clickPointLat.toString()}{resourceManager.getString('myResources', 'TEXT217')}{clickPointLong.toString()})" outputDate="true" reportLink="http://dev.unep-wcmc.org/csn/default.html#state=reports"/>
+				<components:ReportToolbar dataGrid="{speciesPointTable}" reportTitle="{resourceManager.getString('myResources', 'TEXT216')}{clickPointLat.toString()}{resourceManager.getString('myResources', 'TEXT217')}{clickPointLong.toString()})" outputDate="true" reportLink="http://dev.unep-wcmc.org/csn/default.html#state=reports" wowImage="{welcomeBox.wowImage}"/>
 			</s:VGroup>
 		</s:BorderContainer>
 	</components:MyBorderContainer>

@@ -1,7 +1,7 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <projectDescription>
-	<name>CSN</name>
-	<comment></comment>
+	<name>Critical-Site-Network-Tool</name>
+	<comment/>
 	<projects>
 	</projects>
 	<buildSpec>
@@ -33,3 +33,4 @@
 		</link>
 	</linkedResources>
 </projectDescription>
+
