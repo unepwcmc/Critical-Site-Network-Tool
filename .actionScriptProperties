@@ -8,8 +8,8 @@
           <libraryPathEntry kind="3" linkType="1" path="${PROJECT_FRAMEWORKS}/libs/flex.swc" useDefaultLinkType="false"/>
         </excludedEntries>
       </libraryPathEntry>
-      <libraryPathEntry kind="3" linkType="1" path="/Users/andrewcottam/Downloads/AlivePDF 0.1.5 RC/Sources/bin/AlivePDF.swc" useDefaultLinkType="false"/>
       <libraryPathEntry kind="3" linkType="1" path="/Users/andrewcottam/Downloads/ArcGIS_Flex/libs/agslib-2.2-2010-12-08.swc" useDefaultLinkType="false"/>
+      <libraryPathEntry kind="3" linkType="1" path="/Users/andrewcottam/Downloads/AlivePDF 0.1.5 RC/Sources/bin/AlivePDF.swc" useDefaultLinkType="false"/>
     </libraryPath>
     <sourceAttachmentPath/>
   </compiler>
