@@ -27,7 +27,7 @@
 				<mx:LineSeries yField="abundance" displayName="Abundance" id="lineSeries"/>
 			</mx:series>
 			<mx:verticalAxis >
-				<mx:LinearAxis minimum="0" maximumLabelPrecision="0" autoAdjust="false" baseAtZero="true"/>
+				<mx:LinearAxis minimum="0" maximumLabelPrecision="0" baseAtZero="true"/>
 			</mx:verticalAxis>
 		</mx:LineChart>
 	</mx:Canvas>
