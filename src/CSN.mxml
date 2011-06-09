@@ -3,22 +3,19 @@
 Main application class.
 
 -->
-<s:Application xmlns:fx="http://ns.adobe.com/mxml/2009" 
-			   xmlns:s="library://ns.adobe.com/flex/spark" 
-			   xmlns:mx="library://ns.adobe.com/flex/mx" 
-			   xmlns:esri="http://www.esri.com/2008/ags" 
-			   xmlns:components="wcmc.components.*" 
-			   xmlns:classes="wcmc.classes.*" 
-			   xmlns:symbols="com.esri.ags.symbols.*" 
+<s:Application xmlns:fx="http://ns.adobe.com/mxml/2009"
+			   xmlns:s="library://ns.adobe.com/flex/spark"
+			   xmlns:mx="library://ns.adobe.com/flex/mx"
+			   xmlns:esri="http://www.esri.com/2008/ags"
+			   xmlns:components="wcmc.components.*"
+			   xmlns:classes="wcmc.classes.*"
+			   xmlns:symbols="com.esri.ags.symbols.*"
 			   xmlns:reflexutil="net.kandov.reflexutil.*"
-			   xmlns:supportClasses="com.esri.ags.components.supportClasses.*" 
-			   minWidth="955" 
-			   minHeight="600" 
-			   currentState="home"
-			   pageTitle="Critical Site Network Tool" 
-			   initialize="initialise(event)"
-			   currentStateChanging="setTransitionTargets(event)"
-			   currentStateChange="application1_currentStateChangeHandler(event)" viewSourceURL="srcview/index.html">
+			   xmlns:supportClasses="com.esri.ags.components.supportClasses.*"
+			   minWidth="955" minHeight="600" currentState="home"
+			   currentStateChange="application1_currentStateChangeHandler(event)"
+			   currentStateChanging="setTransitionTargets(event)" initialize="initialise(event)"
+			   pageTitle="Critical Site Network Tool">
 
 	<!-- Styles ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
 	 
