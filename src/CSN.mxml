@@ -10,7 +10,6 @@ Main application class.
 			   xmlns:components="wcmc.components.*"
 			   xmlns:classes="wcmc.classes.*"
 			   xmlns:symbols="com.esri.ags.symbols.*"
-			   xmlns:reflexutil="net.kandov.reflexutil.*"
 			   xmlns:supportClasses="com.esri.ags.components.supportClasses.*"
 			   minWidth="955" minHeight="600" currentState="home"
 			   currentStateChange="application1_currentStateChangeHandler(event)"
