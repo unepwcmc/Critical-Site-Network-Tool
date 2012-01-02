@@ -34,7 +34,7 @@ Main application class.
 		<!---Formatting class used to format the year in the time-slider toolbar on the species page-->
 		<mx:DateFormatter id="myDateFormatter" formatString="YYYY"/>
 		<!---The initial geographic extent of the map when the application loads-->		
-		<esri:Extent id="initialExtent" xmin="2000000" ymin="4000000" xmax="2100000" ymax="10000000">
+		<esri:Extent id="initialExtent" xmax="2100000" xmin="2000000" ymax="10000000" ymin="4000000">
 			<esri:SpatialReference wkid="102100"/>
 		</esri:Extent>
 		<!---The main navigation tools that are shown at the top of the map which allow the user to use all of the standard GIS type tools in the application.-->
@@ -42,29 +42,29 @@ Main application class.
 		
 		<!--Effects-->
 		<!---Fades the layer in when the image/data has loaded to alpha of 0.35-->		
-		<classes:DelayedFade id="fadeIn04" duration="200" alphaFrom="0" alphaTo="0.35"/>
+		<classes:DelayedFade id="fadeIn04" alphaFrom="0" alphaTo="0.35" duration="200"/>
 		<!---Fades the layer out when the image/data has loaded to alpha of 0-->		
-		<classes:DelayedFade id="fadeOut04" duration="200" alphaFrom="0.35" alphaTo="0"/>
+		<classes:DelayedFade id="fadeOut04" alphaFrom="0.35" alphaTo="0" duration="200"/>
 		<!---Fades the layer in when the image/data has loaded to alpha of 0.5-->		
-		<classes:DelayedFade id="fadeIn05" duration="200" alphaFrom="0" alphaTo="0.5"/>
+		<classes:DelayedFade id="fadeIn05" alphaFrom="0" alphaTo="0.5" duration="200"/>
 		<!---Fades the layer out when the image/data has loaded to alpha of 0-->		
-		<classes:DelayedFade id="fadeOut05" duration="200" alphaFrom="0.5" alphaTo="0"/>
+		<classes:DelayedFade id="fadeOut05" alphaFrom="0.5" alphaTo="0" duration="200"/>
 		<!---Fades the layer in when the image/data has loaded to alpha of 0.6-->		
-		<classes:DelayedFade id="fadeIn06" duration="200" alphaFrom="0" alphaTo="0.6"/>
+		<classes:DelayedFade id="fadeIn06" alphaFrom="0" alphaTo="0.6" duration="200"/>
 		<!---Fades the layer out when the image/data has loaded to alpha of 0-->		
-		<classes:DelayedFade id="fadeOut06" duration="200" alphaFrom="0.6" alphaTo="0"/>
+		<classes:DelayedFade id="fadeOut06" alphaFrom="0.6" alphaTo="0" duration="200"/>
 		<!---Fades the layer in when the image/data has loaded to alpha of 0.7-->		
-		<classes:DelayedFade id="fadeIn07" duration="200" alphaFrom="0" alphaTo="0.7"/>
+		<classes:DelayedFade id="fadeIn07" alphaFrom="0" alphaTo="0.7" duration="200"/>
 		<!---Fades the layer out when the image/data has loaded to alpha of 0-->		
-		<classes:DelayedFade id="fadeOut07" duration="200" alphaFrom="0.7" alphaTo="0"/>
+		<classes:DelayedFade id="fadeOut07" alphaFrom="0.7" alphaTo="0" duration="200"/>
 		<!---Fades the layer in when the image/data has loaded to alpha of 0.8-->		
-		<classes:DelayedFade id="fadeIn08" duration="200" alphaFrom="0" alphaTo="0.8"/>
+		<classes:DelayedFade id="fadeIn08" alphaFrom="0" alphaTo="0.8" duration="200"/>
 		<!---Fades the layer out when the image/data has loaded to alpha of 0-->		
-		<classes:DelayedFade id="fadeOut08" duration="200" alphaFrom="0.8" alphaTo="0"/>
+		<classes:DelayedFade id="fadeOut08" alphaFrom="0.8" alphaTo="0" duration="200"/>
 		<!---Fades the layer in when the image/data has loaded to alpha of 1-->		
-		<classes:DelayedFade id="fadeIn10" duration="200" alphaFrom="0" alphaTo="1"/>
+		<classes:DelayedFade id="fadeIn10" alphaFrom="0" alphaTo="1" duration="200"/>
 		<!---Fades the layer out when the image/data has loaded to alpha of 0-->		
-		<classes:DelayedFade id="fadeOut10" duration="200" alphaFrom="1" alphaTo="0"/>
+		<classes:DelayedFade id="fadeOut10" alphaFrom="1" alphaTo="0" duration="200"/>
 		<!---Fades a component in to alpha of 1-->		
 		<s:Fade id="fadeIn" alphaFrom="0" alphaTo="1" duration="200"/>
 		<!---Fades a component out to alpha of 0-->		
@@ -86,24 +86,35 @@ Main application class.
 
 		<!--Renderer options - these are used in a number of renderers-->
 		<!--Protection renderer option-->
-		<classes:RendererOption id="protectionRendererOption" UIText="{resourceManager.getString('myResources', 'TEXT198')}"><!--protection status-->
+		<classes:RendererOption id="protectionRendererOption"
+								UIText="{resourceManager.getString('myResources', 'TEXT198')}"><!--protection status-->
 			<classes:renderer>
 				<esri:UniqueValueRenderer attribute="Protected">
 					<esri:infos>
-						<esri:UniqueValueInfo value="whole" >
-							<classes:MySimpleMarkerSymbol color="0x008000" size="13" style="circle" legendCaption="{resourceManager.getString('myResources', 'TEXT169')}"><esri:SimpleLineSymbol alpha="0.5"/></classes:MySimpleMarkerSymbol>
+						<esri:UniqueValueInfo value="whole">
+							<classes:MySimpleMarkerSymbol color="0x008000"
+														  legendCaption="{resourceManager.getString('myResources', 'TEXT169')}"
+														  size="13" style="circle"><esri:SimpleLineSymbol alpha="0.5"/></classes:MySimpleMarkerSymbol>
 						</esri:UniqueValueInfo>
-						<esri:UniqueValueInfo value="little/none" >
-							<classes:MySimpleMarkerSymbol color="0xff0000" size="13" style="circle" legendCaption="{resourceManager.getString('myResources', 'TEXT170')}"><esri:SimpleLineSymbol alpha="0.5"/></classes:MySimpleMarkerSymbol>
+						<esri:UniqueValueInfo value="little/none">
+							<classes:MySimpleMarkerSymbol color="0xff0000"
+														  legendCaption="{resourceManager.getString('myResources', 'TEXT170')}"
+														  size="13" style="circle"><esri:SimpleLineSymbol alpha="0.5"/></classes:MySimpleMarkerSymbol>
 						</esri:UniqueValueInfo>
 						<esri:UniqueValueInfo value="unknown">
-							<classes:MySimpleMarkerSymbol color="0x0000ff" size="13" style="circle" legendCaption="{resourceManager.getString('myResources', 'TEXT141')}"><esri:SimpleLineSymbol alpha="0.5"/></classes:MySimpleMarkerSymbol>
+							<classes:MySimpleMarkerSymbol color="0x0000ff"
+														  legendCaption="{resourceManager.getString('myResources', 'TEXT141')}"
+														  size="13" style="circle"><esri:SimpleLineSymbol alpha="0.5"/></classes:MySimpleMarkerSymbol>
 						</esri:UniqueValueInfo>
 						<esri:UniqueValueInfo value="some">
-							<classes:MySimpleMarkerSymbol color="0xff8000" size="13" style="circle" legendCaption="{resourceManager.getString('myResources', 'TEXT171')}"><esri:SimpleLineSymbol alpha="0.5"/></classes:MySimpleMarkerSymbol>
+							<classes:MySimpleMarkerSymbol color="0xff8000"
+														  legendCaption="{resourceManager.getString('myResources', 'TEXT171')}"
+														  size="13" style="circle"><esri:SimpleLineSymbol alpha="0.5"/></classes:MySimpleMarkerSymbol>
 						</esri:UniqueValueInfo>
 						<esri:UniqueValueInfo value="most">
-							<classes:MySimpleMarkerSymbol color="0xffff00" size="13" style="circle" legendCaption="{resourceManager.getString('myResources', 'TEXT172')}"><esri:SimpleLineSymbol alpha="0.5"/></classes:MySimpleMarkerSymbol>
+							<classes:MySimpleMarkerSymbol color="0xffff00"
+														  legendCaption="{resourceManager.getString('myResources', 'TEXT172')}"
+														  size="13" style="circle"><esri:SimpleLineSymbol alpha="0.5"/></classes:MySimpleMarkerSymbol>
 						</esri:UniqueValueInfo>
 					</esri:infos>
 				</esri:UniqueValueRenderer>
@@ -111,36 +122,52 @@ Main application class.
 		</classes:RendererOption>
 
 		<!--CSN presence renderer option-->
-		<classes:RendererOption id="presenceRendererOption" UIText="{resourceManager.getString('myResources', 'TEXT156')}"><!--presence-->
+		<classes:RendererOption id="presenceRendererOption"
+								UIText="{resourceManager.getString('myResources', 'TEXT156')}"><!--presence-->
 			<classes:renderer>
 				<esri:SimpleRenderer>
-					<classes:MySimpleMarkerSymbol color="0xFF00FF" style="circle" size="13" legendCaption="{resourceManager.getString('myResources', 'TEXT157')}"><esri:SimpleLineSymbol alpha="0.5"/></classes:MySimpleMarkerSymbol>
+					<classes:MySimpleMarkerSymbol color="0xFF00FF"
+												  legendCaption="{resourceManager.getString('myResources', 'TEXT157')}"
+												  size="13" style="circle"><esri:SimpleLineSymbol alpha="0.5"/></classes:MySimpleMarkerSymbol>
 				</esri:SimpleRenderer>
 			</classes:renderer>
 		</classes:RendererOption>
 		
 		<!--Season renderer option-->
-		<classes:RendererOption id="seasonRendererOption" UIText="{resourceManager.getString('myResources', 'TEXT159')}"><!--season-->
+		<classes:RendererOption id="seasonRendererOption"
+								UIText="{resourceManager.getString('myResources', 'TEXT159')}"><!--season-->
 			<classes:renderer>
 				<esri:UniqueValueRenderer attribute="Season">
 					<esri:infos>
-						<esri:UniqueValueInfo value="breeding" >
-							<classes:MySimpleMarkerSymbol color="0xfcfc39" size="13" style="circle" legendCaption="{resourceManager.getString('myResources', 'TEXT160')}"><esri:SimpleLineSymbol alpha="0.5"/></classes:MySimpleMarkerSymbol>
+						<esri:UniqueValueInfo value="breeding">
+							<classes:MySimpleMarkerSymbol color="0xfcfc39"
+														  legendCaption="{resourceManager.getString('myResources', 'TEXT160')}"
+														  size="13" style="circle"><esri:SimpleLineSymbol alpha="0.5"/></classes:MySimpleMarkerSymbol>
 						</esri:UniqueValueInfo>
-						<esri:UniqueValueInfo value="non-breeding" >
-							<classes:MySimpleMarkerSymbol color="0x1e89fb" size="13" style="circle" legendCaption="{resourceManager.getString('myResources', 'TEXT161')}"><esri:SimpleLineSymbol alpha="0.5"/></classes:MySimpleMarkerSymbol>
+						<esri:UniqueValueInfo value="non-breeding">
+							<classes:MySimpleMarkerSymbol color="0x1e89fb"
+														  legendCaption="{resourceManager.getString('myResources', 'TEXT161')}"
+														  size="13" style="circle"><esri:SimpleLineSymbol alpha="0.5"/></classes:MySimpleMarkerSymbol>
 						</esri:UniqueValueInfo>
 						<esri:UniqueValueInfo value="passage">
-							<classes:MySimpleMarkerSymbol color="0x0ee1011" size="13" style="circle" legendCaption="{resourceManager.getString('myResources', 'TEXT162')}"><esri:SimpleLineSymbol alpha="0.5"/></classes:MySimpleMarkerSymbol>
+							<classes:MySimpleMarkerSymbol color="0x0ee1011"
+														  legendCaption="{resourceManager.getString('myResources', 'TEXT162')}"
+														  size="13" style="circle"><esri:SimpleLineSymbol alpha="0.5"/></classes:MySimpleMarkerSymbol>
 						</esri:UniqueValueInfo>
 						<esri:UniqueValueInfo value="winter">
-							<classes:MySimpleMarkerSymbol color="0xd730fb" size="13" style="circle" legendCaption="{resourceManager.getString('myResources', 'TEXT163')}"><esri:SimpleLineSymbol alpha="0.5"/></classes:MySimpleMarkerSymbol>
+							<classes:MySimpleMarkerSymbol color="0xd730fb"
+														  legendCaption="{resourceManager.getString('myResources', 'TEXT163')}"
+														  size="13" style="circle"><esri:SimpleLineSymbol alpha="0.5"/></classes:MySimpleMarkerSymbol>
 						</esri:UniqueValueInfo>
 						<esri:UniqueValueInfo value="resident">
-							<classes:MySimpleMarkerSymbol color="0x1d8216" size="13" style="circle" legendCaption="{resourceManager.getString('myResources', 'TEXT164')}"><esri:SimpleLineSymbol alpha="0.5"/></classes:MySimpleMarkerSymbol>
+							<classes:MySimpleMarkerSymbol color="0x1d8216"
+														  legendCaption="{resourceManager.getString('myResources', 'TEXT164')}"
+														  size="13" style="circle"><esri:SimpleLineSymbol alpha="0.5"/></classes:MySimpleMarkerSymbol>
 						</esri:UniqueValueInfo>
 						<esri:UniqueValueInfo value="unknown">
-							<classes:MySimpleMarkerSymbol color="0xcccccc" size="13" style="circle" legendCaption="{resourceManager.getString('myResources', 'TEXT141')}"><esri:SimpleLineSymbol alpha="0.5"/></classes:MySimpleMarkerSymbol>
+							<classes:MySimpleMarkerSymbol color="0xcccccc"
+														  legendCaption="{resourceManager.getString('myResources', 'TEXT141')}"
+														  size="13" style="circle"><esri:SimpleLineSymbol alpha="0.5"/></classes:MySimpleMarkerSymbol>
 						</esri:UniqueValueInfo>
 					</esri:infos>
 				</esri:UniqueValueRenderer>
@@ -148,7 +175,8 @@ Main application class.
 		</classes:RendererOption>
 		
 		<!--Population mean renderer option-->
-		<classes:RendererOption id="popMeanRendererOption" UIText="{resourceManager.getString('myResources', 'TEXT191')}"><!--mean population-->
+		<classes:RendererOption id="popMeanRendererOption"
+								UIText="{resourceManager.getString('myResources', 'TEXT191')}"><!--mean population-->
 			<classes:renderer>
 				<classes:MyClassBreaksRenderer attribute="PopMean" classes="3" maxSymbolSize="15"><classes:simpleLineSymbol><esri:SimpleLineSymbol alpha="0.5"/></classes:simpleLineSymbol></classes:MyClassBreaksRenderer>
 			</classes:renderer>
@@ -162,17 +190,39 @@ Main application class.
 				<classes:renderer>
 					<classes:MyUniqueValueRenderer attribute="FlyRecID" legendLabelField="Flyway">
 						<classes:infos>
-							<esri:UniqueValueInfo value="1" ><classes:MySimpleMarkerSymbol color="0xffaa00" size="13" style="circle"><esri:SimpleLineSymbol alpha="0.5"/></classes:MySimpleMarkerSymbol></esri:UniqueValueInfo>
-							<esri:UniqueValueInfo value="2" ><classes:MySimpleMarkerSymbol color="0x00c5ff" size="13" style="circle"><esri:SimpleLineSymbol alpha="0.5"/></classes:MySimpleMarkerSymbol></esri:UniqueValueInfo>
-							<esri:UniqueValueInfo value="3" ><classes:MySimpleMarkerSymbol color="0xc500ff" size="13" style="circle"><esri:SimpleLineSymbol alpha="0.5"/></classes:MySimpleMarkerSymbol></esri:UniqueValueInfo>
-							<esri:UniqueValueInfo value="4" ><classes:MySimpleMarkerSymbol color="0x267300" size="13" style="circle"><esri:SimpleLineSymbol alpha="0.5"/></classes:MySimpleMarkerSymbol></esri:UniqueValueInfo>
-							<esri:UniqueValueInfo value="5" ><classes:MySimpleMarkerSymbol color="0xff0000" size="13" style="circle"><esri:SimpleLineSymbol alpha="0.5"/></classes:MySimpleMarkerSymbol></esri:UniqueValueInfo>
-							<esri:UniqueValueInfo value="6" ><classes:MySimpleMarkerSymbol color="0x004da8" size="13" style="circle"><esri:SimpleLineSymbol alpha="0.5"/></classes:MySimpleMarkerSymbol></esri:UniqueValueInfo>
-							<esri:UniqueValueInfo value="7" ><classes:MySimpleMarkerSymbol color="0xffff00" size="13" style="circle"><esri:SimpleLineSymbol alpha="0.5"/></classes:MySimpleMarkerSymbol></esri:UniqueValueInfo>
-							<esri:UniqueValueInfo value="8" ><classes:MySimpleMarkerSymbol color="0xa3ff73" size="13" style="circle"><esri:SimpleLineSymbol alpha="0.5"/></classes:MySimpleMarkerSymbol></esri:UniqueValueInfo>
-							<esri:UniqueValueInfo value="9" ><classes:MySimpleMarkerSymbol color="0x730000" size="13" style="circle"><esri:SimpleLineSymbol alpha="0.5"/></classes:MySimpleMarkerSymbol></esri:UniqueValueInfo>
-							<esri:UniqueValueInfo value="10" ><classes:MySimpleMarkerSymbol color="0x000000" size="13" style="circle"><esri:SimpleLineSymbol alpha="0.5"/></classes:MySimpleMarkerSymbol></esri:UniqueValueInfo>
-							<esri:UniqueValueInfo value="11" ><classes:MySimpleMarkerSymbol color="0x000000" size="13" style="circle"><esri:SimpleLineSymbol alpha="0.5"/></classes:MySimpleMarkerSymbol></esri:UniqueValueInfo>
+							<esri:UniqueValueInfo value="1"><classes:MySimpleMarkerSymbol color="0xffaa00"
+																						  size="13"
+																						  style="circle"><esri:SimpleLineSymbol alpha="0.5"/></classes:MySimpleMarkerSymbol></esri:UniqueValueInfo>
+							<esri:UniqueValueInfo value="2"><classes:MySimpleMarkerSymbol color="0x00c5ff"
+																						  size="13"
+																						  style="circle"><esri:SimpleLineSymbol alpha="0.5"/></classes:MySimpleMarkerSymbol></esri:UniqueValueInfo>
+							<esri:UniqueValueInfo value="3"><classes:MySimpleMarkerSymbol color="0xc500ff"
+																						  size="13"
+																						  style="circle"><esri:SimpleLineSymbol alpha="0.5"/></classes:MySimpleMarkerSymbol></esri:UniqueValueInfo>
+							<esri:UniqueValueInfo value="4"><classes:MySimpleMarkerSymbol color="0x267300"
+																						  size="13"
+																						  style="circle"><esri:SimpleLineSymbol alpha="0.5"/></classes:MySimpleMarkerSymbol></esri:UniqueValueInfo>
+							<esri:UniqueValueInfo value="5"><classes:MySimpleMarkerSymbol color="0xff0000"
+																						  size="13"
+																						  style="circle"><esri:SimpleLineSymbol alpha="0.5"/></classes:MySimpleMarkerSymbol></esri:UniqueValueInfo>
+							<esri:UniqueValueInfo value="6"><classes:MySimpleMarkerSymbol color="0x004da8"
+																						  size="13"
+																						  style="circle"><esri:SimpleLineSymbol alpha="0.5"/></classes:MySimpleMarkerSymbol></esri:UniqueValueInfo>
+							<esri:UniqueValueInfo value="7"><classes:MySimpleMarkerSymbol color="0xffff00"
+																						  size="13"
+																						  style="circle"><esri:SimpleLineSymbol alpha="0.5"/></classes:MySimpleMarkerSymbol></esri:UniqueValueInfo>
+							<esri:UniqueValueInfo value="8"><classes:MySimpleMarkerSymbol color="0xa3ff73"
+																						  size="13"
+																						  style="circle"><esri:SimpleLineSymbol alpha="0.5"/></classes:MySimpleMarkerSymbol></esri:UniqueValueInfo>
+							<esri:UniqueValueInfo value="9"><classes:MySimpleMarkerSymbol color="0x730000"
+																						  size="13"
+																						  style="circle"><esri:SimpleLineSymbol alpha="0.5"/></classes:MySimpleMarkerSymbol></esri:UniqueValueInfo>
+							<esri:UniqueValueInfo value="10"><classes:MySimpleMarkerSymbol color="0x000000"
+																						   size="13"
+																						   style="circle"><esri:SimpleLineSymbol alpha="0.5"/></classes:MySimpleMarkerSymbol></esri:UniqueValueInfo>
+							<esri:UniqueValueInfo value="11"><classes:MySimpleMarkerSymbol color="0x000000"
+																						   size="13"
+																						   style="circle"><esri:SimpleLineSymbol alpha="0.5"/></classes:MySimpleMarkerSymbol></esri:UniqueValueInfo>
 						</classes:infos>
 					</classes:MyUniqueValueRenderer>
 				</classes:renderer>
@@ -184,21 +234,24 @@ Main application class.
 					<esri:ClassBreaksRenderer attribute="PercentFlyway">
 						<esri:ClassBreakInfo maxValue="1">
 							<esri:symbol>
-								<classes:MySimpleMarkerSymbol size="5" color="0xFF0000" legendCaption="0% - 1%">
+								<classes:MySimpleMarkerSymbol color="0xFF0000"
+															  legendCaption="0% - 1%" size="5">
 									<esri:SimpleLineSymbol alpha="0.5"/>
 								</classes:MySimpleMarkerSymbol>
 							</esri:symbol>
 						</esri:ClassBreakInfo>
-						<esri:ClassBreakInfo minValue="1" maxValue="5">
+						<esri:ClassBreakInfo maxValue="5" minValue="1">
 							<esri:symbol>
-								<classes:MySimpleMarkerSymbol size="10" color="0xFF0000" legendCaption="1% - 5%">
+								<classes:MySimpleMarkerSymbol color="0xFF0000"
+															  legendCaption="1% - 5%" size="10">
 									<esri:SimpleLineSymbol alpha="0.5"/>
 								</classes:MySimpleMarkerSymbol>
 							</esri:symbol>
 						</esri:ClassBreakInfo>
 						<esri:ClassBreakInfo minValue="5">
 							<esri:symbol>
-								<classes:MySimpleMarkerSymbol size="15" color="0xFF0000" legendCaption="5% - 100%"> 
+								<classes:MySimpleMarkerSymbol color="0xFF0000"
+															  legendCaption="5% - 100%" size="15"> 
 									<esri:SimpleLineSymbol alpha="0.5"/>
 								</classes:MySimpleMarkerSymbol>
 							</esri:symbol>
@@ -215,7 +268,9 @@ Main application class.
 			<classes:RendererOption UIText="{resourceManager.getString('myResources', 'TEXT156')}"><!--presence-->
 				<classes:renderer>
 					<esri:SimpleRenderer>
-						<classes:MySimpleMarkerSymbol color="0xFFAA00" style="circle" size="13" legendCaption="{resourceManager.getString('myResources', 'TEXT157')}"><esri:SimpleLineSymbol alpha="0.5"/></classes:MySimpleMarkerSymbol>
+						<classes:MySimpleMarkerSymbol color="0xFFAA00"
+													  legendCaption="{resourceManager.getString('myResources', 'TEXT157')}"
+													  size="13" style="circle"><esri:SimpleLineSymbol alpha="0.5"/></classes:MySimpleMarkerSymbol>
 					</esri:SimpleRenderer>
 				</classes:renderer>
 			</classes:RendererOption>
@@ -246,11 +301,14 @@ Main application class.
 			</classes:RendererOption>
 		</s:ArrayCollection>
 		<!---A QueryTask that is used to retrieve a list of countries for the tools on the Reports page for species and populations lists for a country.-->
-		<esri:QueryTask id="countryQueryTask" url="http://dev.unep-wcmc.org/ArcGIS/rest/services/CSN/Reports/MapServer/3" showBusyCursor="true"/>
+		<esri:QueryTask id="countryQueryTask" showBusyCursor="true"
+						url="http://dev.unep-wcmc.org/ArcGIS/rest/services/CSN/Reports/MapServer/3"/>
 		<!---The Query object for the countryQueryTask. The where value is set to CountryID>-1 to retrieve all countries.-->
-		<esri:Query id="countryQuery" outFields="*" returnGeometry="false" where="CountryID>-1"/>
+		<esri:Query id="countryQuery" outFields="*" returnGeometry="false" where="CountryID&gt;-1"/>
 		<!---The IdentifyParameters object used when the user clicks on the map. The default values are a tolerance of 4, the current maps width,height and extent and all layers.-->
-		<esri:IdentifyParameters id="identifyParameters" tolerance="4" width="{map.width}" height="{map.height}" geometry="{clickPoint}" mapExtent="{map.extent}" spatialReference="{map.spatialReference}" layerOption="all"/> 
+		<esri:IdentifyParameters id="identifyParameters" width="{map.width}" height="{map.height}"
+								 geometry="{clickPoint}" layerOption="all" mapExtent="{map.extent}"
+								 spatialReference="{map.spatialReference}" tolerance="4"/> 
 
 	</fx:Declarations>
 
@@ -269,20 +327,36 @@ Main application class.
 	 These layers are currently published from the following ArcGIS REST Services Directory: http://dev.unep-wcmc.org/ArcGIS/rest/services/CSN. However, in the future these servies may be published from an instance of Amazon EC2 to make the application more scalable. In addition, it is envisaged that in future releases of the CSN tool, some of the data layers will be published directly from the data providers, e.g. UNEP-WCMC will publish the World Database on Protected Areas directly from the protectedPlanet website.<p>All of the 
 	 map layers in the map are switched on/off using the relevant UI controls, in all cases these are simple check boxes that are bound to the visible property of the layer. In some cases the visibility of the consittuent layer is also dependent on the state of the application. So for example, the species distribution layer is only visible when the checkbox is selected and the current state of th application is 'species'.</p><p>The type of layer that is shown in the map depends on where it is used. So for example, if the user requests a map of species distribution, then a dynamic map service layer is shown since the user does not need access tot he raw data. However, in other cases the user may require accerss to the actual data (e.g. for critical sites) and in these cases feature layers are used in snapshot mode to return all of the data to the client so that it can be shown in any data tables. In addition, once the data has been returned to the client then it can be rendered on the client according to their requirements withouth having to reload the data from the server.</p><p>The map interaction is minimal with a small number of tools for navigating the map (using the ESRI map controls) and a single IdentifyTask which executes if the user clicks on the map.
 	The results of the identify task are then matched to the layer and are shown using that layers infoWindow. In this way a single infoWindow is recycled for all query operations.</p>-->
-	<components:MyMap id="map" layoutDirection="ltr" width="100%" height="100%" extent="{initialExtent}" creationComplete="map.infoWindow.closeButtonVisible=false;map.infoWindow.labelVisible=false;" pointToolClick="map_pointToolClickHandler(event)" timeSlider="{timeSlider}" extentChange="map_extentChangeHandler(event)" mapClick="map_mapClickHandler(event)">
+	<components:MyMap id="map" width="100%" height="100%"
+					  creationComplete="map.infoWindow.closeButtonVisible=false;map.infoWindow.labelVisible=false;"
+					  extent="{initialExtent}" extentChange="map_extentChangeHandler(event)"
+					  layoutDirection="ltr" mapClick="map_mapClickHandler(event)"
+					  pointToolClick="map_pointToolClickHandler(event)" timeSlider="{timeSlider}">
 
 		<!---The Microsoft Bing imagery and roads layer in the map. The type of base map is selected using the Basemap gallery.-->
-		<esri:VETiledLayer id="bingLayer" key="AgfQ61misLHV_Uq7B8bDf4rMvZZL61oSi8JDxM6I0ImhV3-uO2QPqFMfWe9MK8ar" culture="{culture}" mapStyle="{basemapGallery.mapStyle}" visible="{basemapGallery.isBing}"/>
+		<esri:VETiledLayer id="bingLayer" visible="{basemapGallery.isBing}" culture="{culture}"
+						   key="AgfQ61misLHV_Uq7B8bDf4rMvZZL61oSi8JDxM6I0ImhV3-uO2QPqFMfWe9MK8ar"
+						   mapStyle="{basemapGallery.mapStyle}"/>
 		<!---The ESRI ArcGIS Online imagery layer. The type of base map is selected using the Basemap gallery-->
-		<esri:ArcGISTiledMapServiceLayer id="arcgisOnlineImagery" url="{basemapGallery.url}" load="arcgistiledmapservicelayer1_loadHandler(event)" visible="{!basemapGallery.isBing}"/>
+		<esri:ArcGISTiledMapServiceLayer id="arcgisOnlineImagery" visible="{!basemapGallery.isBing}"
+										 load="arcgistiledmapservicelayer1_loadHandler(event)"
+										 url="{basemapGallery.url}"/>
 		<!---The ESRI ArcGIS Online labels layer. The type of base map is selected using the Basemap gallery-->
-		<esri:ArcGISTiledMapServiceLayer id="arcgisOnlineLabels" url="{basemapGallery.labelurl}" visible="{((basemapGallery.labelurl!=null)&amp;&amp;(!basemapGallery.isBing))}"/>
+		<esri:ArcGISTiledMapServiceLayer id="arcgisOnlineLabels"
+										 visible="{((basemapGallery.labelurl!=null)&amp;&amp;(!basemapGallery.isBing))}"
+										 url="{basemapGallery.labelurl}"/>
 				
 		<!--SPECIES PAGE LAYERS-->
 		
 		<!--Species distribution layer-->
 		<!---The species distribution layer is the first layer in the MapService available through the ArcGIS Server REST Directory: http://dev.unep-wcmc.org/ArcGIS/rest/services/CSN/Species/MapServer. The species that is shown is set using a DefinitionExpression on the MapService using the current SpcRecID in the url.-->
-		<classes:MyArcGISDynamicMapServiceLayer id="distributionMap" url="http://dev.unep-wcmc.org/ArcGIS/rest/services/CSN/Species/MapServer" visible="{speciesBox.dMap.selected}" showEffect="{fadeIn07}" hideEffect="{fadeOut07}" includeIn="species" legendImage="{EmbeddedImages.dmapLegend}" legendCaption="{resourceManager.getString('myResources', 'TEXT103')}">
+		<classes:MyArcGISDynamicMapServiceLayer id="distributionMap" includeIn="species"
+												visible="{speciesBox.dMap.selected}"
+												hideEffect="{fadeOut07}"
+												legendCaption="{resourceManager.getString('myResources', 'TEXT103')}"
+												legendImage="{EmbeddedImages.dmapLegend}"
+												showEffect="{fadeIn07}"
+												url="http://dev.unep-wcmc.org/ArcGIS/rest/services/CSN/Species/MapServer">
 			<classes:layerDefinitions>
 				<fx:Array>
 					<fx:String>SpcRecID={speciesBox.species.spcRecID}</fx:String><!--species distribution-->
@@ -297,7 +371,11 @@ Main application class.
 		
 		<!--Species flyways layer-->
 		<!---The species flyways layer is the second layer in the MapService available through the ArcGIS Server REST Directory: http://dev.unep-wcmc.org/ArcGIS/rest/services/CSN/Species/MapServer. The species that is shown is set using a DefinitionExpression on the MapService using the current SpcRecID in the url.-->
-		<classes:MyArcGISDynamicMapServiceLayer id="flywaysMap" url="http://dev.unep-wcmc.org/ArcGIS/rest/services/CSN/Species/MapServer" visible="{speciesBox.fMap.selected}" showEffect="{fadeIn10}" hideEffect="{fadeOut10}" includeIn="species" showlegend="false">
+		<classes:MyArcGISDynamicMapServiceLayer id="flywaysMap" includeIn="species"
+												visible="{speciesBox.fMap.selected}"
+												hideEffect="{fadeOut10}" showEffect="{fadeIn10}"
+												showlegend="false"
+												url="http://dev.unep-wcmc.org/ArcGIS/rest/services/CSN/Species/MapServer">
 			<classes:layerDefinitions>
 				<fx:Array>
 					<fx:String></fx:String><!--species distribution-->
@@ -313,15 +391,40 @@ Main application class.
 		
 		<!--Species CSN layer-->
 		<!---The species critical sites layer is the third layer in the MapService available through the ArcGIS Server REST Directory: http://dev.unep-wcmc.org/ArcGIS/rest/services/CSN/Species/MapServer. The species that is shown is set using a DefinitionExpression on the MapService using the current SpcRecID in the url. The FeatureLayer is a snapshot feature layer so that all of the data for the species is returned to the client to display in the data table.-->
-		<classes:MyFeatureLayer url="http://dev.unep-wcmc.org/ArcGIS/rest/services/CSN/Species/MapServer/2" includeIn="species" visible="{speciesBox.csnMap.selected}" id="csnFeatureLayer" outFields="[SiteRecID,Country,Name,Protected,SpcRecID,FlyRecID,Flyway,YearStart,YearEnd,PopMin,PopMax,PopMean,PercentFlyway,Season,Unit,IBACriteria,CSN1,CSN2,IsIBA,IsPoly]" showEffect="{fadeIn07}" hideEffect="{fadeOut07}" definitionExpression="SpcRecID={speciesBox.species.spcRecID}" mode="snapshot" legendCaption="{resourceManager.getString('myResources', 'TEXT107')}" renderer="{csnRenderer.currentRenderer}" infoWindowRenderer="wcmc.infoWindows.SiteInfoWindowWithLink"/>
+		<classes:MyFeatureLayer id="csnFeatureLayer" includeIn="species"
+								visible="{speciesBox.csnMap.selected}"
+								definitionExpression="SpcRecID={speciesBox.species.spcRecID}"
+								hideEffect="{fadeOut07}"
+								infoWindowRenderer="wcmc.infoWindows.SiteInfoWindowWithLink"
+								legendCaption="{resourceManager.getString('myResources', 'TEXT107')}"
+								mode="snapshot"
+								outFields="[SiteRecID,Country,Name,Protected,SpcRecID,FlyRecID,Flyway,YearStart,YearEnd,PopMin,PopMax,PopMean,PercentFlyway,Season,Unit,IBACriteria,CSN1,CSN2,IsIBA,IsPoly]"
+								renderer="{csnRenderer.currentRenderer}" showEffect="{fadeIn07}"
+								url="http://dev.unep-wcmc.org/ArcGIS/rest/services/CSN/Species/MapServer/2"/>
 
 		<!--Species IBA layer-->
 		<!---The species IBA layer is the fourth layer in the MapService available through the ArcGIS Server REST Directory: http://dev.unep-wcmc.org/ArcGIS/rest/services/CSN/Species/MapServer. The species that is shown is set using a DefinitionExpression on the MapService using the current SpcRecID in the url. The FeatureLayer is a snapshot feature layer so that all of the data for the species is returned to the client to display in the data table.-->
-		<classes:MyFeatureLayer url="http://dev.unep-wcmc.org/ArcGIS/rest/services/CSN/Species/MapServer/3" includeIn="species" visible="{speciesBox.ibaMap.selected}" id="ibaFeatureLayer" outFields="[SiteRecID,Country,Name,Protected,SpcRecID,YearStart,YearEnd,PopMin,PopMax,PopMean,Season,Unit,IBACriteria,IsPoly]" showEffect="{fadeIn07}" hideEffect="{fadeOut07}" definitionExpression="SpcRecID={speciesBox.species.spcRecID}" mode="snapshot" legendCaption="{resourceManager.getString('myResources', 'TEXT109')}" renderer="{ibaRenderer.currentRenderer}" infoWindowRenderer="wcmc.infoWindows.SiteInfoWindow"/>
+		<classes:MyFeatureLayer id="ibaFeatureLayer" includeIn="species"
+								visible="{speciesBox.ibaMap.selected}"
+								definitionExpression="SpcRecID={speciesBox.species.spcRecID}"
+								hideEffect="{fadeOut07}"
+								infoWindowRenderer="wcmc.infoWindows.SiteInfoWindow"
+								legendCaption="{resourceManager.getString('myResources', 'TEXT109')}"
+								mode="snapshot"
+								outFields="[SiteRecID,Country,Name,Protected,SpcRecID,YearStart,YearEnd,PopMin,PopMax,PopMean,Season,Unit,IBACriteria,IsPoly]"
+								renderer="{ibaRenderer.currentRenderer}" showEffect="{fadeIn07}"
+								url="http://dev.unep-wcmc.org/ArcGIS/rest/services/CSN/Species/MapServer/3"/>
 		
 		<!--Species IWC site layer-->
 		<!---The species IWC layer is the fifth layer in the MapService available through the ArcGIS Server REST Directory: http://dev.unep-wcmc.org/ArcGIS/rest/services/CSN/Species/MapServer. The species that is shown is set using a DefinitionExpression on the MapService using the current SpcRecID in the url.-->
-		<classes:MyArcGISDynamicMapServiceLayer url="http://dev.unep-wcmc.org/ArcGIS/rest/services/CSN/Species/MapServer" includeIn="species" visible="{speciesBox.iwcMap.selected}" showEffect="{fadeIn08}" hideEffect="{fadeOut08}" legendCaption="{resourceManager.getString('myResources', 'TEXT149')}" infoWindowRenderer="wcmc.infoWindows.IWCChartInfoWindow" legendImage="{EmbeddedImages.speciesIWCL}">
+		<classes:MyArcGISDynamicMapServiceLayer includeIn="species"
+												visible="{speciesBox.iwcMap.selected}"
+												hideEffect="{fadeOut08}"
+												infoWindowRenderer="wcmc.infoWindows.IWCChartInfoWindow"
+												legendCaption="{resourceManager.getString('myResources', 'TEXT149')}"
+												legendImage="{EmbeddedImages.speciesIWCL}"
+												showEffect="{fadeIn08}"
+												url="http://dev.unep-wcmc.org/ArcGIS/rest/services/CSN/Species/MapServer">
 			<classes:layerDefinitions>
 				<fx:Array> 
 					<fx:String></fx:String><!--species distribution-->
@@ -340,7 +443,13 @@ Main application class.
 		
 		<!--Species IWC Time Slider layer-->
 		<!---The species IWC time slider layer is the MapService available through the ArcGIS Server REST Directory: http://dev.unep-wcmc.org/ArcGIS/rest/services/CSN/IWCTimeSlider/MapServer. The species and year that is shown is set using a DefinitionExpression on the MapService using the current SpcRecID in the url and the year from the timeslider control that is shown when the user turns on the IWC time slider. This service is separate from the other services because it accesses and maps over 60 million records.-->
-		<classes:MyArcGISDynamicMapServiceLayer url="http://dev.unep-wcmc.org/ArcGIS/rest/services/CSN/IWCTimeSlider/MapServer" id="iwcNonCumulativeTimeLayer" includeIn="species" visible="{speciesBox.timeSliderTool.selected}" load="iwcNonCumulativeTimeLayer_loadHandler(event)" legendCaption="{resourceManager.getString('myResources', 'TEXT149')} ({myDateFormatter.format(timeSlider.timeExtent.endTime)})" legendImage="{EmbeddedImages.timeSeriesMap}" infoWindowRenderer="wcmc.infoWindows.IWCCountInfoWindow">
+		<classes:MyArcGISDynamicMapServiceLayer id="iwcNonCumulativeTimeLayer" includeIn="species"
+												visible="{speciesBox.timeSliderTool.selected}"
+												infoWindowRenderer="wcmc.infoWindows.IWCCountInfoWindow"
+												legendCaption="{resourceManager.getString('myResources', 'TEXT149')} ({myDateFormatter.format(timeSlider.timeExtent.endTime)})"
+												legendImage="{EmbeddedImages.timeSeriesMap}"
+												load="iwcNonCumulativeTimeLayer_loadHandler(event)"
+												url="http://dev.unep-wcmc.org/ArcGIS/rest/services/CSN/IWCTimeSlider/MapServer">
 			<classes:layerDefinitions>
 				<fx:Array>
 					<fx:String>SpcRecID={speciesBox.species.spcRecID}</fx:String>
@@ -357,7 +466,14 @@ Main application class.
 		
 		<!--Critical Site layer-->
 		<!---The critical sites layer represents the point and polygon critical sites (the first and second layers) in the MapService available through the ArcGIS Server REST Directory: http://dev.unep-wcmc.org/ArcGIS/rest/services/CSN/Sites/MapServer. Unlike the species layers, there are no definition expressions on the sites layers since all sites are shown.-->
-		<classes:MyArcGISDynamicMapServiceLayer id="criticalSiteLayer" url="http://dev.unep-wcmc.org/ArcGIS/rest/services/CSN/Sites/MapServer" includeIn="site" visible="{sitesBox.dMap.selected}" showEffect="{fadeIn05}" hideEffect="{fadeOut05}" legendCaption="{resourceManager.getString('myResources', 'TEXT83')}" infoWindowRenderer="wcmc.infoWindows.SiteInfoWindow" legendImage="{EmbeddedImages.siteL}">
+		<classes:MyArcGISDynamicMapServiceLayer id="criticalSiteLayer" includeIn="site"
+												visible="{sitesBox.dMap.selected}"
+												hideEffect="{fadeOut05}"
+												infoWindowRenderer="wcmc.infoWindows.SiteInfoWindow"
+												legendCaption="{resourceManager.getString('myResources', 'TEXT83')}"
+												legendImage="{EmbeddedImages.siteL}"
+												showEffect="{fadeIn05}"
+												url="http://dev.unep-wcmc.org/ArcGIS/rest/services/CSN/Sites/MapServer">
 			<classes:layerDefinitions>
 				<fx:Array>
 					<fx:String>IsPoly=0</fx:String><!--Points layer-->
@@ -373,7 +489,14 @@ Main application class.
 		
 		<!--IBA layer-->
 		<!---The IBA sites layer represents the point and polygon IBA sites (the third and fourth layers) in the MapService available through the ArcGIS Server REST Directory: http://dev.unep-wcmc.org/ArcGIS/rest/services/CSN/Sites/MapServer. Unlike the species layers, there are no definition expressions on the sites layers since all sites are shown.-->
-		<classes:MyArcGISDynamicMapServiceLayer id="ibaLayer" url="http://dev.unep-wcmc.org/ArcGIS/rest/services/CSN/Sites/MapServer" includeIn="site" visible="{sitesBox.ibaMap.selected}" showEffect="{fadeIn07}" hideEffect="{fadeOut07}" legendCaption="{resourceManager.getString('myResources', 'TEXT122')}" infoWindowRenderer="wcmc.infoWindows.SiteInfoWindow" legendImage="{EmbeddedImages.ibaL}">
+		<classes:MyArcGISDynamicMapServiceLayer id="ibaLayer" includeIn="site"
+												visible="{sitesBox.ibaMap.selected}"
+												hideEffect="{fadeOut07}"
+												infoWindowRenderer="wcmc.infoWindows.SiteInfoWindow"
+												legendCaption="{resourceManager.getString('myResources', 'TEXT122')}"
+												legendImage="{EmbeddedImages.ibaL}"
+												showEffect="{fadeIn07}"
+												url="http://dev.unep-wcmc.org/ArcGIS/rest/services/CSN/Sites/MapServer">
 			<classes:visibleLayers>
 				<mx:ArrayCollection>
 					<fx:Number>2</fx:Number><!--IBA points layer-->
@@ -385,7 +508,14 @@ Main application class.
 		<!--Site IWC Layer-->
 		<!---The IWC layer represents the point locations of IWC sites (the fifth layer) in the MapService available through the ArcGIS Server REST Directory: http://dev.unep-wcmc.org/ArcGIS/rest/services/CSN/Sites/MapServer. Unlike the species layers, there are no definition expressions on the sites layers since all sites are shown.-->
 <!--		<classes:MyFeatureLayer url="http://dev.unep-wcmc.org/ArcGIS/rest/services/CSN/Sites/MapServer/4" minScale="{STATIC_DYNAMIC_SCALE_CUT_OFF}" includeIn="site" visible="{sitesBox.iwcMap.selected}" outFields="[Name,CountryCode,SiteCode]" showEffect="{fadeIn07}" hideEffect="{fadeOut07}" legendCaption="{resourceManager.getString('myResources', 'TEXT85')}" symbol="{iwcSymbol}" infoWindowRenderer="wcmc.infoWindows.IWCSimpleInfoWindow"/>-->
-		<classes:MyArcGISDynamicMapServiceLayer id="iwcLayer" url="http://dev.unep-wcmc.org/ArcGIS/rest/services/CSN/Sites/MapServer" includeIn="site" visible="{sitesBox.iwcMap.selected}" showEffect="{fadeIn07}" hideEffect="{fadeOut07}" legendCaption="{resourceManager.getString('myResources', 'TEXT149')}" infoWindowRenderer="wcmc.infoWindows.IWCSimpleInfoWindow" legendImage="{EmbeddedImages.speciesIWCL}">
+		<classes:MyArcGISDynamicMapServiceLayer id="iwcLayer" includeIn="site"
+												visible="{sitesBox.iwcMap.selected}"
+												hideEffect="{fadeOut07}"
+												infoWindowRenderer="wcmc.infoWindows.IWCSimpleInfoWindow"
+												legendCaption="{resourceManager.getString('myResources', 'TEXT149')}"
+												legendImage="{EmbeddedImages.speciesIWCL}"
+												showEffect="{fadeIn07}"
+												url="http://dev.unep-wcmc.org/ArcGIS/rest/services/CSN/Sites/MapServer">
 			<classes:visibleLayers>
 				<mx:ArrayCollection>
 					<fx:Number>4</fx:Number><!--IWC layer-->
@@ -395,7 +525,14 @@ Main application class.
 	
 		<!--Site WDPA layer-->
 		<!---The WDPA layer represents the point and polygon WDPA sites (the 6th and 7th layers) in the MapService available through the ArcGIS Server REST Directory: http://dev.unep-wcmc.org/ArcGIS/rest/services/CSN/Sites/MapServer. Unlike the species layers, there are no definition expressions on the sites layers since all sites are shown.-->
-		<classes:MyArcGISDynamicMapServiceLayer id="wdpaLayer" url="http://dev.unep-wcmc.org/ArcGIS/rest/services/CSN/Sites/MapServer" includeIn="site" visible="{sitesBox.wdpaMap.selected}" showEffect="{fadeIn07}" hideEffect="{fadeOut07}" legendCaption="{resourceManager.getString('myResources', 'TEXT87')}" infoWindowRenderer="wcmc.infoWindows.WDPAInfoWindow" legendImage="{EmbeddedImages.wdpaL}">
+		<classes:MyArcGISDynamicMapServiceLayer id="wdpaLayer" includeIn="site"
+												visible="{sitesBox.wdpaMap.selected}"
+												hideEffect="{fadeOut07}"
+												infoWindowRenderer="wcmc.infoWindows.WDPAInfoWindow"
+												legendCaption="{resourceManager.getString('myResources', 'TEXT87')}"
+												legendImage="{EmbeddedImages.wdpaL}"
+												showEffect="{fadeIn07}"
+												url="http://dev.unep-wcmc.org/ArcGIS/rest/services/CSN/Sites/MapServer">
 			<classes:visibleLayers>
 				<mx:ArrayCollection>
 					<fx:Number>5</fx:Number><!--WDPA points layer-->
@@ -409,7 +546,14 @@ Main application class.
 		
 		<!--Site Ramsar layer-->
 		<!---The Ramsar layer represents the point and polygon Ramsar sites (the 8th and 9th layers) in the MapService available through the ArcGIS Server REST Directory: http://dev.unep-wcmc.org/ArcGIS/rest/services/CSN/Sites/MapServer. Unlike the species layers, there are no definition expressions on the sites layers since all sites are shown.-->
-		<classes:MyArcGISDynamicMapServiceLayer id="ramsarLayer" url="http://dev.unep-wcmc.org/ArcGIS/rest/services/CSN/Sites/MapServer" includeIn="site" visible="{sitesBox.ramsarMap.selected}" showEffect="{fadeIn07}" hideEffect="{fadeOut07}" legendCaption="{resourceManager.getString('myResources', 'TEXT91')}" infoWindowRenderer="wcmc.infoWindows.RamsarInfoWindow" legendImage="{EmbeddedImages.ramsarL}">
+		<classes:MyArcGISDynamicMapServiceLayer id="ramsarLayer" includeIn="site"
+												visible="{sitesBox.ramsarMap.selected}"
+												hideEffect="{fadeOut07}"
+												infoWindowRenderer="wcmc.infoWindows.RamsarInfoWindow"
+												legendCaption="{resourceManager.getString('myResources', 'TEXT91')}"
+												legendImage="{EmbeddedImages.ramsarL}"
+												showEffect="{fadeIn07}"
+												url="http://dev.unep-wcmc.org/ArcGIS/rest/services/CSN/Sites/MapServer">
 			<classes:visibleLayers>
 				<mx:ArrayCollection>
 					<fx:Number>7</fx:Number><!--Ramsar points layer-->
@@ -425,13 +569,26 @@ Main application class.
 		
 		<!--Reports site layer-->
 		<!---The layer containing the sites matching the currently selected values in the filterBox, e.g. if the user selects Albania in the filterBox, then only the sites for Albania will be shown on the map using this layer.-->
-		<classes:MyFeatureLayer id="sitePointsLayer" url="http://dev.unep-wcmc.org/ArcGIS/rest/services/CSN/Reports/MapServer/1" includeIn="reports" visible="{reportsBox.showSites.selected}" outFields="[Name,SiteRecID,Country,IsIBA,Protected,IBASpc,CSNSpc,Total]" showEffect="{fadeIn07}" hideEffect="{fadeOut07}" legendCaption="{resourceManager.getString('myResources', 'TEXT83')}" mode="snapshot" infoWindowRenderer="wcmc.infoWindows.SiteListInfoWindow" renderer="{siteListRenderer.currentRenderer}"/>
+		<classes:MyFeatureLayer id="sitePointsLayer" includeIn="reports"
+								visible="{reportsBox.showSites.selected}" hideEffect="{fadeOut07}"
+								infoWindowRenderer="wcmc.infoWindows.SiteListInfoWindow"
+								legendCaption="{resourceManager.getString('myResources', 'TEXT83')}"
+								mode="snapshot"
+								outFields="[Name,SiteRecID,Country,IsIBA,Protected,IBASpc,CSNSpc,Total]"
+								renderer="{siteListRenderer.currentRenderer}"
+								showEffect="{fadeIn07}"
+								url="http://dev.unep-wcmc.org/ArcGIS/rest/services/CSN/Reports/MapServer/1"/>
 		
 		<!--CONTEXTUAL LAYERS-->
 		
 		<!--AEWA Boundary layer-->
 		<!---Dynamic map service with the AEWA boundary outline.-->
-		<classes:MyArcGISDynamicMapServiceLayer id="aewaLayer" url="http://dev.unep-wcmc.org/ArcGIS/rest/services/CSN/ContextualData/MapServer" visible="{toolbox.aewaBoundary.selected}" showEffect="{fadeIn10}" hideEffect="{fadeOut10}" showlegend="false" loadError="aewaLayer_loadErrorHandler(event)">
+		<classes:MyArcGISDynamicMapServiceLayer id="aewaLayer"
+												visible="{toolbox.aewaBoundary.selected}"
+												hideEffect="{fadeOut10}"
+												loadError="aewaLayer_loadErrorHandler(event)"
+												showEffect="{fadeIn10}" showlegend="false"
+												url="http://dev.unep-wcmc.org/ArcGIS/rest/services/CSN/ContextualData/MapServer">
 			<classes:visibleLayers>
 				<mx:ArrayCollection>
 					<fx:Number>0</fx:Number>
@@ -441,7 +598,12 @@ Main application class.
 		
 		<!--Demo sites layer-->
 		<!---Dynamic map service with the Demo sites-->
-		<classes:MyArcGISDynamicMapServiceLayer id="demoSitesLayer" url="http://dev.unep-wcmc.org/ArcGIS/rest/services/CSN/ContextualData/MapServer" visible="{toolbox.demoSites.selected}" showEffect="{fadeIn10}" hideEffect="{fadeOut10}" showlegend="false" infoWindowRenderer="wcmc.infoWindows.DemoSitesInfoWindow" imageFormat="png32">
+		<classes:MyArcGISDynamicMapServiceLayer id="demoSitesLayer"
+												visible="{toolbox.demoSites.selected}"
+												hideEffect="{fadeOut10}" imageFormat="png32"
+												infoWindowRenderer="wcmc.infoWindows.DemoSitesInfoWindow"
+												showEffect="{fadeIn10}" showlegend="false"
+												url="http://dev.unep-wcmc.org/ArcGIS/rest/services/CSN/ContextualData/MapServer">
 			<classes:visibleLayers>
 				<mx:ArrayCollection>
 					<fx:Number>1</fx:Number>
@@ -451,7 +613,12 @@ Main application class.
 
 		<!--Gap sites layer-->
 		<!---Dynamic map service with the Gap sites-->
-		<classes:MyArcGISDynamicMapServiceLayer id="gapSitesLayer" url="http://dev.unep-wcmc.org/ArcGIS/rest/services/CSN/ContextualData/MapServer" visible="{toolbox.gapSites.selected}" showEffect="{fadeIn10}" hideEffect="{fadeOut10}" showlegend="false" infoWindowRenderer="wcmc.infoWindows.GapSitesInfoWindow" imageFormat="png32">
+		<classes:MyArcGISDynamicMapServiceLayer id="gapSitesLayer"
+												visible="{toolbox.gapSites.selected}"
+												hideEffect="{fadeOut10}" imageFormat="png32"
+												infoWindowRenderer="wcmc.infoWindows.GapSitesInfoWindow"
+												showEffect="{fadeIn10}" showlegend="false"
+												url="http://dev.unep-wcmc.org/ArcGIS/rest/services/CSN/ContextualData/MapServer">
 			<classes:visibleLayers>
 				<mx:ArrayCollection>
 					<fx:Number>2</fx:Number>
@@ -464,64 +631,100 @@ Main application class.
 	<!-- Map navigation controls-->
 	<mx:ControlBar width="100%" horizontalAlign="center" paddingTop="0">
 		<!---Map navigation controls.-->
-		<mx:ToggleButtonBar id="navBar" creationComplete="navBar.selectedIndex=-1" valueCommit="if (navBar.selectedIndex == -1) navTool.deactivate()" itemClick="navigationToolClick(event)" toggleOnClick="true">
+		<mx:ToggleButtonBar id="navBar" creationComplete="navBar.selectedIndex=-1"
+							itemClick="navigationToolClick(event)" toggleOnClick="true"
+							valueCommit="if (navBar.selectedIndex == -1) navTool.deactivate()">
 			<mx:dataProvider>
 				<fx:Array>
-					<fx:Object icon="{EmbeddedImages.zoomIn}" toolTip="{resourceManager.getString('myResources', 'TEXT178')}"/>
-					<fx:Object icon="{EmbeddedImages.zoomOut}" toolTip="{resourceManager.getString('myResources', 'TEXT179')}"/>
-					<fx:Object icon="{EmbeddedImages.pan}" toolTip="{resourceManager.getString('myResources', 'TEXT180')}"/>
+					<fx:Object icon="{EmbeddedImages.zoomIn}"
+							   toolTip="{resourceManager.getString('myResources', 'TEXT178')}"/>
+					<fx:Object icon="{EmbeddedImages.zoomOut}"
+							   toolTip="{resourceManager.getString('myResources', 'TEXT179')}"/>
+					<fx:Object icon="{EmbeddedImages.pan}"
+							   toolTip="{resourceManager.getString('myResources', 'TEXT180')}"/>
 				</fx:Array>
 			</mx:dataProvider>
 		</mx:ToggleButtonBar>
 		<mx:ControlBar horizontalGap="0">
-			<mx:Button click="navTool.zoomToPrevExtent()" enabled="{!navTool.isFirstExtent}" icon="{(!navTool.isFirstExtent ? EmbeddedImages.previousImg : EmbeddedImages.previousDisabledImg)}" toolTip="{resourceManager.getString('myResources', 'TEXT181')}"/>
-			<mx:Button click="navTool.zoomToNextExtent()" enabled="{!navTool.isLastExtent}" icon="{(!navTool.isLastExtent ? EmbeddedImages.nextImg : EmbeddedImages.nextDisabledImg)}" toolTip="{resourceManager.getString('myResources', 'TEXT182')}"/>
+			<mx:Button click="navTool.zoomToPrevExtent()" enabled="{!navTool.isFirstExtent}"
+					   icon="{(!navTool.isFirstExtent ? EmbeddedImages.previousImg : EmbeddedImages.previousDisabledImg)}"
+					   toolTip="{resourceManager.getString('myResources', 'TEXT181')}"/>
+			<mx:Button click="navTool.zoomToNextExtent()" enabled="{!navTool.isLastExtent}"
+					   icon="{(!navTool.isLastExtent ? EmbeddedImages.nextImg : EmbeddedImages.nextDisabledImg)}"
+					   toolTip="{resourceManager.getString('myResources', 'TEXT182')}"/>
 		</mx:ControlBar>
-		<mx:Button click="navTool.zoomToFullExtent()" icon="@Embed(source='images/full.png')" toolTip="{resourceManager.getString('myResources', 'TEXT183')}"/>
+		<mx:Button click="navTool.zoomToFullExtent()" icon="@Embed(source='images/full.png')"
+				   toolTip="{resourceManager.getString('myResources', 'TEXT183')}"/>
 	</mx:ControlBar>		
 	
 	<!--Basemap gallery-->
 	<!---The basemapGallery is a custom box that allows the user to change the base map data for the application. @see wcmc.components.BasemapGallery-->
-	<components:BasemapGallery id="basemapGallery" basemapChanged="basemapChanged(event)" visible="{toolbox.basemapSwitch.selected}" showEffect="{fadeIn}" hideEffect="{fadeOut}" show="basemapGallery_showHandler(event)" styleName="InformationPanel" map="{map}" hide="toolbox.basemapSwitch.selected=false" csn="{this}"/>
+	<components:BasemapGallery id="basemapGallery" visible="{toolbox.basemapSwitch.selected}"
+							   basemapChanged="basemapChanged(event)" csn="{this}"
+							   hide="toolbox.basemapSwitch.selected=false" hideEffect="{fadeOut}"
+							   map="{map}" show="basemapGallery_showHandler(event)"
+							   showEffect="{fadeIn}" styleName="InformationPanel"/>
 
 	<!--Button to show the infoPanel again after it has been hidden-->
-	<supportClasses:InfoWindowCloseButton right="0" top="100" visible="{!infoPanel.visible}" toolTip="{resourceManager.getString('myResources', 'TEXT184')}" click="infoPanel.visible=true"/>
+	<supportClasses:InfoWindowCloseButton visible="{!infoPanel.visible}" right="0" top="100"
+										  click="infoPanel.visible=true"
+										  toolTip="{resourceManager.getString('myResources', 'TEXT184')}"/>
 
 	<!--Legend-->
 	<!---The Legend component shows information about the currently visible layers in the map, such as the layers names and symbology. @see wcmc.components.Legend-->
-	<components:Legend id="legend" map="{map}" visible="{toolbox.legendSwitch.selected}" hideEffect="{fadeOut}" showEffect="{fadeIn}" hide="toolbox.legendSwitch.selected=false" filters="{shadow}" csn="{this}"/>
+	<components:Legend id="legend" visible="{toolbox.legendSwitch.selected}" csn="{this}"
+					   filters="{shadow}" hide="toolbox.legendSwitch.selected=false"
+					   hideEffect="{fadeOut}" map="{map}" showEffect="{fadeIn}"/>
 
 	<!--Time slider toolbar-->
 	<!---The timesliderToolbar is a box which shows the user a slider control to control the year for the IWC data.-->
-	<components:MyBorderContainer id="timesliderToolbar" styleName="InformationPanel" visible="{(speciesBox.timeSliderTool.selected)&amp;&amp;(currentState=='species')}" show="timesliderToolbar_showHandler(event)">
-		<s:BorderContainer styleName="ContentPanel" right="5" bottom="5" top="5" left="5" height="100%" minHeight="0" minWidth="0">
-			<s:VGroup paddingBottom="8" paddingLeft="10" paddingTop="10" paddingRight="10" horizontalAlign="center">
-				<components:BoxHeader dragComponent="{timesliderToolbar}" target="{this}" caption="{resourceManager.getString('myResources', 'TEXT134')} {myDateFormatter.format(timeSlider.timeExtent.endTime)}" boxClosed="speciesBox.timeSliderTool.checkBox.selected=false"/>
+	<components:MyBorderContainer id="timesliderToolbar"
+								  visible="{(speciesBox.timeSliderTool.selected)&amp;&amp;(currentState=='species')}"
+								  show="timesliderToolbar_showHandler(event)"
+								  styleName="InformationPanel">
+		<s:BorderContainer left="5" right="5" top="5" bottom="5" height="100%" minWidth="0"
+						   minHeight="0" styleName="ContentPanel">
+			<s:VGroup horizontalAlign="center" paddingBottom="8" paddingLeft="10" paddingRight="10"
+					  paddingTop="10">
+				<components:BoxHeader boxClosed="speciesBox.timeSliderTool.checkBox.selected=false"
+									  caption="{resourceManager.getString('myResources', 'TEXT134')} {myDateFormatter.format(timeSlider.timeExtent.endTime)}"
+									  dragComponent="{timesliderToolbar}" target="{this}"/>
 				<!---The timeSlider is the actual control the controls the time-period for the map control.-->
-				<esri:TimeSlider id="timeSlider" skinClass="wcmc.skins.MyTimeSliderSkin" singleThumbAsTimeInstant="true" itemCreationPolicy="immediate" includeIn="species"/>
+				<esri:TimeSlider id="timeSlider" includeIn="species" itemCreationPolicy="immediate"
+								 singleThumbAsTimeInstant="true"
+								 skinClass="wcmc.skins.MyTimeSliderSkin"/>
 			</s:VGroup>
 		</s:BorderContainer>
 	</components:MyBorderContainer>		
 	
 	<!--Info panel-->
 	<!---The info panel is the main viewport to the application and contains all of the items that the user will interact with, apart from popups like data tables. It contains components that are displayed according to what state the application is in.-->
-	<s:BorderContainer id="infoPanel" width="450" height="750" styleName="InformationPanel" verticalCenter="0">
-		<s:BorderContainer styleName="ContentPanel" height="{(infoPanel.height - 20)}" width="{infoPanel.width-20}" x="10" y="10">
-			<s:VGroup width="100%" height="100%" paddingBottom="10" paddingLeft="10" paddingRight="10" paddingTop="13">
+	<s:BorderContainer id="infoPanel" width="450" height="750" styleName="InformationPanel"
+					   verticalCenter="0">
+		<s:BorderContainer x="10" y="10" width="{infoPanel.width-20}"
+						   height="{(infoPanel.height - 20)}" styleName="ContentPanel">
+			<s:VGroup width="100%" height="100%" paddingBottom="10" paddingLeft="10"
+					  paddingRight="10" paddingTop="13">
 				<!---The switcher is the navigation control for the infoPanel which sets the state of the application. @see wcmc.components.Switcher-->
 				<components:Switcher id="switcher" csn="{this}"/>
 				<!---The welcomeBox is the box that is loaded when the state of the application is 'home'. This is the default state on loading. @see wcmc.components.WelcomeBox-->
 				<components:WelcomeBox id="welcomeBox" includeIn="home" csn="{this}"/> 
 				<!---The speciesSearchBox is the box that is loaded when the state of the application is 'speciesSearch'. @see wcmc.components.SpeciesSearchBox-->
-				<components:SpeciesSearchBox id="speciesSearchBox" includeIn="speciesSearch" itemCreationPolicy="immediate" commonNameField="{commonNameField}" dao="{dao}"/> 
+				<components:SpeciesSearchBox id="speciesSearchBox" includeIn="speciesSearch"
+											 commonNameField="{commonNameField}" dao="{dao}"
+											 itemCreationPolicy="immediate"/> 
 				<!---The siteSearchBox is the box that is loaded when the state of the application is 'siteSearch'. @see wcmc.components.SiteSearchBox-->
-				<components:SiteSearchBox id="siteSearchBox" includeIn="siteSearch" itemCreationPolicy="immediate" csn="{this}"/>
+				<components:SiteSearchBox id="siteSearchBox" includeIn="siteSearch" csn="{this}"
+										  itemCreationPolicy="immediate"/>
 				<!---The speciesBox is the box that is loaded when the state of the application is 'species'. @see wcmc.components.SpeciesBox-->
-				<components:SpeciesBox id="speciesBox" includeIn="species" itemCreationPolicy="immediate" csn="{this}"/> 
+				<components:SpeciesBox id="speciesBox" includeIn="species" csn="{this}"
+									   itemCreationPolicy="immediate"/> 
 				<!---The sitesBox is the box that is loaded when the state of the application is 'sitesBox'. @see wcmc.components.SitesBox-->
-				<components:SitesBox id="sitesBox" includeIn="site" map="{map}" itemCreationPolicy="immediate" csn="{this}"/> 
+				<components:SitesBox id="sitesBox" includeIn="site" csn="{this}"
+									 itemCreationPolicy="immediate" map="{map}"/> 
 				<!---The reportsBox is the box that is loaded when the state of the application is 'reports'. @see wcmc.components.ReportsBox-->
-				<components:ReportsBox id="reportsBox" includeIn="reports" map="{map}" dao="{dao}" itemCreationPolicy="immediate" csn="{this}"/>
+				<components:ReportsBox id="reportsBox" includeIn="reports" csn="{this}" dao="{dao}"
+									   itemCreationPolicy="immediate" map="{map}"/>
 				<!---The infoBox is the box that is loaded when the state of the application is 'info'. @see wcmc.components.InfoBox-->
 				<components:InfoBox id="infoBox" includeIn="info"/>
 				<!---The toolbox is shown at the bottom of the infoPanel is is used to control the switching on/off of the contextual layers and to show/hide the legend and the Basemap gallery. It also allows the user to set the language and print the map. @see wcmc.components.Toolbox-->
@@ -542,261 +745,595 @@ Main application class.
 	
 	<!--Species critical sites data table-->
 	<!---A custom border container that shows information relating to the critical sites for a species. @see wcmc.components.MyBorderContainer-->
-	<components:MyBorderContainer id="csnDataTable" styleName="InformationPanel" horizontalCenter="0" bottom="10" visible="{(speciesBox.csnMap.selected)&amp;&amp;(currentState=='species')}"> 
-		<s:BorderContainer styleName="ContentPanel" right="5" bottom="5" top="5" left="5">
-			<s:VGroup paddingLeft="10" paddingBottom="8" paddingRight="10" paddingTop="10">
-				<s:HGroup verticalAlign="middle" width="100%">
-					<s:Label text="{resourceManager.getString('myResources', 'TEXT185')}" styleName="boxLabel"/>
+	<components:MyBorderContainer id="csnDataTable"
+								  visible="{(speciesBox.csnMap.selected)&amp;&amp;(currentState=='species')}"
+								  bottom="10" horizontalCenter="0" styleName="InformationPanel"> 
+		<s:BorderContainer left="5" right="5" top="5" bottom="5" styleName="ContentPanel">
+			<s:VGroup paddingBottom="8" paddingLeft="10" paddingRight="10" paddingTop="10">
+				<s:HGroup width="100%" verticalAlign="middle">
+					<s:Label styleName="boxLabel"
+							 text="{resourceManager.getString('myResources', 'TEXT185')}"/>
 					<!---The renderer chooser for the critical site data.-->
-					<components:RendererChooser id="csnRenderer" renderers="{csnRenderers}" selectedIndex="0" width="200"/>
+					<components:RendererChooser id="csnRenderer" width="200"
+												renderers="{csnRenderers}" selectedIndex="0"/>
 					<mx:Spacer width="100%"/>
 					<components:DragBox dragComponent="{csnDataTable}" target="{this}"/>
 					<components:MyCloseButton closeTarget="{csnDataTable}"/>
 				</s:HGroup>
 				<!---The data grid that shows information on the critical sites. This data grid is bound to the features in the csnFeatureLayer.-->
-				<components:MyDataGrid id="csnDataGrid" dataProvider="{csnFeatureLayer.features}" featureLayer="{csnFeatureLayer}" itemClick="datagrid_itemClickHandler(event)" itemRollOver="dataGrid_ItemRollOver(event)" itemRollOut="datagrid_itemRollOutHandler(event)">
+				<components:MyDataGrid id="csnDataGrid" dataProvider="{csnFeatureLayer.features}"
+									   featureLayer="{csnFeatureLayer}"
+									   itemClick="datagrid_itemClickHandler(event)"
+									   itemRollOut="datagrid_itemRollOutHandler(event)"
+									   itemRollOver="dataGrid_ItemRollOver(event)">
 					<components:columns>
-						<mx:DataGridColumn headerText="{resourceManager.getString('myResources', 'TEXT28')}" itemRenderer="wcmc.renderers.CountryRenderer" sortCompareFunction="countrySortCompare" width="{wCountry}"/>
-						<mx:DataGridColumn headerText="{resourceManager.getString('myResources', 'TEXT186')}" dataField="Name" showDataTips="true" width="{wSitename}"/>
-						<mx:DataGridColumn headerText="{resourceManager.getString('myResources', 'TEXT158')}" dataField="Flyway" showDataTips="true" width="{wPopulation}"/>
-						<mx:DataGridColumn headerText="{resourceManager.getString('myResources', 'TEXT159')}" dataField="Season" width="{wSeason}"/>
-						<mx:DataGridColumn headerText="{resourceManager.getString('myResources', 'TEXT187')}" dataField="YearStart" width="{wStart}"/>
-						<mx:DataGridColumn headerText="{resourceManager.getString('myResources', 'TEXT188')}" dataField="YearEnd" width="{wEnd}"/>
-						<mx:DataGridColumn headerText="{resourceManager.getString('myResources', 'TEXT189')}" dataField="PopMin" textAlign="right" width="{wMin}"/>
-						<mx:DataGridColumn headerText="{resourceManager.getString('myResources', 'TEXT190')}" dataField="PopMax" textAlign="right" width="{wMax}"/>
-						<mx:DataGridColumn headerText="{resourceManager.getString('myResources', 'TEXT191')}" dataField="PopMean" textAlign="right" width="{wMean}"/>
-						<mx:DataGridColumn headerText="{resourceManager.getString('myResources', 'TEXT192')}" dataField="Unit" width="{wUnits}"/>
-						<mx:DataGridColumn headerText="{resourceManager.getString('myResources', 'TEXT193')}" dataField="PercentFlyway" sortCompareFunction="percentSortCompare" labelFunction="getPercentFlyway" textAlign="right" width="{wPercentPop}"/>
-						<mx:DataGridColumn headerText="{resourceManager.getString('myResources', 'TEXT194')}" itemRenderer="wcmc.renderers.TicRenderer1" width="{wCSN1}" sortCompareFunction="booleanCompare1"/>
-						<mx:DataGridColumn headerText="{resourceManager.getString('myResources', 'TEXT195')}" itemRenderer="wcmc.renderers.TicRenderer2" width="{wCSN2}" sortCompareFunction="booleanCompare2"/>
-						<mx:DataGridColumn headerText="{resourceManager.getString('myResources', 'TEXT196')}" itemRenderer="wcmc.renderers.TicRenderer3" width="{wIBA}" sortCompareFunction="booleanCompare3"/>
-						<mx:DataGridColumn headerText="{resourceManager.getString('myResources', 'TEXT197')}" dataField="IBACriteria" width="70" showDataTips="{wIBACriteria}"/>
-						<mx:DataGridColumn headerText="{resourceManager.getString('myResources', 'TEXT198')}" dataField="Protected" width="{wProtected}"/>
-						<mx:DataGridColumn headerText="" width="{wLink}" itemRenderer="wcmc.renderers.SiteLinkRenderer"/>
+						<mx:DataGridColumn width="{wCountry}"
+										   headerText="{resourceManager.getString('myResources', 'TEXT28')}"
+										   itemRenderer="wcmc.renderers.CountryRenderer"
+										   sortCompareFunction="countrySortCompare"/>
+						<mx:DataGridColumn width="{wSitename}" dataField="Name"
+										   headerText="{resourceManager.getString('myResources', 'TEXT186')}"
+										   showDataTips="true"/>
+						<mx:DataGridColumn width="{wPopulation}" dataField="Flyway"
+										   headerText="{resourceManager.getString('myResources', 'TEXT158')}"
+										   showDataTips="true"/>
+						<mx:DataGridColumn width="{wSeason}" dataField="Season"
+										   headerText="{resourceManager.getString('myResources', 'TEXT159')}"/>
+						<mx:DataGridColumn width="{wStart}" dataField="YearStart"
+										   headerText="{resourceManager.getString('myResources', 'TEXT187')}"/>
+						<mx:DataGridColumn width="{wEnd}" dataField="YearEnd"
+										   headerText="{resourceManager.getString('myResources', 'TEXT188')}"/>
+						<mx:DataGridColumn width="{wMin}" dataField="PopMin"
+										   headerText="{resourceManager.getString('myResources', 'TEXT189')}"
+										   textAlign="right"/>
+						<mx:DataGridColumn width="{wMax}" dataField="PopMax"
+										   headerText="{resourceManager.getString('myResources', 'TEXT190')}"
+										   textAlign="right"/>
+						<mx:DataGridColumn width="{wMean}" dataField="PopMean"
+										   headerText="{resourceManager.getString('myResources', 'TEXT191')}"
+										   textAlign="right"/>
+						<mx:DataGridColumn width="{wUnits}" dataField="Unit"
+										   headerText="{resourceManager.getString('myResources', 'TEXT192')}"/>
+						<mx:DataGridColumn width="{wPercentPop}" dataField="PercentFlyway"
+										   headerText="{resourceManager.getString('myResources', 'TEXT193')}"
+										   labelFunction="getPercentFlyway"
+										   sortCompareFunction="percentSortCompare"
+										   textAlign="right"/>
+						<mx:DataGridColumn width="{wCSN1}"
+										   headerText="{resourceManager.getString('myResources', 'TEXT194')}"
+										   itemRenderer="wcmc.renderers.TicRenderer1"
+										   sortCompareFunction="booleanCompare1"/>
+						<mx:DataGridColumn width="{wCSN2}"
+										   headerText="{resourceManager.getString('myResources', 'TEXT195')}"
+										   itemRenderer="wcmc.renderers.TicRenderer2"
+										   sortCompareFunction="booleanCompare2"/>
+						<mx:DataGridColumn width="{wIBA}"
+										   headerText="{resourceManager.getString('myResources', 'TEXT196')}"
+										   itemRenderer="wcmc.renderers.TicRenderer3"
+										   sortCompareFunction="booleanCompare3"/>
+						<mx:DataGridColumn width="70" dataField="IBACriteria"
+										   headerText="{resourceManager.getString('myResources', 'TEXT197')}"
+										   showDataTips="{wIBACriteria}"/>
+						<mx:DataGridColumn width="{wProtected}" dataField="Protected"
+										   headerText="{resourceManager.getString('myResources', 'TEXT198')}"/>
+						<mx:DataGridColumn width="{wLink}" headerText=""
+										   itemRenderer="wcmc.renderers.SiteLinkRenderer"/>
 					</components:columns>
 				</components:MyDataGrid> 
-				<components:ReportToolbar dataGrid="{csnDataGrid}" reportTitle="{resourceManager.getString('myResources', 'TEXT199')} {speciesBox.species.commonName}" reportOrientation="{Orientation.LANDSCAPE}" reportLink="http://dev.unep-wcmc.org/csn/default.html#state=species&amp;SpcRecID={speciesBox.species.spcRecID}" wowImage="{welcomeBox.wowImage}"/>
+				<components:ReportToolbar dataGrid="{csnDataGrid}"
+										  reportLink="http://dev.unep-wcmc.org/csn/default.html#state=species&amp;SpcRecID={speciesBox.species.spcRecID}"
+										  reportOrientation="{Orientation.LANDSCAPE}"
+										  reportTitle="{resourceManager.getString('myResources', 'TEXT199')} {speciesBox.species.commonName}"
+										  wowImage="{welcomeBox.wowImage}"/>
 			</s:VGroup>
 		</s:BorderContainer>
 	</components:MyBorderContainer>
 	
 	<!--Species IBA data table-->
 	<!---A custom border container that shows information relating to the IBA sites for a species. @see wcmc.components.MyBorderContainer-->
-	<components:MyBorderContainer id="ibaDataTable" styleName="InformationPanel" horizontalCenter="0" bottom="10" visible="{(speciesBox.ibaMap.selected)&amp;&amp;(currentState=='species')}"> 
-		<s:BorderContainer styleName="ContentPanel" right="5" bottom="5" top="5" left="5">
-			<s:VGroup paddingLeft="10" paddingBottom="8" paddingRight="10" paddingTop="10">
-				<s:HGroup verticalAlign="middle" width="100%">
-					<s:Label text="{resourceManager.getString('myResources', 'TEXT224')}" styleName="boxLabel"/>
+	<components:MyBorderContainer id="ibaDataTable"
+								  visible="{(speciesBox.ibaMap.selected)&amp;&amp;(currentState=='species')}"
+								  bottom="10" horizontalCenter="0" styleName="InformationPanel"> 
+		<s:BorderContainer left="5" right="5" top="5" bottom="5" styleName="ContentPanel">
+			<s:VGroup paddingBottom="8" paddingLeft="10" paddingRight="10" paddingTop="10">
+				<s:HGroup width="100%" verticalAlign="middle">
+					<s:Label styleName="boxLabel"
+							 text="{resourceManager.getString('myResources', 'TEXT224')}"/>
 					<!---The renderer chooser for the IBA site data.-->
-					<components:RendererChooser id="ibaRenderer" renderers="{ibaRenderers}" selectedIndex="0" width="200"/>
+					<components:RendererChooser id="ibaRenderer" width="200"
+												renderers="{ibaRenderers}" selectedIndex="0"/>
 					<mx:Spacer width="100%"/>
 					<components:DragBox dragComponent="{ibaDataTable}" target="{this}"/>
 					<components:MyCloseButton click="ibaDataTable.visible=false"/>
 				</s:HGroup>
 				<!---The data grid that shows information on the IBA sites. This data grid is bound to the features in the ibaFeatureLayer.-->
-				<components:MyDataGrid id="ibaDataGrid" dataProvider="{ibaFeatureLayer.features}" featureLayer="{ibaFeatureLayer}" itemClick="datagrid_itemClickHandler(event)" itemRollOver="dataGrid_ItemRollOver(event)" itemRollOut="datagrid_itemRollOutHandler(event)">
+				<components:MyDataGrid id="ibaDataGrid" dataProvider="{ibaFeatureLayer.features}"
+									   featureLayer="{ibaFeatureLayer}"
+									   itemClick="datagrid_itemClickHandler(event)"
+									   itemRollOut="datagrid_itemRollOutHandler(event)"
+									   itemRollOver="dataGrid_ItemRollOver(event)">
 					<components:columns>
-						<mx:DataGridColumn headerText="{resourceManager.getString('myResources', 'TEXT28')}" itemRenderer="wcmc.renderers.CountryRenderer" sortCompareFunction="countrySortCompare" width="{wCountry}"/>
-						<mx:DataGridColumn headerText="{resourceManager.getString('myResources', 'TEXT186')}" dataField="Name" showDataTips="true" width="{wSitename}"/>
-						<mx:DataGridColumn headerText="{resourceManager.getString('myResources', 'TEXT159')}" dataField="Season" width="{wSeason}"/>
-						<mx:DataGridColumn headerText="{resourceManager.getString('myResources', 'TEXT187')}" dataField="YearStart" width="{wStart}"/>
-						<mx:DataGridColumn headerText="{resourceManager.getString('myResources', 'TEXT188')}" dataField="YearEnd" width="{wEnd}"/>
-						<mx:DataGridColumn headerText="{resourceManager.getString('myResources', 'TEXT189')}" dataField="PopMin" textAlign="right" width="{wMin}"/>
-						<mx:DataGridColumn headerText="{resourceManager.getString('myResources', 'TEXT190')}" dataField="PopMax" textAlign="right" width="{wMax}"/>
-						<mx:DataGridColumn headerText="{resourceManager.getString('myResources', 'TEXT191')}" dataField="PopMean" textAlign="right" width="{wMean}"/>
-						<mx:DataGridColumn headerText="{resourceManager.getString('myResources', 'TEXT192')}" dataField="Unit" width="{wUnits}"/>
-						<mx:DataGridColumn headerText="{resourceManager.getString('myResources', 'TEXT197')}" dataField="IBACriteria" width="{wIBACriteria}" showDataTips="true"/>
-						<mx:DataGridColumn headerText="{resourceManager.getString('myResources', 'TEXT198')}" dataField="Protected" width="{wProtected}"/>
-						<mx:DataGridColumn headerText="" width="{wLink}" itemRenderer="wcmc.renderers.SiteLinkRenderer"/>
+						<mx:DataGridColumn width="{wCountry}"
+										   headerText="{resourceManager.getString('myResources', 'TEXT28')}"
+										   itemRenderer="wcmc.renderers.CountryRenderer"
+										   sortCompareFunction="countrySortCompare"/>
+						<mx:DataGridColumn width="{wSitename}" dataField="Name"
+										   headerText="{resourceManager.getString('myResources', 'TEXT186')}"
+										   showDataTips="true"/>
+						<mx:DataGridColumn width="{wSeason}" dataField="Season"
+										   headerText="{resourceManager.getString('myResources', 'TEXT159')}"/>
+						<mx:DataGridColumn width="{wStart}" dataField="YearStart"
+										   headerText="{resourceManager.getString('myResources', 'TEXT187')}"/>
+						<mx:DataGridColumn width="{wEnd}" dataField="YearEnd"
+										   headerText="{resourceManager.getString('myResources', 'TEXT188')}"/>
+						<mx:DataGridColumn width="{wMin}" dataField="PopMin"
+										   headerText="{resourceManager.getString('myResources', 'TEXT189')}"
+										   textAlign="right"/>
+						<mx:DataGridColumn width="{wMax}" dataField="PopMax"
+										   headerText="{resourceManager.getString('myResources', 'TEXT190')}"
+										   textAlign="right"/>
+						<mx:DataGridColumn width="{wMean}" dataField="PopMean"
+										   headerText="{resourceManager.getString('myResources', 'TEXT191')}"
+										   textAlign="right"/>
+						<mx:DataGridColumn width="{wUnits}" dataField="Unit"
+										   headerText="{resourceManager.getString('myResources', 'TEXT192')}"/>
+						<mx:DataGridColumn width="{wIBACriteria}" dataField="IBACriteria"
+										   headerText="{resourceManager.getString('myResources', 'TEXT197')}"
+										   showDataTips="true"/>
+						<mx:DataGridColumn width="{wProtected}" dataField="Protected"
+										   headerText="{resourceManager.getString('myResources', 'TEXT198')}"/>
+						<mx:DataGridColumn width="{wLink}" headerText=""
+										   itemRenderer="wcmc.renderers.SiteLinkRenderer"/>
 					</components:columns>
 				</components:MyDataGrid> 
-				<components:ReportToolbar dataGrid="{ibaDataGrid}" reportTitle="{resourceManager.getString('myResources', 'TEXT200')} {speciesBox.species.commonName}" reportOrientation="{Orientation.LANDSCAPE}" reportLink="http://dev.unep-wcmc.org/csn/default.html#state=species&amp;SpcRecID={speciesBox.species.spcRecID}" wowImage="{welcomeBox.wowImage}"/>
+				<components:ReportToolbar dataGrid="{ibaDataGrid}"
+										  reportLink="http://dev.unep-wcmc.org/csn/default.html#state=species&amp;SpcRecID={speciesBox.species.spcRecID}"
+										  reportOrientation="{Orientation.LANDSCAPE}"
+										  reportTitle="{resourceManager.getString('myResources', 'TEXT200')} {speciesBox.species.commonName}"
+										  wowImage="{welcomeBox.wowImage}"/>
 			</s:VGroup>
 		</s:BorderContainer>
 	</components:MyBorderContainer>
 	
 	<!--Species Waterbird Population Estimates table-->
 	<!---A custom border container that shows information relating to the waterbird populations for a species. @see wcmc.components.MyBorderContainer-->
-	<components:MyBorderContainer id="wpeDataTable" styleName="InformationPanel" visible="{(speciesBox.wpeTable.selected)&amp;&amp;(currentState=='species')}" show="wpeDataTable_showHandler(event)"> 
-		<s:BorderContainer styleName="ContentPanel" right="5" bottom="5" top="5" left="5">
-			<s:VGroup paddingLeft="10" paddingBottom="8" paddingRight="10" paddingTop="10">
-				<components:BoxHeader dragComponent="{wpeDataTable}" target="{this}" caption="{resourceManager.getString('myResources', 'TEXT117')}" boxClosed="speciesBox.wpeTable.checkBox.selected=false;"/>
+	<components:MyBorderContainer id="wpeDataTable"
+								  visible="{(speciesBox.wpeTable.selected)&amp;&amp;(currentState=='species')}"
+								  bottom="10" horizontalCenter="0" styleName="InformationPanel">
+		<s:BorderContainer left="5" right="5" top="5" bottom="5" styleName="ContentPanel">
+			<s:VGroup paddingBottom="8" paddingLeft="10" paddingRight="10" paddingTop="10">
+				<components:BoxHeader boxClosed="speciesBox.wpeTable.checkBox.selected=false;"
+									  caption="{resourceManager.getString('myResources', 'TEXT117')}"
+									  dragComponent="{wpeDataTable}" target="{this}"/>
 				<!---The data grid that shows information on the waterbird population estimates for a species. This data grid is bound to the data from the DAO.getWaterbirdPopulationEstimates method. @see wcmc.classes.DAO-->
-				<mx:DataGrid id="wpeTable" rowCount="{wpeTable.dataProvider.length}" dataProvider="{dao.getWaterbirdPopulationEstimates(speciesBox.species.spcRecID)}">
+				<mx:DataGrid id="wpeTable"
+							 dataProvider="{dao.getWaterbirdPopulationEstimates(speciesBox.species.spcRecID)}"
+							 rowCount="{wpeTable.dataProvider.length}">
 					<mx:columns>
-						<mx:DataGridColumn headerText="{resourceManager.getString('myResources', 'TEXT158')}" dataField="Flyway" width="{wPopulation}"/>
-						<mx:DataGridColumn headerText="{resourceManager.getString('myResources', 'TEXT201')}" dataField="Estimate" width="{wEstimate}"/>
-						<mx:DataGridColumn headerText="{resourceManager.getString('myResources', 'TEXT202')}" dataField="Trend" width="{wTrend}"/>
-						<mx:DataGridColumn headerText="{resourceManager.getString('myResources', 'TEXT203')}" dataField="OnePercentCalc" textAlign="right"/>
+						<mx:DataGridColumn width="{wPopulation}" dataField="Flyway"
+										   headerText="{resourceManager.getString('myResources', 'TEXT158')}"/>
+						<mx:DataGridColumn width="{wEstimate}" dataField="Estimate"
+										   headerText="{resourceManager.getString('myResources', 'TEXT201')}"/>
+						<mx:DataGridColumn width="{wTrend}" dataField="Trend"
+										   headerText="{resourceManager.getString('myResources', 'TEXT202')}"/>
+						<mx:DataGridColumn dataField="OnePercentCalc"
+										   headerText="{resourceManager.getString('myResources', 'TEXT203')}"
+										   textAlign="right"/>
 					</mx:columns>
 				</mx:DataGrid>
-				<components:ReportToolbar dataGrid="{wpeTable}" reportTitle="{resourceManager.getString('myResources', 'TEXT204')} {speciesBox.species.commonName}" reportLink="http://dev.unep-wcmc.org/csn/default.html#state=species&amp;SpcRecID={speciesBox.species.spcRecID}" wowImage="{welcomeBox.wowImage}"/>
+				<components:ReportToolbar dataGrid="{wpeTable}"
+										  reportLink="http://dev.unep-wcmc.org/csn/default.html#state=species&amp;SpcRecID={speciesBox.species.spcRecID}"
+										  reportTitle="{resourceManager.getString('myResources', 'TEXT204')} {speciesBox.species.commonName}"
+										  wowImage="{welcomeBox.wowImage}"/>
 			</s:VGroup>
 		</s:BorderContainer>
 	</components:MyBorderContainer>
 	
-	<!--Site species list table-->
-	<!---A custom border container that shows information on all species recorded for a site.-->
-	<components:MyBorderContainer id="speciesListDataTable" styleName="InformationPanel" horizontalCenter="0" bottom="10" visible="{(sitesBox.speciesList.selected)&amp;&amp;(currentState=='site')}"> 
-		<s:BorderContainer styleName="ContentPanel" right="5" bottom="5" top="5" left="5">
-			<s:VGroup paddingLeft="10" paddingBottom="8" paddingRight="10" paddingTop="10">
-				<components:BoxHeader dragComponent="{speciesListDataTable}" target="{this}" caption="{resourceManager.getString('myResources', 'TEXT93')}" boxClosed="sitesBox.speciesList.checkBox.selected=false;"/>
-				<!---Data grid showing all species occuring for a site. This data grid is bound to the DAO.getSpeciesList method. @see wcmc.classes.DAO-->
-				<mx:DataGrid id="speciesListTable" dataProvider="{getSpeciesList(commonNameField,sitesBox.site.siteRecID)}">
+	<!--Flyway protection table-->
+	<!---A custom border container that shows information relating to the amount of protection for a flyway population. @see wcmc.components.MyBorderContainer-->
+	<components:MyBorderContainer id="protectionDataTable"
+								  visible="{(speciesBox.protectionTable.selected)&amp;&amp;(currentState=='species')}"
+								  bottom="10" horizontalCenter="0" styleName="InformationPanel"> 
+		<s:BorderContainer left="5" right="5" top="5" bottom="5" styleName="ContentPanel">
+			<s:VGroup paddingBottom="8" paddingLeft="10" paddingRight="10" paddingTop="10">
+				<s:HGroup width="100%" verticalAlign="middle">
+					<s:Label styleName="boxLabel"
+							 text="{resourceManager.getString('myResources', 'TEXT251')}"/>
+					<mx:Spacer width="100%"/>
+					<components:DragBox dragComponent="{protectionDataTable}" target="{this}"/>
+					<components:MyCloseButton closeTarget="{protectionDataTable}"
+											  targetClosed="myclosebutton1_targetClosedHandler(event)"/>
+				</s:HGroup>
+				<s:HGroup width="100%" verticalAlign="middle">
+					<s:Label width="120" styleName="boxLabel2"
+							 text="{resourceManager.getString('myResources', 'TEXT254')}"/>
+					<s:DropDownList id="flywayDropDown" width="220"
+									dataProvider="{dao.getFlyways(speciesBox.species.spcRecID)}"
+									labelField="Flyway"/>
+				</s:HGroup>
+				<s:HGroup width="100%" verticalAlign="middle">
+					<s:Label width="120" styleName="boxLabel2"
+							 text="{resourceManager.getString('myResources', 'TEXT253')}"/>
+					<s:DropDownList id="protectionTypeDropDown" width="220"
+									dataProvider="{dao.getProtectionTypes()}"
+									labelField="ProtectionType"/>
+
+				</s:HGroup>
+				<!---The data grid that shows information on flyway protection for a species. This data grid is bound to the data from the DAO.getWaterbirdPopulationEstimates method. @see wcmc.classes.DAO-->
+				<mx:DataGrid id="protectionTable"
+							 dataProvider="{dao.getProtection(flywayDropDown.selectedItem.SpcFlyRecID,protectionTypeDropDown.selectedItem.ID)}"
+							 rowCount="{protectionTable.dataProvider.length}" >
 					<mx:columns>
-						<mx:DataGridColumn headerText="{resourceManager.getString('myResources', 'TEXT208')}" width="{wScientific}" showDataTips="true" itemRenderer="wcmc.renderers.SpeciesRenderer" sortCompareFunction="speciesCompare"/>
-						<mx:DataGridColumn headerText="{resourceManager.getString('myResources', 'TEXT205')}" dataField="{commonNameField}" width="{wCommon}" showDataTips="true" dataTipField="{commonNameField}"/>
-						<mx:DataGridColumn headerText="{resourceManager.getString('myResources', 'TEXT158')}" dataField="Flyway" width="{wPopulation}" showDataTips="true" dataTipField="Flyway"/>
-						<mx:DataGridColumn headerText="{resourceManager.getString('myResources', 'TEXT159')}" dataField="Season" width="{wSeason}"/>
-						<mx:DataGridColumn headerText="{resourceManager.getString('myResources', 'TEXT187')}" dataField="YearStart" width="{wStart}"/>
-						<mx:DataGridColumn headerText="{resourceManager.getString('myResources', 'TEXT188')}" dataField="YearEnd" width="{wEnd}"/>
-						<mx:DataGridColumn headerText="{resourceManager.getString('myResources', 'TEXT189')}" dataField="PopMin" textAlign="right" width="{wMin}"/>
-						<mx:DataGridColumn headerText="{resourceManager.getString('myResources', 'TEXT190')}" dataField="PopMax" textAlign="right" width="{wMax}"/>
-						<mx:DataGridColumn headerText="{resourceManager.getString('myResources', 'TEXT191')}" dataField="PopMean" textAlign="right" width="{wMean}"/>
-						<mx:DataGridColumn headerText="{resourceManager.getString('myResources', 'TEXT192')}" dataField="Unit" width="{wUnits}"/>
-						<mx:DataGridColumn headerText="{resourceManager.getString('myResources', 'TEXT193')}" dataField="PercentFlyway" sortCompareFunction="percentSortCompare" labelFunction="getPercentFlyway" textAlign="right" width="{wPercentPop}"/>
-						<mx:DataGridColumn headerText="{resourceManager.getString('myResources', 'TEXT194')}" itemRenderer="wcmc.renderers.SiteSpeciesListTicRenderer1" width="{wCSN1}" sortCompareFunction="booleanCompare1"/>
-						<mx:DataGridColumn headerText="{resourceManager.getString('myResources', 'TEXT195')}" itemRenderer="wcmc.renderers.SiteSpeciesListTicRenderer2" width="{wCSN2}" sortCompareFunction="booleanCompare2"/>
-						<mx:DataGridColumn headerText="{resourceManager.getString('myResources', 'TEXT196')}" itemRenderer="wcmc.renderers.SiteSpeciesListTicRenderer3" width="{wIBA}" sortCompareFunction="booleanCompare3"/>
-						<mx:DataGridColumn headerText="{resourceManager.getString('myResources', 'TEXT197')}" dataField="IBACriteria" showDataTips="true" width="{wIBACriteria}"/>
-						<mx:DataGridColumn headerText="{resourceManager.getString('myResources', 'TEXT206')}" itemRenderer="wcmc.renderers.IWCTrendRenderer" textAlign="center" width="70" sortCompareFunction="booleanCompare4"/>
-						<mx:DataGridColumn headerText="" width="{wLink}" itemRenderer="wcmc.renderers.SpeciesLinkRenderer"/>
+						<mx:DataGridColumn dataField="Region"
+										   headerText="{resourceManager.getString('myResources', 'TEXT255')}" width="200"/>
+						<mx:DataGridColumn dataField="BPercent"
+										   headerText="{resourceManager.getString('myResources', 'TEXT256')}"
+										   labelFunction="addPercent" textAlign="right" width="60"/>
+						<mx:DataGridColumn dataField="B"
+										   headerText="{resourceManager.getString('myResources', 'TEXT257')}" textAlign="right" width="60"/>
+						<mx:DataGridColumn dataField="NBPercent"
+										   headerText="{resourceManager.getString('myResources', 'TEXT258')}"
+										   labelFunction="addPercent" textAlign="right" width="60"/>
+						<mx:DataGridColumn dataField="NB"
+										   headerText="{resourceManager.getString('myResources', 'TEXT259')}" textAlign="right" width="60"/>
 					</mx:columns>
 				</mx:DataGrid>
-				<components:ReportToolbar dataGrid="{speciesListTable}" reportTitle="{resourceManager.getString('myResources', 'TEXT207')} {sitesBox.site.name}" reportOrientation="{Orientation.LANDSCAPE}" reportLink="http://dev.unep-wcmc.org/csn/default.html#state=site&amp;SiteRecID={sitesBox.site.siteRecID}" wowImage="{welcomeBox.wowImage}"/>
+				<components:ReportToolbar dataGrid="{protectionTable}"
+										  reportLink="http://dev.unep-wcmc.org/csn/default.html#state=species&amp;SpcRecID={speciesBox.species.spcRecID}"
+										  reportTitle="{resourceManager.getString('myResources', 'TEXT260')} {speciesBox.species.commonName}" reportSubTitle1="Population: {flywayDropDown.selectedItem.Flyway}"
+										  reportSubTitle2="Legal Instrument: {protectionTypeDropDown.selectedItem.ProtectionType}"
+										  wowImage="{welcomeBox.wowImage}"/>
+			</s:VGroup>
+		</s:BorderContainer>
+	</components:MyBorderContainer>
+
+	<!--Site species list table-->
+	<!---A custom border container that shows information on all species recorded for a site.-->
+	<components:MyBorderContainer id="speciesListDataTable"
+								  visible="{(sitesBox.speciesList.selected)&amp;&amp;(currentState=='site')}"
+								  bottom="10" horizontalCenter="0" styleName="InformationPanel"> 
+		<s:BorderContainer left="5" right="5" top="5" bottom="5" styleName="ContentPanel">
+			<s:VGroup paddingBottom="8" paddingLeft="10" paddingRight="10" paddingTop="10">
+				<components:BoxHeader boxClosed="sitesBox.speciesList.checkBox.selected=false;"
+									  caption="{resourceManager.getString('myResources', 'TEXT93')}"
+									  dragComponent="{speciesListDataTable}" target="{this}"/>
+				<!---Data grid showing all species occuring for a site. This data grid is bound to the DAO.getSpeciesList method. @see wcmc.classes.DAO-->
+				<mx:DataGrid id="speciesListTable"
+							 dataProvider="{getSpeciesList(commonNameField,sitesBox.site.siteRecID)}">
+					<mx:columns>
+						<mx:DataGridColumn width="{wScientific}"
+										   headerText="{resourceManager.getString('myResources', 'TEXT208')}"
+										   itemRenderer="wcmc.renderers.SpeciesRenderer"
+										   showDataTips="true" sortCompareFunction="speciesCompare"/>
+						<mx:DataGridColumn width="{wCommon}" dataField="{commonNameField}"
+										   dataTipField="{commonNameField}"
+										   headerText="{resourceManager.getString('myResources', 'TEXT205')}"
+										   showDataTips="true"/>
+						<mx:DataGridColumn width="{wPopulation}" dataField="Flyway"
+										   dataTipField="Flyway"
+										   headerText="{resourceManager.getString('myResources', 'TEXT158')}"
+										   showDataTips="true"/>
+						<mx:DataGridColumn width="{wSeason}" dataField="Season"
+										   headerText="{resourceManager.getString('myResources', 'TEXT159')}"/>
+						<mx:DataGridColumn width="{wStart}" dataField="YearStart"
+										   headerText="{resourceManager.getString('myResources', 'TEXT187')}"/>
+						<mx:DataGridColumn width="{wEnd}" dataField="YearEnd"
+										   headerText="{resourceManager.getString('myResources', 'TEXT188')}"/>
+						<mx:DataGridColumn width="{wMin}" dataField="PopMin"
+										   headerText="{resourceManager.getString('myResources', 'TEXT189')}"
+										   textAlign="right"/>
+						<mx:DataGridColumn width="{wMax}" dataField="PopMax"
+										   headerText="{resourceManager.getString('myResources', 'TEXT190')}"
+										   textAlign="right"/>
+						<mx:DataGridColumn width="{wMean}" dataField="PopMean"
+										   headerText="{resourceManager.getString('myResources', 'TEXT191')}"
+										   textAlign="right"/>
+						<mx:DataGridColumn width="{wUnits}" dataField="Unit"
+										   headerText="{resourceManager.getString('myResources', 'TEXT192')}"/>
+						<mx:DataGridColumn width="{wPercentPop}" dataField="PercentFlyway"
+										   headerText="{resourceManager.getString('myResources', 'TEXT193')}"
+										   labelFunction="getPercentFlyway"
+										   sortCompareFunction="percentSortCompare"
+										   textAlign="right"/>
+						<mx:DataGridColumn width="{wCSN1}"
+										   headerText="{resourceManager.getString('myResources', 'TEXT194')}"
+										   itemRenderer="wcmc.renderers.SiteSpeciesListTicRenderer1"
+										   sortCompareFunction="booleanCompare1"/>
+						<mx:DataGridColumn width="{wCSN2}"
+										   headerText="{resourceManager.getString('myResources', 'TEXT195')}"
+										   itemRenderer="wcmc.renderers.SiteSpeciesListTicRenderer2"
+										   sortCompareFunction="booleanCompare2"/>
+						<mx:DataGridColumn width="{wIBA}"
+										   headerText="{resourceManager.getString('myResources', 'TEXT196')}"
+										   itemRenderer="wcmc.renderers.SiteSpeciesListTicRenderer3"
+										   sortCompareFunction="booleanCompare3"/>
+						<mx:DataGridColumn width="{wIBACriteria}" dataField="IBACriteria"
+										   headerText="{resourceManager.getString('myResources', 'TEXT197')}"
+										   showDataTips="true"/>
+						<mx:DataGridColumn width="70"
+										   headerText="{resourceManager.getString('myResources', 'TEXT206')}"
+										   itemRenderer="wcmc.renderers.IWCTrendRenderer"
+										   sortCompareFunction="booleanCompare4" textAlign="center"/>
+						<mx:DataGridColumn width="{wLink}" headerText=""
+										   itemRenderer="wcmc.renderers.SpeciesLinkRenderer"/>
+					</mx:columns>
+				</mx:DataGrid>
+				<components:ReportToolbar dataGrid="{speciesListTable}"
+										  reportLink="http://dev.unep-wcmc.org/csn/default.html#state=site&amp;SiteRecID={sitesBox.site.siteRecID}"
+										  reportOrientation="{Orientation.LANDSCAPE}"
+										  reportTitle="{resourceManager.getString('myResources', 'TEXT207')} {sitesBox.site.name}"
+										  wowImage="{welcomeBox.wowImage}"/>
 			</s:VGroup>
 		</s:BorderContainer>
 	</components:MyBorderContainer>
 	
 	<!--Reports Matching species table-->
 	<!---A custom border container that shows a list of matching species in the reports page when the user selects values in the filterBox.-->
-	<components:MyBorderContainer id="reportSpeciesList" styleName="InformationPanel" horizontalCenter="0" bottom="10" visible="{(reportsBox.showSpecies.selected)&amp;&amp;(currentState=='reports')}" movedToFront="reportSpeciesList_movedToFrontHandler(event)"> 
-		<s:BorderContainer styleName="ContentPanel" right="5" bottom="5" top="5" left="5">
-			<s:VGroup paddingLeft="10" paddingBottom="8" paddingRight="10" paddingTop="10">
-				<components:BoxHeader dragComponent="{reportSpeciesList}" target="{this}" caption="{resourceManager.getString('myResources', 'TEXT93')}" boxClosed="reportsBox.showSpecies.selected=false;"/>
+	<components:MyBorderContainer id="reportSpeciesList"
+								  visible="{(reportsBox.showSpecies.selected)&amp;&amp;(currentState=='reports')}"
+								  bottom="10" horizontalCenter="0"
+								  movedToFront="reportSpeciesList_movedToFrontHandler(event)"
+								  styleName="InformationPanel"> 
+		<s:BorderContainer left="5" right="5" top="5" bottom="5" styleName="ContentPanel">
+			<s:VGroup paddingBottom="8" paddingLeft="10" paddingRight="10" paddingTop="10">
+				<components:BoxHeader boxClosed="reportsBox.showSpecies.selected=false;"
+									  caption="{resourceManager.getString('myResources', 'TEXT93')}"
+									  dragComponent="{reportSpeciesList}" target="{this}"/>
 				<!---Data grid that shows a list of matching species in the reports page when the user selects values in the filterBox. It is bound to the reportsBox.filteredSpecies ArrayCollection. @see wcmc.components.ReportsBox-->
-				<components:MyDataGrid id="reportSpeciesListTable" dataProvider="{reportsBox.filteredSpecies}">
+				<components:MyDataGrid id="reportSpeciesListTable"
+									   dataProvider="{reportsBox.filteredSpecies}">
 					<components:columns>
-						<mx:DataGridColumn headerText="{resourceManager.getString('myResources', 'TEXT208')}" dataField="Species" width="{wScientific}" showDataTips="true" itemRenderer="wcmc.renderers.SpeciesRenderer" sortCompareFunction="speciesCompare"/>
-						<mx:DataGridColumn headerText="{resourceManager.getString('myResources', 'TEXT205')}" dataField="{commonNameField}" width="{wCommon}" showDataTips="true" dataTipField="{commonNameField}"/>
-						<mx:DataGridColumn headerText="" width="{wLink}" itemRenderer="wcmc.renderers.SpeciesLinkRenderer"/>
+						<mx:DataGridColumn width="{wScientific}" dataField="Species"
+										   headerText="{resourceManager.getString('myResources', 'TEXT208')}"
+										   itemRenderer="wcmc.renderers.SpeciesRenderer"
+										   showDataTips="true" sortCompareFunction="speciesCompare"/>
+						<mx:DataGridColumn width="{wCommon}" dataField="{commonNameField}"
+										   dataTipField="{commonNameField}"
+										   headerText="{resourceManager.getString('myResources', 'TEXT205')}"
+										   showDataTips="true"/>
+						<mx:DataGridColumn width="{wLink}" headerText=""
+										   itemRenderer="wcmc.renderers.SpeciesLinkRenderer"/>
 					</components:columns>
 				</components:MyDataGrid>
-				<components:ReportToolbar dataGrid="{reportSpeciesListTable}" reportTitle="{resourceManager.getString('myResources', 'TEXT93')}" outputFilters="true" filterCollection="{reportsBox.filterBox.filterCollection}" reportLink="http://dev.unep-wcmc.org/csn/default.html#state=reports" wowImage="{welcomeBox.wowImage}"/>
+				<components:ReportToolbar dataGrid="{reportSpeciesListTable}"
+										  filterCollection="{reportsBox.filterBox.filterCollection}"
+										  outputFilters="true"
+										  reportLink="http://dev.unep-wcmc.org/csn/default.html#state=reports"
+										  reportTitle="{resourceManager.getString('myResources', 'TEXT93')}"
+										  wowImage="{welcomeBox.wowImage}"/>
 			</s:VGroup>
 		</s:BorderContainer>
 	</components:MyBorderContainer>
 	
 	<!--Reports - Matching sites table-->
 	<!---The reportSiteList box is the box showing matching sites in the Reports page when the user selects items from the filter. The contents of this box are bound to the matching siteRecIDs in the filterBox.-->
-	<components:MyBorderContainer id="reportSiteList" styleName="InformationPanel" horizontalCenter="0" bottom="10" visible="{(reportsBox.showSites.selected)&amp;&amp;(currentState=='reports')}" movedToFront="reportSpeciesList_movedToFrontHandler(event)"> 
-		<s:BorderContainer styleName="ContentPanel" right="5" bottom="5" top="5" left="5">
-			<s:VGroup paddingLeft="10" paddingBottom="8" paddingRight="10" paddingTop="10">
-				<s:HGroup verticalAlign="middle" width="100%">
-					<s:Label text="{resourceManager.getString('myResources', 'TEXT185')}" styleName="boxLabel"/>
+	<components:MyBorderContainer id="reportSiteList"
+								  visible="{(reportsBox.showSites.selected)&amp;&amp;(currentState=='reports')}"
+								  bottom="10" horizontalCenter="0"
+								  movedToFront="reportSpeciesList_movedToFrontHandler(event)"
+								  styleName="InformationPanel"> 
+		<s:BorderContainer left="5" right="5" top="5" bottom="5" styleName="ContentPanel">
+			<s:VGroup paddingBottom="8" paddingLeft="10" paddingRight="10" paddingTop="10">
+				<s:HGroup width="100%" verticalAlign="middle">
+					<s:Label styleName="boxLabel"
+							 text="{resourceManager.getString('myResources', 'TEXT185')}"/>
 					<!---The siteListRenderer is used to render the features in the site list layer. @see sitePointsLayer-->
-					<components:RendererChooser id="siteListRenderer" renderers="{siteListRenderers}" selectedIndex="0" width="180"/>
+					<components:RendererChooser id="siteListRenderer" width="180"
+												renderers="{siteListRenderers}" selectedIndex="0"/>
 					<mx:Spacer width="100%"/>
 					<components:DragBox dragComponent="{reportSiteList}" target="{this}"/>
 					<components:MyCloseButton click="reportSiteList.visible=false;reportsBox.showSites.selected=false;"/>
 				</s:HGroup>
 				<mx:Canvas>
-					<mx:SWFLoader source="{EmbeddedImages.loader}" horizontalCenter="0" verticalCenter="0"/>
+					<mx:SWFLoader horizontalCenter="0" source="{EmbeddedImages.loader}"
+								  verticalCenter="0"/>
 					<!---Custom data grid that is bound to the features in the sitePointsLayer. This data grid shows all of the matching sites according to the values currently selected in the filterBox.-->
-					<components:MyDataGrid id="reportSiteListTable" dataProvider="{sitePointsLayer.features}" featureLayer="{sitePointsLayer}" visible="{!sitePointsLayer.loading}" itemClick="datagrid_itemClickHandler(event)" itemRollOver="dataGrid_ItemRollOver(event)" itemRollOut="datagrid_itemRollOutHandler(event)">
+					<components:MyDataGrid id="reportSiteListTable"
+										   visible="{!sitePointsLayer.loading}"
+										   dataProvider="{sitePointsLayer.features}"
+										   featureLayer="{sitePointsLayer}"
+										   itemClick="datagrid_itemClickHandler(event)"
+										   itemRollOut="datagrid_itemRollOutHandler(event)"
+										   itemRollOver="dataGrid_ItemRollOver(event)">
 						<components:columns>
-							<mx:DataGridColumn headerText="{resourceManager.getString('myResources', 'TEXT28')}" itemRenderer="wcmc.renderers.CountryRenderer" sortCompareFunction="countrySortCompare" width="{wCountry}"/>
-							<mx:DataGridColumn headerText="{resourceManager.getString('myResources', 'TEXT186')}" dataField="Name" showDataTips="true" width="{wSitename}"/>
-							<mx:DataGridColumn headerText="{resourceManager.getString('myResources', 'TEXT196')}" itemRenderer="wcmc.renderers.TicRenderer3" width="{wIBA}" sortCompareFunction="booleanCompare3"/>
-							<mx:DataGridColumn headerText="{resourceManager.getString('myResources', 'TEXT198')}" dataField="Protected" width="{wProtected}"/>
-							<mx:DataGridColumn headerText="{resourceManager.getString('myResources', 'TEXT209')}" dataField="CSNSpc" width="70" textAlign="center" sortCompareFunction="csnSpCountCompare"/>
-							<mx:DataGridColumn headerText="{resourceManager.getString('myResources', 'TEXT210')}" dataField="IBASpc" width="70" textAlign="center" sortCompareFunction="ibaSpCountCompare"/>
-							<mx:DataGridColumn headerText="{resourceManager.getString('myResources', 'TEXT243')}" dataField="Total" width="83" textAlign="center"/>
-							<mx:DataGridColumn headerText="" width="20" itemRenderer="wcmc.renderers.SiteLinkRenderer"/>
+							<mx:DataGridColumn width="{wCountry}"
+											   headerText="{resourceManager.getString('myResources', 'TEXT28')}"
+											   itemRenderer="wcmc.renderers.CountryRenderer"
+											   sortCompareFunction="countrySortCompare"/>
+							<mx:DataGridColumn width="{wSitename}" dataField="Name"
+											   headerText="{resourceManager.getString('myResources', 'TEXT186')}"
+											   showDataTips="true"/>
+							<mx:DataGridColumn width="{wIBA}"
+											   headerText="{resourceManager.getString('myResources', 'TEXT196')}"
+											   itemRenderer="wcmc.renderers.TicRenderer3"
+											   sortCompareFunction="booleanCompare3"/>
+							<mx:DataGridColumn width="{wProtected}" dataField="Protected"
+											   headerText="{resourceManager.getString('myResources', 'TEXT198')}"/>
+							<mx:DataGridColumn width="70" dataField="CSNSpc"
+											   headerText="{resourceManager.getString('myResources', 'TEXT209')}"
+											   sortCompareFunction="csnSpCountCompare"
+											   textAlign="center"/>
+							<mx:DataGridColumn width="70" dataField="IBASpc"
+											   headerText="{resourceManager.getString('myResources', 'TEXT210')}"
+											   sortCompareFunction="ibaSpCountCompare"
+											   textAlign="center"/>
+							<mx:DataGridColumn width="83" dataField="Total"
+											   headerText="{resourceManager.getString('myResources', 'TEXT243')}"
+											   textAlign="center"/>
+							<mx:DataGridColumn width="20" headerText=""
+											   itemRenderer="wcmc.renderers.SiteLinkRenderer"/>
 						</components:columns>
 					</components:MyDataGrid> 
 				</mx:Canvas>
-				<components:ReportToolbar dataGrid="{reportSiteListTable}" reportTitle="{resourceManager.getString('myResources', 'TEXT211')}" outputFilters="true" filterCollection="{reportsBox.filterBox.filterCollection}" reportLink="http://dev.unep-wcmc.org/csn/default.html#state=reports" wowImage="{welcomeBox.wowImage}"/>
+				<components:ReportToolbar dataGrid="{reportSiteListTable}"
+										  filterCollection="{reportsBox.filterBox.filterCollection}"
+										  outputFilters="true"
+										  reportLink="http://dev.unep-wcmc.org/csn/default.html#state=reports"
+										  reportTitle="{resourceManager.getString('myResources', 'TEXT211')}"
+										  wowImage="{welcomeBox.wowImage}"/>
 			</s:VGroup>
 		</s:BorderContainer>
 	</components:MyBorderContainer>
 	
 	<!--Reports - Species list for a country table-->
 	<!---The reportSpeciesListForCountry box is the box showing species that occur in a country based on the currently selected country in the countryDropDown control.-->	
-	<components:MyBorderContainer id="reportSpeciesListForCountry" styleName="InformationPanel" horizontalCenter="0" bottom="10" visible="{(reportsBox.reportSpeciesListForCountry.selected)&amp;&amp;(currentState=='reports')}" movedToFront="reportSpeciesListForCountry_movedToFrontHandler(event)">
-		<s:BorderContainer styleName="ContentPanel" right="5" bottom="5" top="5" left="5">
-			<s:VGroup paddingLeft="10" paddingBottom="8" paddingRight="10" paddingTop="10">
-				<s:HGroup verticalAlign="middle" width="100%">
-					<s:Label text="{resourceManager.getString('myResources', 'TEXT66')}" styleName="boxLabel" creationComplete="countryQueryTask.execute(countryQuery)"/>
+	<components:MyBorderContainer id="reportSpeciesListForCountry"
+								  visible="{(reportsBox.reportSpeciesListForCountry.selected)&amp;&amp;(currentState=='reports')}"
+								  bottom="10" horizontalCenter="0"
+								  movedToFront="reportSpeciesListForCountry_movedToFrontHandler(event)"
+								  styleName="InformationPanel">
+		<s:BorderContainer left="5" right="5" top="5" bottom="5" styleName="ContentPanel">
+			<s:VGroup paddingBottom="8" paddingLeft="10" paddingRight="10" paddingTop="10">
+				<s:HGroup width="100%" verticalAlign="middle">
+					<s:Label creationComplete="countryQueryTask.execute(countryQuery)"
+							 styleName="boxLabel"
+							 text="{resourceManager.getString('myResources', 'TEXT66')}"/>
 					<!---The countryDropDown is a simple drop down control that shows a list of all AEWA countries from the countryQueryTask. These items are rendererd using the CountryFilterRenderer2 renderer.-->
-					<s:DropDownList id="countryDropDown" dataProvider="{getSortedCountries(countryQueryTask.executeLastResult.attributes)}" itemRenderer="wcmc.renderers.CountryFilterRenderer2" change="countryComboBox_changeHandler(event)" width="190" labelField="Name"/>
+					<s:DropDownList id="countryDropDown" width="190"
+									change="countryComboBox_changeHandler(event)"
+									dataProvider="{getSortedCountries(countryQueryTask.executeLastResult.attributes)}"
+									itemRenderer="wcmc.renderers.CountryFilterRenderer2"
+									labelField="Name"/>
 					<mx:Spacer width="100%"/>
 					<components:DragBox dragComponent="{reportSpeciesListForCountry}" target="{this}"/>
 					<components:MyCloseButton click="reportSpeciesListForCountry.visible=false;reportsBox.reportSpeciesListForCountry.checkBox.selected=false"/>
 				</s:HGroup>
 				<!---Data grid that is bound to the features that are returned in the countrySpeciesQueryTask when the user selects a country in the countryDropDown control.-->
-				<mx:DataGrid id="reportSpeciesListForCountryTable" dataProvider="{sortCountrySpeciesList(reportsBox.speciesFilterBox.countrySpeciesQueryTask.executeLastResult.attributes)}">
+				<mx:DataGrid id="reportSpeciesListForCountryTable"
+							 dataProvider="{sortCountrySpeciesList(reportsBox.speciesFilterBox.countrySpeciesQueryTask.executeLastResult.attributes)}">
 					<mx:columns>
-						<mx:DataGridColumn headerText="{resourceManager.getString('myResources', 'TEXT208')}" dataField="Species" width="{wScientific}" showDataTips="true" itemRenderer="wcmc.renderers.SpeciesRenderer" sortCompareFunction="speciesCompare"/>
-						<mx:DataGridColumn headerText="{resourceManager.getString('myResources', 'TEXT205')}" dataField="{commonNameField}" width="{wCommon}" showDataTips="true" dataTipField="{commonNameField}"/>
-						<mx:DataGridColumn headerText="{resourceManager.getString('myResources', 'TEXT212')}" dataField="Description" width="60"/>
-						<mx:DataGridColumn headerText="" width="20" itemRenderer="wcmc.renderers.SpeciesLinkRenderer"/>
+						<mx:DataGridColumn width="{wScientific}" dataField="Species"
+										   headerText="{resourceManager.getString('myResources', 'TEXT208')}"
+										   itemRenderer="wcmc.renderers.SpeciesRenderer"
+										   showDataTips="true" sortCompareFunction="speciesCompare"/>
+						<mx:DataGridColumn width="{wCommon}" dataField="{commonNameField}"
+										   dataTipField="{commonNameField}"
+										   headerText="{resourceManager.getString('myResources', 'TEXT205')}"
+										   showDataTips="true"/>
+						<mx:DataGridColumn width="60" dataField="Description"
+										   headerText="{resourceManager.getString('myResources', 'TEXT212')}"/>
+						<mx:DataGridColumn width="20" headerText=""
+										   itemRenderer="wcmc.renderers.SpeciesLinkRenderer"/>
 					</mx:columns>
 				</mx:DataGrid>
-				<components:ReportToolbar dataGrid="{reportSpeciesListForCountryTable}" reportTitle="{resourceManager.getString('myResources', 'TEXT207')} {countryDropDown.selectedItem.Name}" outputFilters="true" filterCollection="{reportsBox.speciesFilterBox.allSpeciesFilter}" reportLink="http://dev.unep-wcmc.org/csn/default.html#state=reports" wowImage="{welcomeBox.wowImage}"/>
+				<components:ReportToolbar dataGrid="{reportSpeciesListForCountryTable}"
+										  filterCollection="{reportsBox.speciesFilterBox.allSpeciesFilter}"
+										  outputFilters="true"
+										  reportLink="http://dev.unep-wcmc.org/csn/default.html#state=reports"
+										  reportTitle="{resourceManager.getString('myResources', 'TEXT207')} {countryDropDown.selectedItem.Name}"
+										  wowImage="{welcomeBox.wowImage}"/>
 			</s:VGroup>
 		</s:BorderContainer>
 	</components:MyBorderContainer>
 	
 	<!--Reports - population list for a country table-->
 	<!---The reportFlywayListForCountry box is the box showing species flyways that occur in a country based on the currently selected country in the countryDropDown2 control.-->	
-	<components:MyBorderContainer id="reportPopListForCountry" styleName="InformationPanel" horizontalCenter="0" bottom="10" visible="{(reportsBox.reportFlywayListForCountry.selected)&amp;&amp;(currentState=='reports')}" movedToFront="reportPopListForCountry_movedToFrontHandler(event)"> 
-		<s:BorderContainer styleName="ContentPanel" right="5" bottom="5" top="5" left="5">
-			<s:VGroup paddingLeft="10" paddingBottom="8" paddingRight="10" paddingTop="10">
-				<s:HGroup verticalAlign="middle" width="100%">
-					<s:Label text="{resourceManager.getString('myResources', 'TEXT213')}" styleName="boxLabel" creationComplete="countryQueryTask.execute(countryQuery)"/>
+	<components:MyBorderContainer id="reportPopListForCountry"
+								  visible="{(reportsBox.reportFlywayListForCountry.selected)&amp;&amp;(currentState=='reports')}"
+								  bottom="10" horizontalCenter="0"
+								  movedToFront="reportPopListForCountry_movedToFrontHandler(event)"
+								  styleName="InformationPanel"> 
+		<s:BorderContainer left="5" right="5" top="5" bottom="5" styleName="ContentPanel">
+			<s:VGroup paddingBottom="8" paddingLeft="10" paddingRight="10" paddingTop="10">
+				<s:HGroup width="100%" verticalAlign="middle">
+					<s:Label creationComplete="countryQueryTask.execute(countryQuery)"
+							 styleName="boxLabel"
+							 text="{resourceManager.getString('myResources', 'TEXT213')}"/>
 					<!---The countryDropDown2 is a simple drop down control that shows a list of all AEWA countries from the countryQueryTask. These items are rendererd using the CountryFilterRenderer2 renderer.-->
-					<s:DropDownList id="countryDropDown2" dataProvider="{getSortedCountries(countryQueryTask.executeLastResult.attributes)}" itemRenderer="wcmc.renderers.CountryFilterRenderer2" change="countryDropDown2_changeHandler(event)" width="190" labelField="Name"/>
+					<s:DropDownList id="countryDropDown2" width="190"
+									change="countryDropDown2_changeHandler(event)"
+									dataProvider="{getSortedCountries(countryQueryTask.executeLastResult.attributes)}"
+									itemRenderer="wcmc.renderers.CountryFilterRenderer2"
+									labelField="Name"/>
 					<mx:Spacer width="100%"/>
 					<components:DragBox dragComponent="{reportPopListForCountry}" target="{this}"/>
 					<components:MyCloseButton click="reportPopListForCountry.visible=false;reportsBox.reportFlywayListForCountry.checkBox.selected=false"/>
 				</s:HGroup>
 				<!---Data grid that is bound to the features that are returned in the countryPopulationQueryTask when the user selects a country in the countryDropDown2 control.-->
-				<mx:DataGrid id="reportFlywayListForCountryTable" dataProvider="{sortCountrySpeciesList(reportsBox.populationFilterBox.flywaysQueryTask.executeLastResult.attributes)}">
+				<mx:DataGrid id="reportFlywayListForCountryTable"
+							 dataProvider="{sortCountrySpeciesList(reportsBox.populationFilterBox.flywaysQueryTask.executeLastResult.attributes)}">
 					<mx:columns>
-						<mx:DataGridColumn headerText="{resourceManager.getString('myResources', 'TEXT208')}" dataField="Species" width="{wScientific}" showDataTips="true" itemRenderer="wcmc.renderers.SpeciesRenderer" sortCompareFunction="speciesCompare"/>
-						<mx:DataGridColumn headerText="{resourceManager.getString('myResources', 'TEXT205')}" dataField="{commonNameField}" width="{wCommon}" showDataTips="true" dataTipField="{commonNameField}"/>
-						<mx:DataGridColumn headerText="{resourceManager.getString('myResources', 'TEXT158')}" dataField="Flyway" width="{wPopulation}" showDataTips="true" dataTipField="Flyway"/>
-						<mx:DataGridColumn headerText="{resourceManager.getString('myResources', 'TEXT201')}" dataField="Estimate" width="{wEstimate}" showDataTips="true" dataTipField="Estimate"/>
-						<mx:DataGridColumn headerText="{resourceManager.getString('myResources', 'TEXT203')}" dataField="OnePercentCalc" textAlign="right" sortCompareFunction="onePercentCompare" width="{wOnePercent}"/>
-						<mx:DataGridColumn headerText="{resourceManager.getString('myResources', 'TEXT250')}" dataField="AEWAStatus" width="{wAEWAStatus}"/>
-						<mx:DataGridColumn headerText="" width="20" itemRenderer="wcmc.renderers.SpeciesLinkRenderer"/>
+						<mx:DataGridColumn width="{wScientific}" dataField="Species"
+										   headerText="{resourceManager.getString('myResources', 'TEXT208')}"
+										   itemRenderer="wcmc.renderers.SpeciesRenderer"
+										   showDataTips="true" sortCompareFunction="speciesCompare"/>
+						<mx:DataGridColumn width="{wCommon}" dataField="{commonNameField}"
+										   dataTipField="{commonNameField}"
+										   headerText="{resourceManager.getString('myResources', 'TEXT205')}"
+										   showDataTips="true"/>
+						<mx:DataGridColumn width="{wPopulation}" dataField="Flyway"
+										   dataTipField="Flyway"
+										   headerText="{resourceManager.getString('myResources', 'TEXT158')}"
+										   showDataTips="true"/>
+						<mx:DataGridColumn width="{wEstimate}" dataField="Estimate"
+										   dataTipField="Estimate"
+										   headerText="{resourceManager.getString('myResources', 'TEXT201')}"
+										   showDataTips="true"/>
+						<mx:DataGridColumn width="{wOnePercent}" dataField="OnePercentCalc"
+										   headerText="{resourceManager.getString('myResources', 'TEXT203')}"
+										   sortCompareFunction="onePercentCompare" textAlign="right"/>
+						<mx:DataGridColumn width="{wAEWAStatus}" dataField="AEWAStatus"
+										   headerText="{resourceManager.getString('myResources', 'TEXT250')}"/>
+						<mx:DataGridColumn width="20" headerText=""
+										   itemRenderer="wcmc.renderers.SpeciesLinkRenderer"/>
 					</mx:columns>
 				</mx:DataGrid>
-				<components:ReportToolbar dataGrid="{reportFlywayListForCountryTable}" reportTitle="{resourceManager.getString('myResources', 'TEXT214')} {countryDropDown2.selectedItem.Name}" reportOrientation="{Orientation.LANDSCAPE}" reportLink="http://dev.unep-wcmc.org/csn/default.html#state=reports"/>
+				<components:ReportToolbar dataGrid="{reportFlywayListForCountryTable}"
+										  reportLink="http://dev.unep-wcmc.org/csn/default.html#state=reports"
+										  reportOrientation="{Orientation.LANDSCAPE}"
+										  reportTitle="{resourceManager.getString('myResources', 'TEXT214')} {countryDropDown2.selectedItem.Name}"/>
 			</s:VGroup>
 		</s:BorderContainer>
 	</components:MyBorderContainer>
 	
 	<!--Reports - population list for a point table-->
 	<!---The speciesPointDataTable box is the box showing species that occur for a user-defined point. These features are contained in the arrayCollection speciesListForPoints which is created when the user activates the species list for point tool and clicks on the map.-->	
-	<components:MyBorderContainer id="reportPopListForPoint" styleName="InformationPanel" horizontalCenter="0" bottom="10" visible="{(reportsBox.reportFlywayListForPoint.selected)&amp;&amp;(currentState=='reports')}" show="speciesPointDataTable_showHandler(event)" hide="speciesPointDataTable_hideHandler(event)" movedToFront="reportPopListForPoint_movedToFrontHandler(event)"> 
-		<s:BorderContainer styleName="ContentPanel" right="5" bottom="5" top="5" left="5">
-			<s:VGroup paddingLeft="10" paddingBottom="8" paddingRight="10" paddingTop="10">
-				<components:BoxHeader id="popListHeader" dragComponent="{reportPopListForPoint}" target="{this}" caption="{resourceManager.getString('myResources', 'TEXT215')}" boxClosed="reportsBox.reportFlywayListForPoint.checkBox.selected=false;"/>
+	<components:MyBorderContainer id="reportPopListForPoint"
+								  visible="{(reportsBox.reportFlywayListForPoint.selected)&amp;&amp;(currentState=='reports')}"
+								  bottom="10" hide="speciesPointDataTable_hideHandler(event)"
+								  horizontalCenter="0"
+								  movedToFront="reportPopListForPoint_movedToFrontHandler(event)"
+								  show="speciesPointDataTable_showHandler(event)"
+								  styleName="InformationPanel"> 
+		<s:BorderContainer left="5" right="5" top="5" bottom="5" styleName="ContentPanel">
+			<s:VGroup paddingBottom="8" paddingLeft="10" paddingRight="10" paddingTop="10">
+				<components:BoxHeader id="popListHeader"
+									  boxClosed="reportsBox.reportFlywayListForPoint.checkBox.selected=false;"
+									  caption="{resourceManager.getString('myResources', 'TEXT215')}"
+									  dragComponent="{reportPopListForPoint}" target="{this}"/>
 				<!---Data grid that is bound to the speciesListForPoints ArrayCollection that is created when the user activates the species list for point tool and clicks on the map.-->
-				<mx:DataGrid id="speciesPointTable" dataProvider="{reportsBox.pointFilterBox.flywaysQueryTask.executeLastResult.attributes}">
+				<mx:DataGrid id="speciesPointTable"
+							 dataProvider="{reportsBox.pointFilterBox.flywaysQueryTask.executeLastResult.attributes}">
 					<mx:columns>
-						<mx:DataGridColumn headerText="{resourceManager.getString('myResources', 'TEXT208')}" dataField="Species" width="{wScientific}" showDataTips="true" itemRenderer="wcmc.renderers.SpeciesRenderer" sortCompareFunction="speciesCompare"/>
-						<mx:DataGridColumn headerText="{resourceManager.getString('myResources', 'TEXT205')}" dataField="{commonNameField}" width="{wCommon}" showDataTips="true" dataTipField="{commonNameField}"/>
-						<mx:DataGridColumn headerText="{resourceManager.getString('myResources', 'TEXT158')}" dataField="Flyway" width="{wPopulation}" showDataTips="true" dataTipField="Flyway"/>
-						<mx:DataGridColumn headerText="{resourceManager.getString('myResources', 'TEXT201')}" dataField="Estimate" width="{wEstimate}" showDataTips="true" dataTipField="Estimate"/>
-						<mx:DataGridColumn headerText="{resourceManager.getString('myResources', 'TEXT203')}" dataField="OnePercentCalc" textAlign="right" sortCompareFunction="onePercentCompare" width="{wOnePercent}"/>
-						<mx:DataGridColumn headerText="{resourceManager.getString('myResources', 'TEXT250')}" dataField="AEWAStatus" width="{wAEWAStatus}"/>
-						<mx:DataGridColumn headerText="" width="20" itemRenderer="wcmc.renderers.SpeciesLinkRenderer"/>
+						<mx:DataGridColumn width="{wScientific}" dataField="Species"
+										   headerText="{resourceManager.getString('myResources', 'TEXT208')}"
+										   itemRenderer="wcmc.renderers.SpeciesRenderer"
+										   showDataTips="true" sortCompareFunction="speciesCompare"/>
+						<mx:DataGridColumn width="{wCommon}" dataField="{commonNameField}"
+										   dataTipField="{commonNameField}"
+										   headerText="{resourceManager.getString('myResources', 'TEXT205')}"
+										   showDataTips="true"/>
+						<mx:DataGridColumn width="{wPopulation}" dataField="Flyway"
+										   dataTipField="Flyway"
+										   headerText="{resourceManager.getString('myResources', 'TEXT158')}"
+										   showDataTips="true"/>
+						<mx:DataGridColumn width="{wEstimate}" dataField="Estimate"
+										   dataTipField="Estimate"
+										   headerText="{resourceManager.getString('myResources', 'TEXT201')}"
+										   showDataTips="true"/>
+						<mx:DataGridColumn width="{wOnePercent}" dataField="OnePercentCalc"
+										   headerText="{resourceManager.getString('myResources', 'TEXT203')}"
+										   sortCompareFunction="onePercentCompare" textAlign="right"/>
+						<mx:DataGridColumn width="{wAEWAStatus}" dataField="AEWAStatus"
+										   headerText="{resourceManager.getString('myResources', 'TEXT250')}"/>
+						<mx:DataGridColumn width="20" headerText=""
+										   itemRenderer="wcmc.renderers.SpeciesLinkRenderer"/>
 					</mx:columns>
 				</mx:DataGrid> 
-				<components:ReportToolbar dataGrid="{speciesPointTable}" reportTitle="{resourceManager.getString('myResources', 'TEXT216')}{clickPointLat.toString()}{resourceManager.getString('myResources', 'TEXT217')}{clickPointLong.toString()})" outputDate="true" reportLink="http://dev.unep-wcmc.org/csn/default.html#state=reports" wowImage="{welcomeBox.wowImage}"/>
+				<components:ReportToolbar dataGrid="{speciesPointTable}" outputDate="true"
+										  reportLink="http://dev.unep-wcmc.org/csn/default.html#state=reports"
+										  reportTitle="{resourceManager.getString('myResources', 'TEXT216')}{clickPointLat.toString()}{resourceManager.getString('myResources', 'TEXT217')}{clickPointLong.toString()})"
+										  wowImage="{welcomeBox.wowImage}"/>
 			</s:VGroup>
 		</s:BorderContainer>
 	</components:MyBorderContainer>
@@ -1291,6 +1828,19 @@ Main application class.
 					}
 				}
 			}
+			private function addPercent(item:Object,column:DataGridColumn):String
+			{
+				if (item[column.dataField]==null) return "";
+				var percent:Number=item[column.dataField];
+				if (percent>1)
+				{
+					return percent.toFixed(0) + "%";
+				}
+				else
+				{
+					return "<1%";						
+				}
+			}
 			////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 			
@@ -1586,20 +2136,6 @@ Main application class.
 				var point:Point=speciesBox.timeSliderTool.contentToGlobal(new Point());
 				timesliderToolbar.bottom=height-point.y+15;
 				timesliderToolbar.x=infoPanel.x-40;
-			}
-			
-			////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-			//// WPE DATA TABLE POSITIONING
-			////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-			
-			/**
-			 * Sets the startup position of the WPE table.
-			 */ 			
-			protected function wpeDataTable_showHandler(event:FlexEvent):void
-			{
-				var point:Point=speciesBox.wpeTable.contentToGlobal(new Point());
-				wpeDataTable.bottom=height-point.y+15;
-				wpeDataTable.right=infoPanel.right;
 			}
 			
 			////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1977,6 +2513,12 @@ Main application class.
 			{
 				reportsBox.currentState="pointFilter";
 			}
+			
+			protected function myclosebutton1_targetClosedHandler(event:Event):void
+			{
+				speciesBox.protectionTable.checkBox.selected=false;				
+			}
+			
 		]]>
 	</fx:Script>
 </s:Application>

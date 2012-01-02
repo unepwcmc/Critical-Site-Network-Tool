@@ -47,6 +47,8 @@
 			import wcmc.classes.LookupValue;
 			[Bindable]public var dataGrid:DataGrid;
 			[Bindable]public var reportTitle:String;
+			[Bindable]public var reportSubTitle1:String;
+			[Bindable]public var reportSubTitle2:String;
 			[Bindable]public var outputFilters:Boolean=false;
 			[Bindable]public var filterCollection:FilterCollection;
 			[Bindable]public var wowImage:Image;
@@ -78,6 +80,16 @@
 				myPDF.moveTo(10,19);
 				myPDF.lineTo(130,19);
 				myPDF.end();
+				if (reportSubTitle1)
+				{
+					myPDF.newLine(15);
+					myPDF.writeText(10,reportSubTitle1);
+				}
+				if (reportSubTitle2)
+				{
+					myPDF.newLine(4);
+					myPDF.writeText(10,reportSubTitle2);
+				}
 				myPDF.newLine(15);
 				var label:String;
 				myPDF.setFont(iFont,8);

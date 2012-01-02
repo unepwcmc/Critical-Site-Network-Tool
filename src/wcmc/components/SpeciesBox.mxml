@@ -30,7 +30,7 @@ Main species box that contains all of the controls for turning on/off the variou
 					<components:LinkLabel text="{resourceManager.getString('myResources', 'TEXT102')}" click="Utilities.navigateToUrl('http://groms.unep.de/view_new2008/species_report_new2008.php?lang=en&amp;genus=' + species.genus + '&amp;species=' + species.species)" textAlign="right" width="100%"/>
 				</s:VGroup>
 			</s:HGroup>
-			<s:VGroup width="100%" paddingTop="10" paddingLeft="5" paddingRight="5" gap="0">
+			<s:VGroup width="100%" paddingTop="9" paddingLeft="5" paddingRight="5" gap="0">
 				<components:Tool id="dMap" imageSource="{EmbeddedImages.speciesMap}" label="{resourceManager.getString('myResources', 'TEXT103')}" description="{resourceManager.getString('myResources', 'TEXT104')}"/>
 				<components:Tool id="fMap" imageSource="{EmbeddedImages.speciesFlyway}" label="{resourceManager.getString('myResources', 'TEXT105')}" description="{resourceManager.getString('myResources', 'TEXT106')}"/>
 				<components:Tool id="csnMap" imageSource="{EmbeddedImages.speciesAbundance}" label="{resourceManager.getString('myResources', 'TEXT107')}" description="{resourceManager.getString('myResources', 'TEXT108')}"/>
@@ -39,6 +39,7 @@ Main species box that contains all of the controls for turning on/off the variou
 	<!--			<components:Tool id="iwcCustomAreaTool" imageSource="{EmbeddedImages.chart}" label="{resourceManager.getString('myResources', 'TEXT113')}" description="{resourceManager.getString('myResources', 'TEXT114')}"/>-->
 				<components:Tool id="timeSliderTool" imageSource="{EmbeddedImages.timeSlider}" label="{resourceManager.getString('myResources', 'TEXT115')}" description="{resourceManager.getString('myResources', 'TEXT116')}"/>
 				<components:Tool id="wpeTable" imageSource="{EmbeddedImages.list}" label="{resourceManager.getString('myResources', 'TEXT117')}" description="{resourceManager.getString('myResources', 'TEXT118')}"/>
+				<components:Tool id="protectionTable" imageSource="{EmbeddedImages.list}" label="{resourceManager.getString('myResources', 'TEXT251')}" description="{resourceManager.getString('myResources', 'TEXT252')}"/>
 			</s:VGroup>
 		</s:VGroup>
 	</s:Scroller>

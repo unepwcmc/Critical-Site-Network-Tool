@@ -14,7 +14,7 @@ Generic component that is used to display a check box next to a title and descri
 		[Event(name="toolActivated", type="flash.events.Event")]
 		[Event(name="toolDeactivated", type="flash.events.Event")]
 	</fx:Metadata>
-	<s:HGroup width="100%" paddingBottom="3" paddingTop="3" paddingLeft="3" gap="2">
+	<s:HGroup width="100%" paddingBottom="2" paddingTop="3" paddingLeft="3" gap="2">
 		<s:HGroup height="100%">
 			<mx:Image source="{imageSource}" filters="{[blur]}"/>
 			<s:CheckBox id="checkBox" click="checkBox_clickHandler(event)"/>

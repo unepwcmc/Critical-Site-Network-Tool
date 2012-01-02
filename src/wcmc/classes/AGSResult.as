@@ -64,6 +64,10 @@ package wcmc.classes
 		 */		
 		static public const POINTFLYWAYSLIST:String="pointflywayslist";
 		/**
+		 * Data requests that return a flyway list for a species. 
+		 */		
+		static public const SPECIESFLYWAYSLIST:String="speciesflywayslist";
+		/**
 		 * Data requests that return data from a SOAP request - these are used in the Filters. 
 		 */		
 		static public const SOAPRESULT:String="soapResult";
