@@ -315,7 +315,7 @@
 							}
 							else
 							{
-								text=column.itemToLabel(obj);
+								(obj[column.dataField]!="") ? text=column.itemToLabel(obj) : text="";
 							}
 						}
 						data+=text; 

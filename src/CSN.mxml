@@ -966,15 +966,15 @@ Main application class.
 					<mx:columns>
 						<mx:DataGridColumn dataField="Region"
 										   headerText="{resourceManager.getString('myResources', 'TEXT255')}" width="200"/>
-						<mx:DataGridColumn dataField="BPercent"
+						<mx:DataGridColumn dataField="BrPercent"
 										   headerText="{resourceManager.getString('myResources', 'TEXT256')}"
 										   labelFunction="addPercent" textAlign="right" width="60"/>
-						<mx:DataGridColumn dataField="B"
+						<mx:DataGridColumn dataField="Br"
 										   headerText="{resourceManager.getString('myResources', 'TEXT257')}" textAlign="right" width="60"/>
-						<mx:DataGridColumn dataField="NBPercent"
+						<mx:DataGridColumn dataField="NBrPercent"
 										   headerText="{resourceManager.getString('myResources', 'TEXT258')}"
 										   labelFunction="addPercent" textAlign="right" width="60"/>
-						<mx:DataGridColumn dataField="NB"
+						<mx:DataGridColumn dataField="NBr"
 										   headerText="{resourceManager.getString('myResources', 'TEXT259')}" textAlign="right" width="60"/>
 					</mx:columns>
 				</mx:DataGrid>
@@ -1811,6 +1811,7 @@ Main application class.
 			}
 			private function getPercentFlyway(item:Object,column:DataGridColumn):String
 			{
+				if ((item[column.dataField].toString().substring(item[column.dataField].toString().length-1))=="%") return item[column.dataField].toString();
 				var percent:Number=item.PercentFlyway;
 				if (percent>1)
 				{
@@ -1831,6 +1832,7 @@ Main application class.
 			private function addPercent(item:Object,column:DataGridColumn):String
 			{
 				if (item[column.dataField]==null) return "";
+				if ((item[column.dataField].toString().substring(item[column.dataField].toString().length-1))=="%") return item[column.dataField].toString();
 				var percent:Number=item[column.dataField];
 				if (percent>1)
 				{

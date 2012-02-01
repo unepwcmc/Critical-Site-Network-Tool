@@ -352,22 +352,24 @@ package wcmc.classes// this is the package information
 			var _ac:ArrayCollection=new ArrayCollection();
 			function onResult(featureSet:FeatureSet, token:Object = null):void
 			{
+				var obj:Object=new Object();
 				for each (var object:Object in featureSet.attributes)
 				{
 					_ac.addItem(object);
 				}
-				_ac.refresh();
 			}
 			return _ac;
 		}
 		
 		public function getProtection(spcFlyRecID:String,protectionTypeID:int):ArrayCollection
 		{
-			var queryTask:QueryTask=new QueryTask("http://dev.unep-wcmc.org/ArcGIS/rest/services/CSN/Reports/MapServer/6"); // 'Protection totals' layer
+			var layerID:int;
+			(protectionTypeID==1) ? layerID = 8 : layerID=6; //if we want all protection types then get the 7th layer
+			var queryTask:QueryTask=new QueryTask("http://dev.unep-wcmc.org/ArcGIS/rest/services/CSN/Reports/MapServer/" + layerID.toString()); // 'Protection totals' layer
 			var query:Query=new Query;
 			query.returnGeometry=false;
 			query.outFields=["*"];
-			query.where="SpcFlyRecID='" + spcFlyRecID + "' and ProtectionType=" + protectionTypeID;
+			(protectionTypeID==1) ? query.where="SpcFlyRecID='" + spcFlyRecID + "'" : query.where="SpcFlyRecID='" + spcFlyRecID + "' and ProtectionType=" + protectionTypeID;
 			queryTask.execute(query, new AsyncResponder(onResult, onFault));
 			var _ac:ArrayCollection=new ArrayCollection();
 			function onResult(featureSet:FeatureSet, token:Object = null):void
@@ -378,23 +380,23 @@ package wcmc.classes// this is the package information
 				}
 				if (_ac.length>0)
 				{//add the totals if there is some data
-					var BPercentTotal:int;
-					var BTotal:int;
-					var NBPercentTotal:int;
-					var NBTotal:int;
+					var BrPercentTotal:int;
+					var BrTotal:int;
+					var NBrPercentTotal:int;
+					var NBrTotal:int;
 					for each (var obj:Object in _ac)
 					{
-						BPercentTotal=BPercentTotal+ obj.BPercent;
-						BTotal=BTotal+ obj.B;
-						NBPercentTotal=NBPercentTotal+ obj.NBPercent;
-						NBTotal=NBTotal+ obj.NB;
+						BrPercentTotal=BrPercentTotal+ obj.BrPercent;
+						BrTotal=BrTotal+ obj.Br;
+						NBrPercentTotal=NBrPercentTotal+ obj.NBrPercent;
+						NBrTotal=NBrTotal+ obj.NBr;
 					}
 					var totalObj:Object = new Object();
 					totalObj.Region="TOTAL:";
-					(BTotal>0) ? totalObj.BPercent=BPercentTotal : totalObj.BPercent=null;
-					(BTotal>0) ? totalObj.B=BTotal : totalObj.B=null;
-					(NBTotal>0) ? totalObj.NBPercent=NBPercentTotal : totalObj.NBPercent=null;
-					(NBTotal>0) ? totalObj.NB=NBTotal : totalObj.NB=null;
+					(BrTotal>0) ? totalObj.BrPercent=BrPercentTotal : totalObj.BrPercent=null;
+					(BrTotal>0) ? totalObj.Br=BrTotal : totalObj.Br=null;
+					(NBrTotal>0) ? totalObj.NBrPercent=NBrPercentTotal : totalObj.NBrPercent=null;
+					(NBrTotal>0) ? totalObj.NBr=NBrTotal : totalObj.NBr=null;
 					_ac.addItem(totalObj);
 				}
 			}
