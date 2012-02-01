@@ -1,7 +1,7 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <projectDescription>
 	<name>Critical-Site-Network-Tool</name>
-	<comment/>
+	<comment></comment>
 	<projects>
 	</projects>
 	<buildSpec>
@@ -15,22 +15,4 @@
 		<nature>com.adobe.flexbuilder.project.flexnature</nature>
 		<nature>com.adobe.flexbuilder.project.actionscriptnature</nature>
 	</natures>
-	<linkedResources>
-		<link>
-			<name>bin-release</name>
-			<type>2</type>
-			<location>/Users/andrewcottam/Sites/csn_final</location>
-		</link>
-		<link>
-			<name>bin-release1</name>
-			<type>2</type>
-			<location>/Users/andrewcottam/Sites/csn_dev</location>
-		</link>
-		<link>
-			<name>bin-release2</name>
-			<type>2</type>
-			<location>/Users/andrewcottam/Sites/csn</location>
-		</link>
-	</linkedResources>
 </projectDescription>
-
